@@ -1,0 +1,30 @@
+package it.unina.vetbook.entity;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+public class Prenotazione {
+
+    private int id;
+    private LocalDate data;
+    private LocalTime ora;
+    private AnimaleDomestico animale;
+    private Proprietario proprietario;
+
+    public Prenotazione(LocalDate data, LocalTime ora, AnimaleDomestico animale) {}
+
+    public LocalDate getData() {
+        return data;
+    }
+
+    public LocalTime getOra() {
+        return ora;
+    }
+    
+    public AnimaleDomestico getAnimale() {
+        return animale;
+    }
+    
+    
+}
+
