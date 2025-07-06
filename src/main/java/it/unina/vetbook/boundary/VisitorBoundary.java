@@ -1,5 +1,6 @@
 package it.unina.vetbook.boundary;
 
+import it.unina.vetbook.entity.Proprietario;
 import it.unina.vetbook.entity.UserRole;
 
 import javax.swing.*;
@@ -62,13 +63,13 @@ public class VisitorBoundary extends JFrame {
                // UserRole role = ctrl.login(u, p);   // se fallisce, lancia eccezione
                ------------------------------------------------------- */
 
-            UserRole role = UserRole.AMMINISTRATORE_DELL_AMBULATORIO;          // ← MOCK risposta
+            UserRole role = UserRole.PROPRIETARIO;          // ← MOCK risposta
 
             JOptionPane.showMessageDialog(this, "Login OK come " + role);
             // switch di instradamento
             switch (role) {
                 case PROPRIETARIO: {
-                    System.out.println("Apri ProprietarioBoundary");
+                    new ProprietarioBoundary().setVisible(true);
                     break;
                 }
                 case VETERINARIO: {
@@ -77,6 +78,7 @@ public class VisitorBoundary extends JFrame {
                 }
                 case AMMINISTRATORE_DELL_AMBULATORIO: {
                     new AmministratoreBoundary().setVisible(true);
+                    break;
                 }
             }
             dispose();
