@@ -1,105 +1,123 @@
 package it.unina.vetbook.database;
 
 import it.unina.vetbook.entity.AnimaleDomestico;
+import it.unina.vetbook.entity.Proprietario;
+
 import java.sql.*;
 import java.sql.Date;
-import java.util.*;
 
-public class AnimaleDAO implements GenericDAO<AnimaleDomestico, String> {
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-    private static final String INSERT =
-            "INSERT INTO animale (codice_chip, nome, tipo, razza, colore, data_nascita, id_proprietario) " +
-                    "VALUES (?,?,?,?,?,?,?)";
-
-    private static final String SELECT =
-            "SELECT * FROM animale WHERE codice_chip = ?";
-
-    private static final String UPDATE =
-            "UPDATE animale SET nome = ?, tipo = ?, razza = ?, colore = ?, data_nascita = ?, id_proprietario = ? " +
-                    "WHERE codice_chip = ?";
-
-    private static final String DELETE =
-            "DELETE FROM animale WHERE codice_chip = ?";
-
-    private final DBManager db = DBManager.getInstance();
+public class AnimaleDAO implements GenericDAO<AnimaleDomestico, Integer> {
 
     @Override
-    public void create(AnimaleDomestico a) throws SQLException {
-        try (Connection c = db.getConnection();
-             PreparedStatement ps = c.prepareStatement(INSERT)) {
+    public void create(AnimaleDomestico entity) throws SQLException {
+        String sql = "INSERT INTO Animale (codiceChip, nome, tipo, razza, colore, dataDiNascita) VALUES (?, ?, ?, ?, ?, ?)";
 
-            // ps.setString(1, a.getCodiceChip());
-            ps.setString(2, a.getNome());
-            ps.setString(3, a.getTipo());
-            ps.setString(4, a.getRazza());
-            ps.setString(5, a.getColore());
-            ps.setDate  (6, Date.valueOf(a.getDataDiNascita()));
-            ps.executeUpdate();
+        try (Connection conn = DBManager.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, entity.getCodiceChip());
+            stmt.setString(2, entity.getNome());
+            stmt.setString(3, entity.getTipo());
+            stmt.setString(4, entity.getRazza());
+            stmt.setString(5, entity.getColore());
+            stmt.setDate(6, Date.valueOf(entity.getDataDiNascita()));
+
+            stmt.executeUpdate();
         }
     }
 
     @Override
-    public Optional<AnimaleDomestico> read(String chip) throws SQLException {
-        try (Connection c = db.getConnection();
-             PreparedStatement ps = c.prepareStatement(SELECT)) {
+    public Optional<AnimaleDomestico> read(Integer codiceChip) throws SQLException {
+        String sql = "SELECT * FROM Animale WHERE codiceChip = ?";
 
-            ps.setString(1, chip);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next() ? Optional.of(mapRow(rs)) : Optional.empty();
+        try (Connection conn = DBManager.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, codiceChip);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    AnimaleDomestico animale = mapResultSetToAnimale(rs);
+                    return Optional.of(animale);
+                }
             }
         }
+
+        return Optional.empty();
     }
 
     @Override
-    public void update(AnimaleDomestico a) throws SQLException {
-        try (Connection c = db.getConnection();
-             PreparedStatement ps = c.prepareStatement(UPDATE)) {
+    public void update(AnimaleDomestico entity) throws SQLException {
+        String sql = "UPDATE Animale SET nome = ?, tipo = ?, razza = ?, colore = ?, dataDiNascita = ? WHERE codiceChip = ?";
 
-            ps.setString(1, a.getNome());
-            ps.setString(2, a.getTipo());
-            ps.setString(3, a.getRazza());
-            ps.setString(4, a.getColore());
-            ps.setDate  (5, Date.valueOf(a.getDataDiNascita()));
-            //ps.setString(6, a.getCodiceChip());
-            ps.executeUpdate();
+        try (Connection conn = DBManager.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, entity.getNome());
+            stmt.setString(2, entity.getTipo());
+            stmt.setString(3, entity.getRazza());
+            stmt.setString(4, entity.getColore());
+            stmt.setDate(5, Date.valueOf(entity.getDataDiNascita()));
+            stmt.setInt(6, entity.getCodiceChip());
+
+            stmt.executeUpdate();
         }
     }
 
     @Override
-    public void delete(String chip) throws SQLException {
-        try (Connection c = db.getConnection();
-             PreparedStatement ps = c.prepareStatement(DELETE)) {
+    public void delete(Integer codiceChip) throws SQLException {
+        String sql = "DELETE FROM Animale WHERE codiceChip = ?";
 
-            ps.setString(1, chip);
-            ps.executeUpdate();
+        try (Connection conn = DBManager.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, codiceChip);
+            stmt.executeUpdate();
         }
     }
 
     @Override
     public List<AnimaleDomestico> executeQuery(String sql, Object... params) throws SQLException {
-        List<AnimaleDomestico> out = new ArrayList<>();
-        try (Connection c = db.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
+        List<AnimaleDomestico> result = new ArrayList<>();
 
-            for (int i = 0; i < params.length; i++) { ps.setObject(i + 1, params[i]); }
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) { out.add(mapRow(rs)); }
+        try (Connection conn = DBManager.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            for (int i = 0; i < params.length; i++) {
+                stmt.setObject(i + 1, params[i]);
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    result.add(mapResultSetToAnimale(rs));
+                }
             }
         }
-        return out;
+
+        return result;
     }
 
-    /* ====== helper =================================================== */
-    private AnimaleDomestico mapRow(ResultSet rs) throws SQLException {
-        AnimaleDomestico a = new AnimaleDomestico();
-        //a.setCodiceChip (rs.getString("codice_chip"));
-        a.setNome       (rs.getString("nome"));
-        a.setTipo       (rs.getString("tipo"));
-        a.setRazza      (rs.getString("razza"));
-        a.setColore     (rs.getString("colore"));
-        a.setDataDiNascita(rs.getDate  ("data_nascita").toLocalDate());
-        // proprietario da caricare a parte (lazy) con ProprietarioDAO
-        return a;
+    private AnimaleDomestico mapResultSetToAnimale(ResultSet rs) throws SQLException {
+        int codiceChip = rs.getInt("codiceChip");
+        String nome = rs.getString("nome");
+        String tipo = rs.getString("tipo");
+        String razza = rs.getString("razza");
+        String colore = rs.getString("colore");
+        LocalDate dataDiNascita = rs.getDate("dataDiNascita").toLocalDate();
+        String usernameProprietario = rs.getString("usernameProprietario");
+
+        // 1. Crea animale
+        AnimaleDomestico animale = new AnimaleDomestico(codiceChip, nome, tipo, razza, colore, dataDiNascita);
+
+        // 2. Setta proprietario (puoi creare un oggetto minimo o usare un DAO)
+        Proprietario proprietario = new Proprietario();
+        proprietario.setUsername(usernameProprietario);
+        animale.setProprietario(proprietario);
+
+        return animale;
     }
 }
-

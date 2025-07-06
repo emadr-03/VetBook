@@ -2,7 +2,7 @@ package it.unina.vetbook.entity;
 
 public class Veterinario extends Utente {
 
-    protected Veterinario() {
+    public Veterinario() {
 
     }
 

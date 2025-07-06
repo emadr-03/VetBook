@@ -5,12 +5,21 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GenericDAO<T, K> {
-    void create(T entity)                 throws SQLException;
-    Optional<T> read(K id)                throws SQLException;
-    void update(T entity)                 throws SQLException;
-    void delete(K id)                     throws SQLException;
+    default void create(T entity) throws SQLException{
+        throw new UnsupportedOperationException("Not supported yet");
+    }
+    default Optional<T> read(K id) throws SQLException{
+        throw new UnsupportedOperationException("Not supported yet");
+    }
+    default void update(T entity) throws SQLException{
+        throw new UnsupportedOperationException("Not supported yet");
+    }
+    default void delete(K id) throws SQLException{
+        throw new UnsupportedOperationException("Not supported yet");
+    }
 
-
-    List<T> executeQuery(String sql, Object... params) throws SQLException;
+    default List<T> executeQuery(String sql, Object... params) throws SQLException{
+        throw new UnsupportedOperationException("Not supported yet");
+    }
 }
 

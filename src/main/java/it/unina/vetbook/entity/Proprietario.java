@@ -10,7 +10,7 @@ public class Proprietario extends Utente {
     private InputStream immagineProfilo;
     private List<AnimaleDomestico> animali;
 
-    protected Proprietario() {}
+    public Proprietario() {}
 
     public void setNome(String nome) {
         this.nome = nome;
@@ -29,6 +29,18 @@ public class Proprietario extends Utente {
                 .filter(a -> a.getCodiceChip() == codiceChip)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getCognome() {
+        return cognome;
+    }
+
+    public InputStream getImmagineProfilo() {
+        return immagineProfilo;
     }
 
     @Override

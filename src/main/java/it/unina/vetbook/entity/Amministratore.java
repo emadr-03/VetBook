@@ -2,7 +2,7 @@ package it.unina.vetbook.entity;
 
 public class Amministratore extends Utente {
 
-    protected Amministratore() {
+    public Amministratore() {
 
     }
 
