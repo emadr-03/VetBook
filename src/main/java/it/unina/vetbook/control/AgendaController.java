@@ -11,9 +11,17 @@ import java.util.List;
 
 public class AgendaController {
 
+    private static AgendaController instance;
     private Agenda agenda = Agenda.getInstance();
 
-    public void inserisciDisponibilita(LocalDate data, LocalTime ora) {
+    public static AgendaController getInstance() {
+        if (instance == null) {
+            instance = new AgendaController();
+        }
+        return instance;
+    }
+
+    public boolean inserisciDisponibilita(LocalDate data, LocalTime ora) {
         throw new UnsupportedOperationException("Not supported yet");
     }
 

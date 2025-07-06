@@ -5,6 +5,7 @@ import it.unina.vetbook.database.VisitaDAO;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,11 @@ public class Agenda {
     List<Prenotazione> prenotazioni;
     List<Visita> visite;
 
-    private Agenda() {}
+    private Agenda() {
+        this.disponibilita = new ArrayList<>();
+        this.prenotazioni = new ArrayList<>();
+        this.visite = new ArrayList<>();
+    }
 
     public static Agenda getInstance() {
         if (instance == null) {
