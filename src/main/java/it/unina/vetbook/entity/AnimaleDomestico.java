@@ -14,14 +14,13 @@ public class AnimaleDomestico {
 
     public AnimaleDomestico(){}
 
-    public AnimaleDomestico(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita, Proprietario proprietario) {
+    public AnimaleDomestico(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
         this.codiceChip = codiceChip;
         this.nome = nome;
         this.tipo = tipo;
         this.razza = razza;
         this.colore = colore;
         this.dataDiNascita = dataDiNascita;
-        this.proprietario = proprietario;
     }
 
     public boolean isVaccinato(){
@@ -54,6 +53,10 @@ public class AnimaleDomestico {
 
     public Proprietario getProprietario() {
         return proprietario;
+    }
+
+    public void setProprietario(Proprietario proprietario) {
+        this.proprietario = proprietario;
     }
 }
 

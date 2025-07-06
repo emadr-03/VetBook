@@ -10,6 +10,8 @@ public class Visita {
     private double costo;
     private LocalDate data;
     private LocalTime ora;
+    private Farmaco farmaco;
+    private AnimaleDomestico animale;
 
     public Visita(TipoVisita tipo, String descrizione, double costo) {}
 
@@ -33,6 +35,12 @@ public class Visita {
         return costo;
     }
 
-    public void prescrivi(Farmaco f) {}
+    public AnimaleDomestico getAnimale() {
+        return animale;
+    }
+
+    public void prescrivi(Farmaco f) {
+        this.farmaco = f;
+    }
 }
 

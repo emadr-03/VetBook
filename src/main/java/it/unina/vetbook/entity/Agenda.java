@@ -1,5 +1,9 @@
 package it.unina.vetbook.entity;
 
+import it.unina.vetbook.database.PrenotazioneDAO;
+import it.unina.vetbook.database.VisitaDAO;
+
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,8 +49,12 @@ public class Agenda {
 
         visite.add(v);
 
-        // VisitaDAO dao = VisitaDAO.create(v)
-        // dao.create()
+        try{
+            VisitaDAO dao = new VisitaDAO();
+            dao.create(v);
+        } catch (SQLException e){
+            throw new RuntimeException("Errore nella registrazione della visita", e);
+        }
     }
 
     public List<Visita> visualizzaVisiteGiornaliere() {
@@ -67,8 +75,12 @@ public class Agenda {
                         d.getOra().equals(p.getOra())
         );
         this.prenotazioni.add(p);
-        //PrenotazioniDAO dao = new PrenotazioniDAO(p);
-        //dao.create(p);
+
+        try {
+            new PrenotazioneDAO().create(p);
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore nella creazione della prenotazione", e);
+        }
     }
 
     public void aggiungiDisponibilità(Disponibilita d) {

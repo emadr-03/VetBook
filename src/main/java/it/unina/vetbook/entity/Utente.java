@@ -1,11 +1,36 @@
 package it.unina.vetbook.entity;
 
+import it.unina.vetbook.database.UtenteDAO;
+
+import java.sql.SQLException;
+import java.util.Optional;
+
 public abstract class Utente {
+
     protected String username;
     protected String email;
     protected String password;
     protected UserRole ruolo;
 
+    public abstract boolean checkPassword(String password);
+
+    public static Utente login(String username, String password) {
+        try {
+            Optional<Utente> utente = new UtenteDAO().read(username, password);
+            return utente.orElse(null);
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante il login", e);
+        }
+    }
+
+
+    public void registrati() {
+        try {
+            new UtenteDAO().create(this);
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore nella registrazione dell'utente", e);
+        }
+    }
 
     public String getUsername() {
         return username;
@@ -39,16 +64,4 @@ public abstract class Utente {
         this.ruolo = ruolo;
     }
 
-    public abstract boolean checkPassword(String password);
-
-    public static Utente login(String username, String password) {
-        //UtenteDAO u = UtenteDAO(username, password);
-        //return u.read()
-        return null;
-    }
-
-    public void registrati(){
-        //UtenteDAO u = UtenteDAO(this);
-        //u.create();
-    }
 }
