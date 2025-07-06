@@ -10,35 +10,51 @@ public class AnimaleDomestico {
     private String razza;
     private String colore;
     private LocalDate dataDiNascita;
+    private Proprietario proprietario;
 
-    public AnimaleDomestico() {}
+    public AnimaleDomestico(){}
 
-    public AnimaleDomestico(int codiceChip, String nome, String tipo, String razza,
-                            String colore, LocalDate dataDiNascita) {
-        this.codiceChip    = codiceChip;
-        this.nome          = nome;
-        this.tipo          = tipo;
-        this.razza         = razza;
-        this.colore        = colore;
+    public AnimaleDomestico(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita, Proprietario proprietario) {
+        this.codiceChip = codiceChip;
+        this.nome = nome;
+        this.tipo = tipo;
+        this.razza = razza;
+        this.colore = colore;
         this.dataDiNascita = dataDiNascita;
+        this.proprietario = proprietario;
     }
 
-    // getters & setters
-    public int getCodiceChip() { return codiceChip; }
-    public void setCodiceChip(int codiceChip) { this.codiceChip = codiceChip; }
+    public boolean isVaccinato(){
+        throw new UnsupportedOperationException("Not supported yet");
+    }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public int getCodiceChip() {
+        return codiceChip;
+    }
 
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+    public String getNome() {
+        return nome;
+    }
 
-    public String getRazza() { return razza; }
-    public void setRazza(String razza) { this.razza = razza; }
+    public String getTipo() {
+        return tipo;
+    }
 
-    public String getColore() { return colore; }
-    public void setColore(String colore) { this.colore = colore; }
+    public String getRazza() {
+        return razza;
+    }
 
-    public LocalDate getDataDiNascita() { return dataDiNascita; }
-    public void setDataDiNascita(LocalDate dataDiNascita) { this.dataDiNascita = dataDiNascita; }
+    public String getColore() {
+        return colore;
+    }
+
+    public LocalDate getDataDiNascita() {
+        return dataDiNascita;
+    }
+
+    public Proprietario getProprietario() {
+        return proprietario;
+    }
 }
+
+
