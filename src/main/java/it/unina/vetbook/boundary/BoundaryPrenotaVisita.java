@@ -1,87 +1,63 @@
 package it.unina.vetbook.boundary;
 
-import it.unina.vetbook.control.ProprietarioController;
-import it.unina.vetbook.dto.AnimaleDTO;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class BoundaryPrenotaVisita extends JDialog {
+public class BoundaryPrenotaVisita extends JFrame {
 
     private final DefaultTableModel model;
     private final JTable table;
-    private AnimaleDTO animaleSelezionato = null;
-    private boolean selezioneConfermata = false;
 
-    public BoundaryPrenotaVisita(Window owner) {
-        super(owner, "Seleziona un Animale", ModalityType.APPLICATION_MODAL);
-        setSize(700, 400);
-        setLocationRelativeTo(owner);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    public BoundaryPrenotaVisita() {
+        super("Prenota Visita - Seleziona Animale");
+        VetcareStyle.initLookAndFeel();
+
+        setSize(800, 500);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setResizable(false);
 
         setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(VetcareStyle.GRAD_TOP);
-        getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        ((JPanel)getContentPane()).setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
 
-        String[] columnNames = {"Codice Chip", "Nome", "Tipo", "Razza"};
-        model = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
+        add(new JLabel("Seleziona l'animale per cui prenotare la visita:", SwingConstants.CENTER), BorderLayout.NORTH);
+
+        String[] cols = {"Codice Chip", "Nome", "Tipo", "Razza"};
+        Object[][] data = {
+                {"1234567890", "Fido", "Cane", "Golden Retriever"},
+                {"0987654321", "Micia", "Gatto", "Siamese"}
         };
-        table = VetcareStyle.makeTable(new Object[0][0], columnNames);
+        model = new DefaultTableModel(data, cols);
+        table = VetcareStyle.makeTable(new Object[0][0], cols);
         table.setModel(model);
-
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        southPanel.setOpaque(false);
-        JButton selezionaBtn = new JButton("Seleziona");
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JButton selezionaBtn = new JButton("Seleziona Animale");
         JButton annullaBtn = new JButton("Annulla");
 
-        selezionaBtn.setEnabled(false);
-        southPanel.add(selezionaBtn);
-        southPanel.add(annullaBtn);
-        add(southPanel, BorderLayout.SOUTH);
-
-        caricaDatiAnimali();
-
-        table.getSelectionModel().addListSelectionListener(e -> {
-            selezionaBtn.setEnabled(table.getSelectedRow() != -1);
-        });
-
-        annullaBtn.addActionListener(e -> dispose());
+        buttonPanel.add(selezionaBtn);
+        buttonPanel.add(annullaBtn);
+        add(buttonPanel, BorderLayout.SOUTH);
 
         selezionaBtn.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
-            if (selectedRow == -1) return;
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Seleziona un animale dalla tabella.", "Errore", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-            long chip = (long) model.getValueAt(selectedRow, 0);
-            String nome = (String) model.getValueAt(selectedRow, 1);
-            String tipo = (String) model.getValueAt(selectedRow, 2);
-            String razza = (String) model.getValueAt(selectedRow, 3);
+            String nomeAnimale = model.getValueAt(selectedRow, 1).toString();
+            String tipoAnimale = model.getValueAt(selectedRow, 2).toString();
 
-            this.animaleSelezionato = new AnimaleDTO(chip, nome, tipo, razza, "", "");
-            this.selezioneConfermata = true;
+            new SelezionaDisponibilitaForm(nomeAnimale, tipoAnimale).setVisible(true);
             dispose();
         });
-    }
 
-    private void caricaDatiAnimali() {
-        model.setRowCount(0);
-        Object[][] datiAnimali = ProprietarioController.getInstance().visualizzaAnimali();
-        for (Object[] row : datiAnimali) {
-            model.addRow(new Object[]{row[0], row[1], row[2], row[3]});
-        }
-    }
-
-    public AnimaleDTO getAnimaleSelezionato() {
-        return animaleSelezionato;
-    }
-
-    public boolean isSelezioneConfermata() {
-        return selezioneConfermata;
+        annullaBtn.addActionListener(e -> {
+            new ProprietarioBoundary().setVisible(true);
+            dispose();
+        });
     }
 }

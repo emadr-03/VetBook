@@ -22,10 +22,31 @@ public class UtenteDAO implements GenericDAO<Utente, String> {
                 stmt.setString(5, p.getNome());
                 stmt.setString(6, p.getCognome());
             } else {
-                stmt.setString(5, null);
-                stmt.setString(6, null);
+                stmt.setNull(5, Types.VARCHAR);
+                stmt.setNull(6, Types.VARCHAR);
             }
 
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public void update(Utente u) throws SQLException {
+        String sql = "UPDATE Utente SET email = ?, password = ?, nome = ?, cognome = ? WHERE username = ?";
+        try (Connection conn = DBManager.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, u.getEmail());
+            stmt.setString(2, u.getPassword());
+
+            if (u instanceof Proprietario p) {
+                stmt.setString(3, p.getNome());
+                stmt.setString(4, p.getCognome());
+            } else {
+                stmt.setNull(3, Types.VARCHAR);
+                stmt.setNull(4, Types.VARCHAR);
+            }
+            stmt.setString(5, u.getUsername());
             stmt.executeUpdate();
         }
     }
@@ -66,9 +87,6 @@ public class UtenteDAO implements GenericDAO<Utente, String> {
                 }
             }
         }
-
         return Optional.empty();
     }
-
 }
-

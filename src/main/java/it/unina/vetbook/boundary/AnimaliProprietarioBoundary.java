@@ -1,117 +1,82 @@
 package it.unina.vetbook.boundary;
 
-import it.unina.vetbook.control.ProprietarioController;
-import it.unina.vetbook.dto.AnimaleDTO;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-public class AnimaliProprietarioBoundary extends JDialog {
+public class AnimaliProprietarioBoundary extends JFrame {
 
     private final DefaultTableModel model;
     private final JTable table;
-    private final JButton modificaBtn = new JButton("Modifica Animale");
-    private final JButton cancellaBtn = new JButton("Cancella Animale");
 
-    public AnimaliProprietarioBoundary(Window owner) {
-        super(owner, "I Miei Animali", ModalityType.APPLICATION_MODAL);
+    public AnimaliProprietarioBoundary() {
+        super("I Tuoi Animali");
+        VetcareStyle.initLookAndFeel();
+
         setSize(800, 500);
-        setLocationRelativeTo(owner);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setResizable(false);
 
         setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(VetcareStyle.GRAD_TOP);
-        getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        ((JPanel)getContentPane()).setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
 
-        String[] columnNames = {"Codice Chip", "Nome", "Tipo", "Razza", "Colore", "Data di Nascita"};
-        model = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
+        String[] cols = {"Codice Chip", "Nome", "Tipo", "Razza", "Colore", "Data Nascita"};
+        Object[][] data = {
+                {"1234567890", "Fido", "Cane", "Golden Retriever", "Biondo", "10/05/2020"},
+                {"0987654321", "Micia", "Gatto", "Siamese", "Crema", "15/08/2021"}
         };
-        table = VetcareStyle.makeTable(new Object[0][0], columnNames);
+        model = new DefaultTableModel(data, cols);
+        table = VetcareStyle.makeTable(new Object[0][0], cols);
         table.setModel(model);
-
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        southPanel.setOpaque(false);
-        JButton chiudiBtn = new JButton("Chiudi");
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JButton modificaBtn = new JButton("Modifica Selezionato");
+        JButton eliminaBtn = new JButton("Elimina Selezionato");
+        JButton indietroBtn = new JButton("Indietro");
 
-        modificaBtn.setEnabled(false);
-        cancellaBtn.setEnabled(false);
+        buttonPanel.add(modificaBtn);
+        buttonPanel.add(eliminaBtn);
+        buttonPanel.add(indietroBtn);
+        add(buttonPanel, BorderLayout.SOUTH);
 
-        southPanel.add(modificaBtn);
-        southPanel.add(cancellaBtn);
-        southPanel.add(Box.createHorizontalStrut(20));
-        southPanel.add(chiudiBtn);
-        add(southPanel, BorderLayout.SOUTH);
+        modificaBtn.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Seleziona un animale da modificare.", "Errore", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-        caricaDatiDalController();
+            String codiceChip = model.getValueAt(selectedRow, 0).toString();
+            String nome = model.getValueAt(selectedRow, 1).toString();
+            String tipo = model.getValueAt(selectedRow, 2).toString();
+            String razza = model.getValueAt(selectedRow, 3).toString();
+            String colore = model.getValueAt(selectedRow, 4).toString();
+            LocalDate dataNascita = LocalDate.parse(model.getValueAt(selectedRow, 5).toString(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-        table.getSelectionModel().addListSelectionListener(e -> {
-            boolean rowIsSelected = table.getSelectedRow() != -1;
-            modificaBtn.setEnabled(rowIsSelected);
-            cancellaBtn.setEnabled(rowIsSelected);
+            new FormAnimale(codiceChip, nome, tipo, razza, colore, dataNascita).setVisible(true);
+            dispose();
         });
 
-        chiudiBtn.addActionListener(e -> dispose());
+        eliminaBtn.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Seleziona un animale da eliminare.", "Errore", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int confirm = JOptionPane.showConfirmDialog(this, "Sei sicuro di voler eliminare l'animale selezionato?", "Conferma Eliminazione", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                model.removeRow(selectedRow);
+                JOptionPane.showMessageDialog(this, "Animale eliminato con successo! (MOCK)");
+            }
+        });
 
-        cancellaBtn.addActionListener(e -> cancellaAnimaleSelezionato());
-
-        modificaBtn.addActionListener(e -> modificaAnimaleSelezionato());
-    }
-
-    private void caricaDatiDalController() {
-        model.setRowCount(0);
-        Object[][] datiAnimali = ProprietarioController.getInstance().visualizzaAnimali();
-        for (Object[] row : datiAnimali) {
-            model.addRow(row);
-        }
-    }
-
-    private void cancellaAnimaleSelezionato() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow == -1) return;
-
-        String nomeAnimale = (String) model.getValueAt(selectedRow, 1);
-        long chip = (long) model.getValueAt(selectedRow, 0);
-
-        int choice = JOptionPane.showConfirmDialog(
-                this,
-                "Sei sicuro di voler cancellare l'animale '" + nomeAnimale + "'?",
-                "Conferma Cancellazione",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE
-        );
-
-        if (choice == JOptionPane.YES_OPTION) {
-            ProprietarioController.getInstance().deleteAnimale(chip);
-            caricaDatiDalController();
-            JOptionPane.showMessageDialog(this, "Animale cancellato con successo.");
-        }
-    }
-
-    private void modificaAnimaleSelezionato() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow == -1) return;
-
-        long chip = (long) model.getValueAt(selectedRow, 0);
-        String nome = (String) model.getValueAt(selectedRow, 1);
-        String tipo = (String) model.getValueAt(selectedRow, 2);
-        String razza = (String) model.getValueAt(selectedRow, 3);
-        String colore = (String) model.getValueAt(selectedRow, 4);
-        String dataNascita = model.getValueAt(selectedRow, 5).toString();
-
-        AnimaleDTO animaleDaModificare = new AnimaleDTO(chip, nome, tipo, razza, colore, dataNascita);
-
-        FormAnimale form = new FormAnimale(this, animaleDaModificare);
-        form.setVisible(true);
-
-        if (form.isSalvataggioRiuscito()) {
-            caricaDatiDalController();
-        }
+        indietroBtn.addActionListener(e -> {
+            new ProprietarioBoundary().setVisible(true);
+            dispose();
+        });
     }
 }

@@ -1,37 +1,25 @@
 package it.unina.vetbook.control;
 
-import it.unina.vetbook.dto.AnimaleDTO;
-import it.unina.vetbook.dto.ProprietarioDTO;
+import it.unina.vetbook.database.AnimaleDAO;
+import it.unina.vetbook.database.UtenteDAO;
+import it.unina.vetbook.entity.Agenda;
+import it.unina.vetbook.entity.AnimaleDomestico;
+import it.unina.vetbook.entity.Prenotazione;
 import it.unina.vetbook.entity.Proprietario;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProprietarioController {
 
     private static ProprietarioController instance;
-    private final List<AnimaleDTO> animaliInMemory;
-    private ProprietarioDTO proprietarioCorrente;
+    private Proprietario proprietarioCorrente;
 
-    private ProprietarioController() {
-        animaliInMemory = new ArrayList<>();
-        animaliInMemory.add(new AnimaleDTO(9810200387L, "Fuffi", "Gatto", "Persiano", "Bianco", "01-05-2020"));
-        animaliInMemory.add(new AnimaleDTO(9410000186L, "Bobby", "Cane", "Labrador", "Miele", "15-08-2022"));
-        animaliInMemory.add(new AnimaleDTO(9810987654L, "Nemo", "Pesce", "Pagliaccio", "Arancione", "10-01-2024"));
-
-        this.proprietarioCorrente = new ProprietarioDTO(
-                "Mario", "Rossi", "mariorossi", "mario.rossi@example.com",
-                getClass().getResource("/img/user_profile_icon.png").getPath()
-        );
-    }
+    private ProprietarioController() {}
 
     public static synchronized ProprietarioController getInstance() {
         if (instance == null) {
@@ -40,67 +28,105 @@ public class ProprietarioController {
         return instance;
     }
 
-    public void gestioneProfilo(String nome, String cognome, String username, String password, String email, InputStream img) {
-        String newImagePath = this.proprietarioCorrente.imagePath;
-        if (img != null) {
-            try {
-                File tempFile = File.createTempFile("profile_img_", ".jpg");
-                Files.copy(img, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                newImagePath = tempFile.getAbsolutePath();
-                tempFile.deleteOnExit();
-            } catch (IOException e) {
-                System.err.println("Impossibile salvare l'immagine del profilo: " + e.getMessage());
-            }
-        }
-        this.proprietarioCorrente = new ProprietarioDTO(nome, cognome, username, email, newImagePath);
+    public void setProprietarioCorrente(Proprietario proprietario) {
+        this.proprietarioCorrente = proprietario;
     }
 
-    public void inserisciAnimale(long codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
-        String dataFormatted = dataDiNascita.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        AnimaleDTO nuovoAnimale = new AnimaleDTO(codiceChip, nome, tipo, razza, colore, dataFormatted);
-        animaliInMemory.add(nuovoAnimale);
+    public void gestioneProfilo(String nome, String cognome, String email, String password) {
+        if (proprietarioCorrente == null) {
+            throw new IllegalStateException("Nessun proprietario loggato.");
+        }
+        proprietarioCorrente.setNome(nome);
+        proprietarioCorrente.setCognome(cognome);
+        proprietarioCorrente.setEmail(email);
+        if (password != null && !password.isEmpty()) {
+            proprietarioCorrente.setPassword(password);
+        }
+
+        try {
+            new UtenteDAO().update(proprietarioCorrente);
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante l'aggiornamento del profilo", e);
+        }
+    }
+
+    public void inserisciAnimale(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
+        if (proprietarioCorrente == null) {
+            throw new IllegalStateException("Nessun proprietario loggato.");
+        }
+        AnimaleDomestico nuovoAnimale = new AnimaleDomestico(codiceChip, nome, tipo, razza, colore, dataDiNascita);
+        nuovoAnimale.setProprietario(proprietarioCorrente);
+        try {
+            new AnimaleDAO().create(nuovoAnimale);
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante l'inserimento dell'animale", e);
+        }
+    }
+
+    public void modificaAnimale(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
+        if (proprietarioCorrente == null) {
+            throw new IllegalStateException("Nessun proprietario loggato.");
+        }
+        AnimaleDomestico animaleModificato = new AnimaleDomestico(codiceChip, nome, tipo, razza, colore, dataDiNascita);
+        try {
+            new AnimaleDAO().update(animaleModificato);
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante la modifica dell'animale", e);
+        }
+    }
+
+    public void eliminaAnimale(int codiceChip) {
+        try {
+            new AnimaleDAO().delete(codiceChip);
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante l'eliminazione dell'animale", e);
+        }
     }
 
     public void gestioneAnimale() {
-        System.out.println("Chiamato metodo generico 'gestioneAnimale'");
+        throw new UnsupportedOperationException("Logica non specificata");
     }
 
-    public void effettuaPrenotazione(AnimaleDTO a, LocalDate data, LocalTime ora) {
-        throw new UnsupportedOperationException("Not supported yet");
+    public void effettuaPrenotazione(AnimaleDomestico a, LocalDate data, LocalTime ora) {
+        if (proprietarioCorrente == null) {
+            throw new IllegalStateException("Nessun proprietario loggato.");
+        }
+        Prenotazione p = new Prenotazione(data, ora, a);
+        Agenda.getInstance().prenotaVisita(p);
     }
 
-    public Object[][] visualizzaAnimali() {
-        Object[][] tabella = new Object[animaliInMemory.size()][6];
-        for (int i = 0; i < animaliInMemory.size(); i++) {
-            AnimaleDTO a = animaliInMemory.get(i);
-            tabella[i][0] = a.codiceChip;
-            tabella[i][1] = a.nome;
-            tabella[i][2] = a.tipo;
-            tabella[i][3] = a.razza;
-            tabella[i][4] = a.colore;
-            tabella[i][5] = a.dataNascita;
+    public List<AnimaleDomestico> getAnimaliProprietario() {
+        if (proprietarioCorrente == null) {
+            throw new IllegalStateException("Nessun proprietario loggato.");
+        }
+        try {
+            return new AnimaleDAO().executeQuery("SELECT * FROM Animale WHERE usernameProprietario = ?", proprietarioCorrente.getUsername());
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore nel recupero degli animali", e);
+        }
+    }
+
+    public Object[][] visualizzaAnimaliInTabella() {
+        List<AnimaleDomestico> animali = getAnimaliProprietario();
+        Object[][] tabella = new Object[animali.size()][6];
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (int i = 0; i < animali.size(); i++) {
+            AnimaleDomestico a = animali.get(i);
+            tabella[i][0] = a.getCodiceChip();
+            tabella[i][1] = a.getNome();
+            tabella[i][2] = a.getTipo();
+            tabella[i][3] = a.getRazza();
+            tabella[i][4] = a.getColore();
+            tabella[i][5] = a.getDataDiNascita().format(formatter);
         }
         return tabella;
     }
 
     public Proprietario getProprietario() {
-        return null;
-    }
-
-    public ProprietarioDTO getDatiProprietarioDTO() {
-        return this.proprietarioCorrente;
-    }
-
-    public void updateAnimale(AnimaleDTO animaleAggiornato) {
-        for (int i = 0; i < animaliInMemory.size(); i++) {
-            if (animaliInMemory.get(i).codiceChip == animaleAggiornato.codiceChip) {
-                animaliInMemory.set(i, animaleAggiornato);
-                return;
-            }
+        if (proprietarioCorrente == null) {
+            throw new IllegalStateException("Nessun proprietario loggato.");
         }
-    }
-
-    public void deleteAnimale(long chip) {
-        animaliInMemory.removeIf(animale -> animale.codiceChip == chip);
+        return proprietarioCorrente;
     }
 }

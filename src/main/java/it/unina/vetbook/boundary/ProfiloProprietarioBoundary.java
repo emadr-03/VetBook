@@ -1,160 +1,136 @@
 package it.unina.vetbook.boundary;
 
-import it.unina.vetbook.control.ProprietarioController;
-import it.unina.vetbook.dto.ProprietarioDTO;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URL;
 
-public class ProfiloProprietarioBoundary extends JDialog {
+public class ProfiloProprietarioBoundary extends JFrame {
 
-    private static final int PROFILE_IMG_SIZE = 80;
+    private static final String RES = "src/main/resources/img/";
+    private JLabel imageLabel;
+    private final int IMG_SIZE = 128;
 
-    private final JTextField txtNome = VetcareStyle.textField("Nome");
-    private final JTextField txtCognome = VetcareStyle.textField("Cognome");
-    private final JTextField txtUsername = VetcareStyle.textField("Username");
-    private final JTextField txtEmail = VetcareStyle.textField("E-mail");
-    private final JPasswordField txtPassword = VetcareStyle.passwordField("Nuova password (opzionale)");
-    private final JLabel lblProfileIcon = new JLabel();
+    public ProfiloProprietarioBoundary() {
+        super("Gestione Profilo");
+        VetcareStyle.initLookAndFeel();
 
-    public ProfiloProprietarioBoundary(Window owner) {
-        super(owner, "Gestione Profilo", ModalityType.APPLICATION_MODAL);
-        setSize(500, 600);
-        setLocationRelativeTo(owner);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setSize(800, 650);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setResizable(false);
 
+        // Layout principale per centrare il contenuto
         setContentPane(VetcareStyle.createSpotlightBackground());
         setLayout(new GridBagLayout());
 
-        JPanel card = VetcareStyle.makeDialogCard();
-        card.setLayout(new GridBagLayout());
-        add(card);
+        // Pannello che contiene tutta la logica (immagine + form)
+        JPanel mainContentPanel = new JPanel(new BorderLayout(20, 20));
+        mainContentPanel.setOpaque(false);
+        add(mainContentPanel, new GridBagConstraints());
 
+        // --- Sezione Immagine (in alto) ---
+        JPanel imageSectionPanel = new JPanel();
+        imageSectionPanel.setLayout(new BoxLayout(imageSectionPanel, BoxLayout.Y_AXIS));
+        imageSectionPanel.setOpaque(false);
+
+        imageLabel = new JLabel(icon("user_profile_icon.png", IMG_SIZE));
+        imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JPanel imageButtonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        imageButtonsPanel.setOpaque(false);
+        JButton caricaBtn = new JButton("Carica Immagine");
+        JButton modificaBtn = new JButton("Modifica Immagine");
+        imageButtonsPanel.add(caricaBtn);
+        imageButtonsPanel.add(modificaBtn);
+
+        imageSectionPanel.add(imageLabel);
+        imageSectionPanel.add(imageButtonsPanel);
+
+        mainContentPanel.add(imageSectionPanel, BorderLayout.NORTH);
+
+        // --- Sezione Form Dati (al centro) ---
+        JPanel formSectionPanel = new JPanel(new GridBagLayout());
+        formSectionPanel.setOpaque(false);
+        formSectionPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
         GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(10, 20, 10, 20);
-
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 2;
-        c.anchor = GridBagConstraints.CENTER;
-        card.add(lblProfileIcon, c);
-
-        c.gridy++;
-        c.insets = new Insets(0, 20, 20, 20);
-        JButton cambiaFotoBtn = new JButton("Cambia Foto...");
-        card.add(cambiaFotoBtn, c);
-        c.gridwidth = 1;
-
-        c.insets = new Insets(8, 20, 8, 20);
         c.anchor = GridBagConstraints.WEST;
-        c.gridy++; c.gridx = 0; card.add(new JLabel("Nome:"), c);
-        c.gridx = 1; card.add(txtNome, c);
-        c.gridy++; c.gridx = 0; card.add(new JLabel("Cognome:"), c);
-        c.gridx = 1; card.add(txtCognome, c);
-        c.gridy++; c.gridx = 0; card.add(new JLabel("Username:"), c);
-        c.gridx = 1; card.add(txtUsername, c);
-        c.gridy++; c.gridx = 0; card.add(new JLabel("Email:"), c);
-        c.gridx = 1; card.add(txtEmail, c);
-        c.gridy++; c.gridx = 0; card.add(new JLabel("Password:"), c);
-        c.gridx = 1; card.add(txtPassword, c);
+        c.insets = new Insets(8, 8, 8, 8);
 
-        c.gridy++;
-        c.gridx = 0;
-        c.gridwidth = 2;
-        c.anchor = GridBagConstraints.CENTER;
-        c.insets = new Insets(20, 20, 20, 20);
-        JPanel btnBox = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
-        JButton salvaBtn = new JButton("Salva Modifiche");
-        JButton annullaBtn = new JButton("Annulla");
-        btnBox.setOpaque(false);
-        btnBox.add(salvaBtn);
-        btnBox.add(annullaBtn);
-        card.add(btnBox, c);
+        JTextField txtNome = VetcareStyle.textField("Nome");
+        txtNome.setText("Mario");
+        JTextField txtCognome = VetcareStyle.textField("Cognome");
+        txtCognome.setText("Rossi");
+        JTextField txtUsername = VetcareStyle.textField("Username");
+        txtUsername.setText("mrossi");
+        txtUsername.setEditable(false);
+        JTextField txtEmail = VetcareStyle.textField("Email");
+        txtEmail.setText("mario.rossi@email.com");
+        JPasswordField password = VetcareStyle.passwordField("Nuova password");
 
-        caricaDatiDalController();
+        c.gridx = 0; c.gridy = 0; formSectionPanel.add(new JLabel("Nome:"), c);
+        c.gridx = 1; c.gridy = 0; formSectionPanel.add(txtNome, c);
+        c.gridx = 0; c.gridy = 1; formSectionPanel.add(new JLabel("Cognome:"), c);
+        c.gridx = 1; c.gridy = 1; formSectionPanel.add(txtCognome, c);
+        c.gridx = 0; c.gridy = 2; formSectionPanel.add(new JLabel("Username:"), c);
+        c.gridx = 1; c.gridy = 2; formSectionPanel.add(txtUsername, c);
+        c.gridx = 0; c.gridy = 3; formSectionPanel.add(new JLabel("Email:"), c);
+        c.gridx = 1; c.gridy = 3; formSectionPanel.add(txtEmail, c);
+        c.gridx = 0; c.gridy = 4; formSectionPanel.add(new JLabel("Password:"), c);
+        c.gridx = 1; c.gridy = 4; formSectionPanel.add(password, c);
 
-        annullaBtn.addActionListener(e -> dispose());
+        mainContentPanel.add(formSectionPanel, BorderLayout.CENTER);
+
+        // --- Pulsanti di controllo (in basso) ---
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        bottomPanel.setOpaque(false);
+        JButton salvaBtn = new JButton("Salva");
+        JButton esciBtn = new JButton("Esci");
+        bottomPanel.add(salvaBtn);
+        bottomPanel.add(esciBtn);
+        mainContentPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        // --- Azioni Pulsanti ---
+        caricaBtn.addActionListener(e -> handleImageUpload());
+        modificaBtn.addActionListener(e -> handleImageUpload());
 
         salvaBtn.addActionListener(e -> {
-            try {
-                InputStream imgStream = null;
-                String imagePath = (String) lblProfileIcon.getClientProperty("imagePath");
-
-                if (imagePath != null && new File(imagePath).exists()) {
-                    imgStream = new FileInputStream(imagePath);
-                }
-
-                ProprietarioController.getInstance().gestioneProfilo(
-                        txtNome.getText(),
-                        txtCognome.getText(),
-                        txtUsername.getText(),
-                        String.valueOf(txtPassword.getPassword()),
-                        txtEmail.getText(),
-                        imgStream
-                );
-                JOptionPane.showMessageDialog(this, "Profilo aggiornato con successo.", "Successo", JOptionPane.INFORMATION_MESSAGE);
-                dispose();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Errore durante il salvataggio: " + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
-            }
+            JOptionPane.showMessageDialog(this, "Profilo salvato con successo! (MOCK)");
         });
 
-        cambiaFotoBtn.addActionListener(e -> {
-            JFileChooser chooser = new JFileChooser();
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Immagini (JPG, PNG, GIF)", "jpg", "jpeg", "png", "gif");
-            chooser.setFileFilter(filter);
-            if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = chooser.getSelectedFile();
-                aggiornaIconaProfilo(selectedFile.getAbsolutePath());
-            }
+        esciBtn.addActionListener(e -> {
+            new ProprietarioBoundary().setVisible(true);
+            dispose();
         });
     }
 
-    private void caricaDatiDalController() {
-        ProprietarioDTO proprietario = ProprietarioController.getInstance().getDatiProprietarioDTO();
-        txtNome.setText(proprietario.nome);
-        txtCognome.setText(proprietario.cognome);
-        txtUsername.setText(proprietario.username);
-        txtEmail.setText(proprietario.email);
+    private void handleImageUpload() {
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "Immagini (JPG, PNG, GIF)", "jpg", "jpeg", "png", "gif");
+        fileChooser.setFileFilter(filter);
 
-        Object imageSource;
-        File f = new File(proprietario.imagePath);
-        if (f.exists() && !f.isDirectory()) {
-            imageSource = proprietario.imagePath;
-        } else {
-            imageSource = getClass().getResource(proprietario.imagePath);
-            if (imageSource == null) {
-                imageSource = getClass().getResource("/img/user_profile_icon.png");
-            }
+        int returnValue = fileChooser.showOpenDialog(this);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            ImageIcon newIcon = new ImageIcon(selectedFile.getAbsolutePath());
+            imageLabel.setIcon(scaleImageIcon(newIcon, IMG_SIZE));
         }
-        aggiornaIconaProfilo(imageSource);
     }
 
-    private void aggiornaIconaProfilo(Object pathOrUrl) {
-        ImageIcon imageIcon = null;
-        String pathForStorage = "";
+    private ImageIcon scaleImageIcon(ImageIcon sourceIcon, int size) {
+        Image image = sourceIcon.getImage();
+        Image scaledImage = image.getScaledInstance(size, size, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledImage);
+    }
 
-        if (pathOrUrl instanceof String) {
-            imageIcon = new ImageIcon((String) pathOrUrl);
-            pathForStorage = (String) pathOrUrl;
-        } else if (pathOrUrl instanceof URL) {
-            imageIcon = new ImageIcon((URL) pathOrUrl);
-            pathForStorage = ((URL) pathOrUrl).getPath();
-        } else {
-            System.err.println("Percorso immagine nullo o non valido.");
-            URL fallbackUrl = getClass().getResource("/img/user_profile_icon.png");
-            if (fallbackUrl != null) imageIcon = new ImageIcon(fallbackUrl);
-        }
-
-        if (imageIcon != null) {
-            Image scaledImage = imageIcon.getImage().getScaledInstance(PROFILE_IMG_SIZE, PROFILE_IMG_SIZE, Image.SCALE_SMOOTH);
-            lblProfileIcon.setIcon(new ImageIcon(scaledImage));
-            lblProfileIcon.putClientProperty("imagePath", pathForStorage);
+    private ImageIcon icon(String file, int size) {
+        try {
+            return scaleImageIcon(new ImageIcon(RES + file), size);
+        } catch (Exception e) {
+            return new ImageIcon(new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB));
         }
     }
 }
