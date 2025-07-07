@@ -7,7 +7,6 @@ import java.time.LocalTime;
 
 public class Prenotazione {
 
-    private int id;
     private LocalDate data;
     private LocalTime ora;
     private AnimaleDomesticoDTO animale;

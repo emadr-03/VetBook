@@ -8,7 +8,6 @@ public class Proprietario extends Utente {
 
     private String nome;
     private String cognome;
-    private InputStream immagineProfilo;
     private List<AnimaleDomestico> animali;
 
     public Proprietario() {
@@ -23,27 +22,12 @@ public class Proprietario extends Utente {
         this.cognome = cognome;
     }
 
-    public List<AnimaleDomestico> getAnimali() {
-        return animali;
-    }
-
-    public AnimaleDomestico getAnimaleByCodiceChip(int codiceChip){
-        return this.getAnimali().stream()
-                .filter(a -> a.getCodiceChip() == codiceChip)
-                .findFirst()
-                .orElse(null);
-    }
-
     public String getNome() {
         return nome;
     }
 
     public String getCognome() {
         return cognome;
-    }
-
-    public InputStream getImmagineProfilo() {
-        return immagineProfilo;
     }
 
     @Override

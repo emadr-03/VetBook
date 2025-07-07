@@ -4,8 +4,6 @@ import it.unina.vetbook.dto.AnimaleDomesticoDTO;
 import it.unina.vetbook.dto.PrenotazioneDTO;
 import it.unina.vetbook.dto.ProprietarioDTO;
 import it.unina.vetbook.entity.Agenda;
-import it.unina.vetbook.entity.AnimaleDomestico;
-import it.unina.vetbook.entity.Prenotazione;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -35,7 +35,6 @@ public class Visita {
     public String getDescrizione() { return descrizione; }
     public double getCosto() { return costo; }
     public AnimaleDomestico getAnimale() { return animale; }
-    public List<Farmaco> getFarmaciPrescritti() { return farmaciPrescritti; }
     public void setAnimale(AnimaleDomestico animale) { this.animale = animale; }
     public void setData(LocalDate data) { this.data = data; }
     public void setOra(LocalTime ora) { this.ora = ora; }

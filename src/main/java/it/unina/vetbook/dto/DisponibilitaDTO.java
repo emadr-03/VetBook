@@ -1,7 +1,5 @@
 package it.unina.vetbook.dto;
 
-import it.unina.vetbook.entity.Disponibilita;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -36,13 +34,5 @@ public class DisponibilitaDTO {
 
     public void setOra(LocalTime ora) {
         this.ora = ora;
-    }
-
-    public Stato getStato() {
-        return stato;
-    }
-
-    public void setStato(Stato stato) {
-        this.stato = stato;
     }
 }

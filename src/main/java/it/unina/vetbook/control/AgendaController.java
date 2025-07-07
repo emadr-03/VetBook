@@ -1,6 +1,6 @@
 package it.unina.vetbook.control;
 
-import it.unina.vetbook.dto.AgendaEntryDTO;
+import it.unina.vetbook.dto.AgendaDTO;
 import it.unina.vetbook.dto.DisponibilitaDTO;
 import it.unina.vetbook.dto.PrenotazioneDTO;
 import it.unina.vetbook.entity.*;
@@ -51,11 +51,11 @@ public class AgendaController {
         agenda.registraVisita(v);
     }
 
-    public List<AgendaEntryDTO> visualizzaAgenda() {
-        List<AgendaEntryDTO> righe = new ArrayList<>();
+    public List<AgendaDTO> visualizzaAgenda() {
+        List<AgendaDTO> righe = new ArrayList<>();
 
         for (DisponibilitaDTO d : agenda.getDisponibilita()) {
-            righe.add(new AgendaEntryDTO(
+            righe.add(new AgendaDTO(
                     "Disponibilità",
                     d.getData(),
                     d.getOra(),
@@ -65,7 +65,7 @@ public class AgendaController {
 
         for (PrenotazioneDTO p : agenda.getPrenotazioni()) {
             String info = p.getAnimale().getNome() + " - " + p.getAnimale().getTipo();
-            righe.add(new AgendaEntryDTO(
+            righe.add(new AgendaDTO(
                     "Prenotazione",
                     p.getData(),
                     p.getOra(),
@@ -74,7 +74,7 @@ public class AgendaController {
         }
 
         for (Visita v : agenda.getVisite()) {
-            righe.add(new AgendaEntryDTO(
+            righe.add(new AgendaDTO(
                     "Visita",
                     v.getData(),
                     v.getOra(),
@@ -82,8 +82,8 @@ public class AgendaController {
             ));
         }
 
-        righe.sort(Comparator.comparing(AgendaEntryDTO::getData)
-                .thenComparing(AgendaEntryDTO::getOra));
+        righe.sort(Comparator.comparing(AgendaDTO::getData)
+                .thenComparing(AgendaDTO::getOra));
 
         return righe;
     }

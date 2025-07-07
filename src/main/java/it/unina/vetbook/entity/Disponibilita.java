@@ -27,8 +27,4 @@ public class Disponibilita {
     public LocalTime getOra() {
         return ora;
     }
-
-    public String getStatoString() {
-        return stato.toString();
-    }
 }

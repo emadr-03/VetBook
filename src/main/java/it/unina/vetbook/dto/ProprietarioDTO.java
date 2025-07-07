@@ -50,19 +50,7 @@ public class ProprietarioDTO {
         this.cognome = cognome;
     }
 
-    public InputStream getImmagineProfilo() {
-        return immagineProfilo;
-    }
-
-    public void setImmagineProfilo(InputStream immagineProfilo) {
-        this.immagineProfilo = immagineProfilo;
-    }
-
     public List<AnimaleDomestico> getAnimali() {
         return animali;
-    }
-
-    public void setAnimali(List<AnimaleDomestico> animali) {
-        this.animali = animali;
     }
 }

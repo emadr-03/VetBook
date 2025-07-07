@@ -7,7 +7,6 @@ import java.time.LocalTime;
 
 public class PrenotazioneDTO {
 
-    private int id;
     private LocalDate data;
     private LocalTime ora;
     private AnimaleDomesticoDTO animale;
@@ -20,14 +19,6 @@ public class PrenotazioneDTO {
         if (animale != null) {
             this.proprietario = animale.getProprietario();
         }
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public LocalDate getData() {

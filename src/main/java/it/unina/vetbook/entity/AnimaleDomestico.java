@@ -12,8 +12,6 @@ public class AnimaleDomestico {
     private LocalDate dataDiNascita;
     private Proprietario proprietario;
 
-    public AnimaleDomestico(){}
-
     public AnimaleDomestico(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
         this.codiceChip = codiceChip;
         this.nome = nome;

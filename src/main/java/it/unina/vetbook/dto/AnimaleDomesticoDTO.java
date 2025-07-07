@@ -27,10 +27,6 @@ public class AnimaleDomesticoDTO {
         return codiceChip;
     }
 
-    public void setCodiceChip(int codiceChip) {
-        this.codiceChip = codiceChip;
-    }
-
     public String getNome() {
         return nome;
     }
@@ -51,24 +47,12 @@ public class AnimaleDomesticoDTO {
         return razza;
     }
 
-    public void setRazza(String razza) {
-        this.razza = razza;
-    }
-
     public String getColore() {
         return colore;
     }
 
-    public void setColore(String colore) {
-        this.colore = colore;
-    }
-
     public LocalDate getDataDiNascita() {
         return dataDiNascita;
-    }
-
-    public void setDataDiNascita(LocalDate dataDiNascita) {
-        this.dataDiNascita = dataDiNascita;
     }
 
     public Proprietario getProprietario() {

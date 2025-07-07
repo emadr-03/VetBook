@@ -3,7 +3,7 @@ package it.unina.vetbook.boundary;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.TimePicker;
 import it.unina.vetbook.control.AgendaController;
-import it.unina.vetbook.dto.AgendaEntryDTO;
+import it.unina.vetbook.dto.AgendaDTO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -71,11 +71,11 @@ public class DisponibilitaForm extends JDialog {
 
     private void caricaAgenda() {
         model.setRowCount(0);
-        List<AgendaEntryDTO> righe = ctrl.visualizzaAgenda();
+        List<AgendaDTO> righe = ctrl.visualizzaAgenda();
         DateTimeFormatter formatterData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter formatterOra = DateTimeFormatter.ofPattern("HH:mm");
 
-        for (AgendaEntryDTO r : righe) {
+        for (AgendaDTO r : righe) {
             model.addRow(new Object[]{
                     r.getTipoEvento(),
                     r.getData().format(formatterData),
