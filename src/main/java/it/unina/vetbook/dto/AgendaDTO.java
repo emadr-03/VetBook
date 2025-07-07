@@ -11,9 +11,12 @@ import java.util.List;
 
 
 /*Questa classe rappresenta l'intero stato dell'agenda in un dato momento.
-E' un container che raggruppa diverse liste: lista delle disponibilità, delle prenotazioni etc...
+E' un container che raggruppa insieme prenotazioni, disponibilità ecc.
 E' utile, ad esempio, ad inviare l'intera agenda in un'unica chiamata.
 Ma non è adatta a rappresentare una singola riga in una tabella di visualizzazione (es. disponibilità, o prenotazione, o visita)
+Es: In DisponibilitaForm c'è il bisogno di rappresentare nella tabella tipi di liste differenti. Questo non era
+possibile attraverso l'uso di AgendaDTO, ma lo diventa grazie all'impiego di AgendaEntryDTO, che permette di visualizzare
+in un'unica tabella eventi di tre tipi differenti.
 */
 public class AgendaDTO {
 
