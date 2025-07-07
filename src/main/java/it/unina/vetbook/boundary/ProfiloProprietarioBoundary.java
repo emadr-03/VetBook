@@ -1,5 +1,8 @@
 package it.unina.vetbook.boundary;
 
+import it.unina.vetbook.control.ProprietarioController;
+import it.unina.vetbook.entity.Proprietario;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
@@ -11,9 +14,11 @@ public class ProfiloProprietarioBoundary extends JFrame {
     private static final String RES = "src/main/resources/img/";
     private JLabel imageLabel;
     private final int IMG_SIZE = 128;
+    private final Proprietario proprietarioCorrente;
 
     public ProfiloProprietarioBoundary() {
         super("Gestione Profilo");
+        this.proprietarioCorrente = ProprietarioController.getInstance().getProprietario();
         VetcareStyle.initLookAndFeel();
 
         setSize(800, 650);
@@ -21,16 +26,13 @@ public class ProfiloProprietarioBoundary extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
 
-        // Layout principale per centrare il contenuto
         setContentPane(VetcareStyle.createSpotlightBackground());
         setLayout(new GridBagLayout());
 
-        // Pannello che contiene tutta la logica (immagine + form)
         JPanel mainContentPanel = new JPanel(new BorderLayout(20, 20));
         mainContentPanel.setOpaque(false);
         add(mainContentPanel, new GridBagConstraints());
 
-        // --- Sezione Immagine (in alto) ---
         JPanel imageSectionPanel = new JPanel();
         imageSectionPanel.setLayout(new BoxLayout(imageSectionPanel, BoxLayout.Y_AXIS));
         imageSectionPanel.setOpaque(false);
@@ -51,7 +53,6 @@ public class ProfiloProprietarioBoundary extends JFrame {
 
         mainContentPanel.add(imageSectionPanel, BorderLayout.NORTH);
 
-        // --- Sezione Form Dati (al centro) ---
         JPanel formSectionPanel = new JPanel(new GridBagLayout());
         formSectionPanel.setOpaque(false);
         formSectionPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
@@ -60,14 +61,14 @@ public class ProfiloProprietarioBoundary extends JFrame {
         c.insets = new Insets(8, 8, 8, 8);
 
         JTextField txtNome = VetcareStyle.textField("Nome");
-        txtNome.setText("Mario");
+        txtNome.setText(proprietarioCorrente.getNome());
         JTextField txtCognome = VetcareStyle.textField("Cognome");
-        txtCognome.setText("Rossi");
+        txtCognome.setText(proprietarioCorrente.getCognome());
         JTextField txtUsername = VetcareStyle.textField("Username");
-        txtUsername.setText("mrossi");
+        // txtUsername.setText(proprietarioCorrente.getUsername());
         txtUsername.setEditable(false);
         JTextField txtEmail = VetcareStyle.textField("Email");
-        txtEmail.setText("mario.rossi@email.com");
+        // txtEmail.setText(proprietarioCorrente.getEmail());
         JPasswordField password = VetcareStyle.passwordField("Nuova password");
 
         c.gridx = 0; c.gridy = 0; formSectionPanel.add(new JLabel("Nome:"), c);
@@ -83,7 +84,6 @@ public class ProfiloProprietarioBoundary extends JFrame {
 
         mainContentPanel.add(formSectionPanel, BorderLayout.CENTER);
 
-        // --- Pulsanti di controllo (in basso) ---
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         bottomPanel.setOpaque(false);
         JButton salvaBtn = new JButton("Salva");
@@ -92,12 +92,11 @@ public class ProfiloProprietarioBoundary extends JFrame {
         bottomPanel.add(esciBtn);
         mainContentPanel.add(bottomPanel, BorderLayout.SOUTH);
 
-        // --- Azioni Pulsanti ---
         caricaBtn.addActionListener(e -> handleImageUpload());
         modificaBtn.addActionListener(e -> handleImageUpload());
 
         salvaBtn.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Profilo salvato con successo! (MOCK)");
+            JOptionPane.showMessageDialog(this, "Funzionalità non richiesta in questo contesto.");
         });
 
         esciBtn.addActionListener(e -> {
@@ -130,7 +129,27 @@ public class ProfiloProprietarioBoundary extends JFrame {
         try {
             return scaleImageIcon(new ImageIcon(RES + file), size);
         } catch (Exception e) {
-            return new ImageIcon(new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB));
+            return createPlaceholderIcon(size);
         }
+    }
+
+    private ImageIcon createPlaceholderIcon(int size) {
+        BufferedImage placeholder = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = placeholder.createGraphics();
+
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setColor(new Color(220, 220, 220));
+        g2d.fillOval(0, 0, size, size);
+
+        g2d.setColor(new Color(180, 180, 180));
+        int headSize = size / 2;
+        g2d.fillOval((size - headSize) / 2, size / 6, headSize, headSize);
+
+        int bodyWidth = size;
+        int bodyHeight = size / 2;
+        g2d.fillArc(-bodyWidth / 4, size / 2, bodyWidth + bodyWidth/2, bodyHeight, 0, -180);
+
+        g2d.dispose();
+        return new ImageIcon(placeholder);
     }
 }

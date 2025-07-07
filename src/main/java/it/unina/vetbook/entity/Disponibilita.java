@@ -14,7 +14,11 @@ public class Disponibilita {
     private LocalTime ora;
     private Stato stato;
 
-    public Disponibilita(LocalDate data, LocalTime ora) {}
+    public Disponibilita(LocalDate data, LocalTime ora) {
+        this.data = data;
+        this.ora = ora;
+        this.stato = Stato.LIBERO;
+    }
 
     public LocalDate getData() {
         return data;
@@ -28,4 +32,3 @@ public class Disponibilita {
         return stato.toString();
     }
 }
-

@@ -1,30 +1,30 @@
 package it.unina.vetbook.boundary;
 
 import com.github.lgooddatepicker.components.DatePicker;
+import it.unina.vetbook.control.ProprietarioController;
+
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
 
 public class FormAnimale extends JFrame {
 
-    // Costruttore per INSERIMENTO
+    private final ProprietarioController ctrl = ProprietarioController.getInstance();
+
     public FormAnimale() {
         this(null, "", "", "", "", null);
         setTitle("Inserisci Nuovo Animale");
     }
 
-    // Costruttore per MODIFICA
     public FormAnimale(String codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataNascita) {
         super("Modifica Animale");
         boolean isModifica = (codiceChip != null);
 
         VetcareStyle.initLookAndFeel();
-
         setSize(800, 650);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
-
         setContentPane(VetcareStyle.createSpotlightBackground());
         setLayout(new GridBagLayout());
 
@@ -127,20 +127,26 @@ public class FormAnimale extends JFrame {
                 return;
             }
 
-            if (isModifica) {
-                JOptionPane.showMessageDialog(this, "Animale modificato con successo! (MOCK)");
-            } else {
-                String codiceChipInput = txtCodiceChip.getText().trim();
-                if (codiceChipInput.isEmpty() || !codiceChipInput.matches("\\d+")) {
-                    mostraErrore("Formato codice chip errato!");
-                    return;
-                }
-                if (codiceChipInput.length() != 10) {
-                    mostraErrore("Il Codice Chip deve essere di esattamente 10 cifre.");
-                    return;
-                }
+            try {
+                int codiceChipInt = Integer.parseInt(txtCodiceChip.getText().trim());
 
-                JOptionPane.showMessageDialog(this, "Animale inserito con successo! (MOCK)");
+                if (isModifica) {
+                    ctrl.modificaAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
+                    JOptionPane.showMessageDialog(this, "Animale modificato con successo!");
+                } else {
+                    if (txtCodiceChip.getText().trim().length() != 10) {
+                        mostraErrore("Il Codice Chip deve essere di esattamente 10 cifre.");
+                        return;
+                    }
+                    ctrl.inserisciAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
+                    JOptionPane.showMessageDialog(this, "Animale inserito con successo!");
+                }
+                new AnimaliProprietarioBoundary().setVisible(true);
+                dispose();
+            } catch (NumberFormatException ex) {
+                mostraErrore("Il codice chip deve essere un numero valido.");
+            } catch (Exception ex) {
+                mostraErrore("Errore: " + ex.getMessage());
             }
         });
 

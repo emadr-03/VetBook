@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-
 public class AgendaController {
 
     private static AgendaController instance;
-    private Agenda agenda = Agenda.getInstance();
+    private final Agenda agenda = Agenda.getInstance();
+
+    private AgendaController() {}
 
     public static AgendaController getInstance() {
         if (instance == null) {
@@ -22,29 +23,15 @@ public class AgendaController {
     }
 
     public boolean inserisciDisponibilita(LocalDate data, LocalTime ora) {
-        throw new UnsupportedOperationException("Not supported yet");
+        return agenda.addDisponibilita(new Disponibilita(data, ora));
     }
 
-    public Object[][] visualizzaDisponibilita() {
+    public List<Disponibilita> visualizzaDisponibilita() {
         List<Disponibilita> lista = agenda.getDisponibilita();
-
         lista.sort(Comparator.comparing(Disponibilita::getData)
                 .thenComparing(Disponibilita::getOra));
-
-        Object[][] tabella = new Object[lista.size()][3];
-
-        for (int i = 0; i < lista.size(); i++) {
-            Disponibilita d = lista.get(i);
-            tabella[i] = new Object[]{
-                    d.getData(),
-                    d.getOra(),
-                    ""
-            };
-        }
-
-        return tabella;
+        return lista;
     }
-
 
     public Object[][] visualizzaPrenotazioni() {
         List<Prenotazione> lista = agenda.getPrenotazioni();
@@ -63,14 +50,12 @@ public class AgendaController {
                     dettaglio
             };
         }
-
         return tabella;
     }
 
-
     public void registraVisita(TipoVisita tipo, String descrizione, double costo, String prodFarmaco, String nomeFarmaco) {
         Visita v = new Visita(tipo, descrizione, costo);
-        if((prodFarmaco!=null && !prodFarmaco.isEmpty()) && (nomeFarmaco!=null && nomeFarmaco.isEmpty())){
+        if((prodFarmaco!=null && !prodFarmaco.isEmpty()) && (nomeFarmaco!=null && !nomeFarmaco.isEmpty())){
             v.prescrivi(new Farmaco(nomeFarmaco, prodFarmaco));
         }
         agenda.registraVisita(v);
@@ -117,6 +102,4 @@ public class AgendaController {
 
         return tabella;
     }
-
 }
-

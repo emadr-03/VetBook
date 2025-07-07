@@ -1,5 +1,7 @@
 package it.unina.vetbook.boundary;
 
+import it.unina.vetbook.control.ProprietarioController;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -10,6 +12,7 @@ public class AnimaliProprietarioBoundary extends JFrame {
 
     private final DefaultTableModel model;
     private final JTable table;
+    private final ProprietarioController ctrl = ProprietarioController.getInstance();
 
     public AnimaliProprietarioBoundary() {
         super("I Tuoi Animali");
@@ -19,15 +22,13 @@ public class AnimaliProprietarioBoundary extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
-
         setLayout(new BorderLayout(10, 10));
         ((JPanel)getContentPane()).setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
 
         String[] cols = {"Codice Chip", "Nome", "Tipo", "Razza", "Colore", "Data Nascita"};
-        Object[][] data = {
-                {"1234567890", "Fido", "Cane", "Golden Retriever", "Biondo", "10/05/2020"},
-                {"0987654321", "Micia", "Gatto", "Siamese", "Crema", "15/08/2021"}
-        };
+
+        Object[][] data = ctrl.visualizzaAnimaliInTabella();
+
         model = new DefaultTableModel(data, cols);
         table = VetcareStyle.makeTable(new Object[0][0], cols);
         table.setModel(model);
@@ -69,8 +70,10 @@ public class AnimaliProprietarioBoundary extends JFrame {
             }
             int confirm = JOptionPane.showConfirmDialog(this, "Sei sicuro di voler eliminare l'animale selezionato?", "Conferma Eliminazione", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
+                int codiceChip = (int) model.getValueAt(selectedRow, 0);
+                ctrl.eliminaAnimale(codiceChip);
                 model.removeRow(selectedRow);
-                JOptionPane.showMessageDialog(this, "Animale eliminato con successo! (MOCK)");
+                JOptionPane.showMessageDialog(this, "Animale eliminato con successo!");
             }
         });
 

@@ -1,6 +1,7 @@
 package it.unina.vetbook.entity;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Proprietario extends Utente {
@@ -10,7 +11,9 @@ public class Proprietario extends Utente {
     private InputStream immagineProfilo;
     private List<AnimaleDomestico> animali;
 
-    public Proprietario() {}
+    public Proprietario() {
+        this.animali = new ArrayList<>();
+    }
 
     public void setNome(String nome) {
         this.nome = nome;
@@ -48,4 +51,3 @@ public class Proprietario extends Utente {
         return false;
     }
 }
-
