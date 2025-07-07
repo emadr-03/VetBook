@@ -1,25 +1,19 @@
 package it.unina.vetbook.control;
 
-import it.unina.vetbook.entity.Proprietario;
-import it.unina.vetbook.entity.UserRole;
+import it.unina.vetbook.database.UtenteDAO;
 import it.unina.vetbook.entity.Utente;
 import it.unina.vetbook.entity.UtenteFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.Optional;
 
 public class AuthController {
 
     private static AuthController instance = null;
-    private final Map<String, Utente> utentiMock;
+    private final UtenteDAO utenteDAO;
 
     private AuthController() {
-        // Creiamo un database di utenti mock in memoria
-        utentiMock = new HashMap<>();
-
-        // Aggiungiamo un utente proprietario di esempio per il login
-        Utente p = UtenteFactory.creaProprietario("mario", "mario.rossi@email.com", "Mario", "Rossi", "password");
-        utentiMock.put(p.getUsername(), p);
+        this.utenteDAO = new UtenteDAO();
     }
 
     public static AuthController getInstance() {
@@ -30,20 +24,25 @@ public class AuthController {
     }
 
     public Utente login(String username, String password) {
-        Utente utente = utentiMock.get(username);
-
-        if (utente != null && utente.getPassword().equals(password)) {
-            return utente;
+        try {
+            // È il Controller che chiama il DAO
+            Optional<Utente> utente = utenteDAO.read(username, password);
+            return utente.orElseThrow(() -> new IllegalArgumentException("Credenziali non valide"));
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore di sistema durante il login", e);
         }
-        throw new IllegalArgumentException("Credenziali non valide");
     }
 
-    public Utente registrati(String username, String email, String nome, String cognome, String password) {
-        if (utentiMock.containsKey(username)) {
-            throw new IllegalStateException("Username già in uso.");
-        }
+    public void registrati(String username, String email, String nome, String cognome, String password) {
+        // 1. Il Controller crea l'entità tramite la Factory
         Utente nuovoUtente = UtenteFactory.creaProprietario(username, email, nome, cognome, password);
-        utentiMock.put(username, nuovoUtente); // Aggiungiamo il nuovo utente alla nostra lista mock
-        return nuovoUtente;
+
+        // 2. Il Controller chiama il DAO per salvare l'entità
+        try {
+            utenteDAO.create(nuovoUtente);
+        } catch (SQLException e) {
+            // Gestisce errori specifici del DB, come username duplicato
+            throw new RuntimeException("Errore nella registrazione: " + e.getMessage(), e);
+        }
     }
 }
