@@ -21,12 +21,28 @@ public class ProprietarioBoundary extends JFrame {
         setContentPane(VetcareStyle.createSpotlightBackground());
         setLayout(new BorderLayout());
 
+        /* logo -------------------------------------------------------------- */
+        ImageIcon logo = new ImageIcon(
+                new ImageIcon(RES + "logo_clinica.png")
+                        .getImage().getScaledInstance(140,140,Image.SCALE_SMOOTH));
+        JLabel head = new JLabel(logo, SwingConstants.CENTER);
+        head.setBorder(BorderFactory.createEmptyBorder(20,0,10,0));
+        add(head, BorderLayout.NORTH);
+
         String nomeProprietario = "Mario Rossi";
         JLabel welcomeLabel = new JLabel("Benvenuto, " + nomeProprietario, SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
         welcomeLabel.setForeground(VetcareStyle.TXT);
         welcomeLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         add(welcomeLabel, BorderLayout.NORTH);
+
+        JPanel north = new JPanel(new BorderLayout());
+        north.setOpaque(false);
+
+        north.add(head, BorderLayout.NORTH);
+        north.add(welcomeLabel, BorderLayout.SOUTH);
+
+        add(north, BorderLayout.NORTH);
 
         JPanel box = new JPanel();
         box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
