@@ -62,21 +62,22 @@ public class ProprietarioController {
         return new ArrayList<>(animaliMock);
     }
 
-    public Object[][] visualizzaAnimaliInTabella() {
-        List<AnimaleDomesticoDTO> animali = getAnimaliProprietario();
-        Object[][] tabella = new Object[animali.size()][6];
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public List<AnimaleDomesticoDTO> visualizzaAnimaliInTabella() {
+        List<AnimaleDomesticoDTO> animali = getAnimaliProprietario(); // Prende la lista degli Entity
+        List<AnimaleDomesticoDTO> animaliDto = new ArrayList<>();
 
-        for (int i = 0; i < animali.size(); i++) {
-            AnimaleDomesticoDTO a = animali.get(i);
-            tabella[i][0] = a.getCodiceChip();
-            tabella[i][1] = a.getNome();
-            tabella[i][2] = a.getTipo();
-            tabella[i][3] = a.getRazza();
-            tabella[i][4] = a.getColore();
-            tabella[i][5] = a.getDataDiNascita().format(formatter);
+        for (AnimaleDomesticoDTO a : animali) {
+            // Converte ogni Entity in un DTO
+            animaliDto.add(new AnimaleDomesticoDTO(
+                    a.getCodiceChip(),
+                    a.getNome(),
+                    a.getTipo(),
+                    a.getRazza(),
+                    a.getColore(),
+                    a.getDataDiNascita()
+            ));
         }
-        return tabella;
+        return animaliDto;
     }
 
     public ProprietarioDTO getProprietario() {
