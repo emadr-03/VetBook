@@ -1,6 +1,7 @@
 package it.unina.vetbook.boundary;
 
 import it.unina.vetbook.control.ProprietarioController;
+import it.unina.vetbook.dto.AnimaleDomesticoDTO;
 import it.unina.vetbook.entity.AnimaleDomestico;
 
 import javax.swing.*;
@@ -12,7 +13,7 @@ public class BoundaryPrenotaVisita extends JFrame {
 
     private final JTable table;
     private final DefaultTableModel model;
-    private final List<AnimaleDomestico> animali;
+    private final List<AnimaleDomesticoDTO> animali;
 
     public BoundaryPrenotaVisita() {
         super("Prenota Visita - Seleziona Animale");
@@ -31,7 +32,7 @@ public class BoundaryPrenotaVisita extends JFrame {
         this.animali = ProprietarioController.getInstance().getAnimaliProprietario();
         Object[][] data = new Object[animali.size()][4];
         for (int i = 0; i < animali.size(); i++) {
-            AnimaleDomestico a = animali.get(i);
+            AnimaleDomesticoDTO a = animali.get(i);
             data[i][0] = a.getCodiceChip();
             data[i][1] = a.getNome();
             data[i][2] = a.getTipo();
@@ -56,7 +57,7 @@ public class BoundaryPrenotaVisita extends JFrame {
                 JOptionPane.showMessageDialog(this, "Seleziona un animale dalla tabella.", "Errore", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            AnimaleDomestico animaleSelezionato = animali.get(selectedRow);
+            AnimaleDomesticoDTO animaleSelezionato = animali.get(selectedRow);
             new SelezionaDisponibilitaForm(animaleSelezionato).setVisible(true);
             dispose();
         });

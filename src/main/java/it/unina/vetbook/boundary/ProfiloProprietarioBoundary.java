@@ -1,6 +1,7 @@
 package it.unina.vetbook.boundary;
 
 import it.unina.vetbook.control.ProprietarioController;
+import it.unina.vetbook.dto.ProprietarioDTO;
 import it.unina.vetbook.entity.Proprietario;
 
 import javax.swing.*;
@@ -14,7 +15,7 @@ public class ProfiloProprietarioBoundary extends JFrame {
     private static final String RES = "src/main/resources/img/";
     private JLabel imageLabel;
     private final int IMG_SIZE = 128;
-    private final Proprietario proprietarioCorrente;
+    private final ProprietarioDTO proprietarioCorrente;
 
     public ProfiloProprietarioBoundary() {
         super("Gestione Profilo");

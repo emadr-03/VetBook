@@ -2,6 +2,7 @@ package it.unina.vetbook.boundary;
 
 import it.unina.vetbook.control.AgendaController;
 import it.unina.vetbook.control.ProprietarioController;
+import it.unina.vetbook.dto.AnimaleDomesticoDTO;
 import it.unina.vetbook.entity.AnimaleDomestico;
 import it.unina.vetbook.entity.Disponibilita;
 import it.unina.vetbook.entity.Proprietario;
@@ -14,12 +15,12 @@ import java.util.List;
 
 public class SelezionaDisponibilitaForm extends JFrame {
 
-    private final AnimaleDomestico animaleSelezionato;
+    private final AnimaleDomesticoDTO animaleSelezionato;
     private final JTable table;
     private final DefaultTableModel model;
     private final List<Disponibilita> disponibilita;
 
-    public SelezionaDisponibilitaForm(AnimaleDomestico a) {
+    public SelezionaDisponibilitaForm(AnimaleDomesticoDTO a) {
         super("Prenota Visita - Seleziona Disponibilità");
         this.animaleSelezionato = a;
         VetcareStyle.initLookAndFeel();

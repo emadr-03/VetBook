@@ -1,6 +1,8 @@
 package it.unina.vetbook.control;
 
 import it.unina.vetbook.dto.AnimaleDomesticoDTO;
+import it.unina.vetbook.dto.PrenotazioneDTO;
+import it.unina.vetbook.dto.ProprietarioDTO;
 import it.unina.vetbook.entity.Agenda;
 import it.unina.vetbook.entity.AnimaleDomestico;
 import it.unina.vetbook.entity.Prenotazione;
@@ -16,7 +18,7 @@ import java.util.stream.Collectors;
 public class ProprietarioController {
 
     private static ProprietarioController instance;
-    private Proprietario proprietarioCorrente;
+    private ProprietarioDTO proprietarioCorrente;
     private List<AnimaleDomesticoDTO> animaliMock;
 
     private ProprietarioController() {
@@ -51,8 +53,8 @@ public class ProprietarioController {
         animaliMock.removeIf(a -> a.getCodiceChip() == codiceChip);
     }
 
-    public void effettuaPrenotazione(AnimaleDomestico a, LocalDate data, LocalTime ora) {
-        Prenotazione p = new Prenotazione(data, ora, a);
+    public void effettuaPrenotazione(AnimaleDomesticoDTO a, LocalDate data, LocalTime ora) {
+        PrenotazioneDTO p = new PrenotazioneDTO(data, ora, a);
         Agenda.getInstance().prenotaVisita(p);
     }
 
@@ -77,9 +79,9 @@ public class ProprietarioController {
         return tabella;
     }
 
-    public Proprietario getProprietario() {
+    public ProprietarioDTO getProprietario() {
         if (proprietarioCorrente == null) {
-            proprietarioCorrente = new Proprietario();
+            proprietarioCorrente = new ProprietarioDTO();
             proprietarioCorrente.setNome("Mario");
             proprietarioCorrente.setCognome("Rossi");
         }

@@ -1,5 +1,8 @@
 package it.unina.vetbook.entity;
 
+import it.unina.vetbook.dto.AnimaleDomesticoDTO;
+import it.unina.vetbook.dto.PrenotazioneDTO;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -10,7 +13,7 @@ public class Agenda {
 
     private static Agenda instance;
     List<Disponibilita> disponibilita;
-    List<Prenotazione> prenotazioni;
+    List<PrenotazioneDTO> prenotazioni;
     List<Visita> visite;
 
     private Agenda() {
@@ -25,8 +28,8 @@ public class Agenda {
 
 
         //dati MOCKATI per far visualizzare una prenotazione al Veterinario
-        AnimaleDomestico animaleTest = new AnimaleDomestico(111222333, "Rex", "Cane", "Pastore Tedesco", "Nero", LocalDate.now().minusYears(3));
-        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(1), LocalTime.of(9, 0), animaleTest));
+        AnimaleDomesticoDTO animaleTest = new AnimaleDomesticoDTO(111222333, "Rex", "Cane", "Pastore Tedesco", "Nero", LocalDate.now().minusYears(3));
+        this.prenotazioni.add(new PrenotazioneDTO(LocalDate.now().plusDays(1), LocalTime.of(9, 0), animaleTest));
     }
 
     public static Agenda getInstance() {
@@ -40,13 +43,13 @@ public class Agenda {
         return disponibilita;
     }
 
-    public void prenotaVisita(Prenotazione p) {
+    public void prenotaVisita(PrenotazioneDTO p) {
         disponibilita.removeIf(d -> d.getData().equals(p.getData()) && d.getOra().equals(p.getOra()));
         this.prenotazioni.add(p);
         System.out.println("Prenotazione aggiunta in memoria per: " + p.getAnimale().getNome());
     }
 
-    public List<Prenotazione> getPrenotazioni() {
+    public List<PrenotazioneDTO> getPrenotazioni() {
         return prenotazioni;
     }
 

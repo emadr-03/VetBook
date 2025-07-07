@@ -1,5 +1,6 @@
 package it.unina.vetbook.control;
 
+import it.unina.vetbook.dto.PrenotazioneDTO;
 import it.unina.vetbook.entity.*;
 
 import java.time.LocalDate;
@@ -34,15 +35,15 @@ public class AgendaController {
     }
 
     public Object[][] visualizzaPrenotazioni() {
-        List<Prenotazione> lista = agenda.getPrenotazioni();
+        List<PrenotazioneDTO> lista = agenda.getPrenotazioni();
 
-        lista.sort(Comparator.comparing(Prenotazione::getData)
-                .thenComparing(Prenotazione::getOra));
+        lista.sort(Comparator.comparing(PrenotazioneDTO::getData)
+                .thenComparing(PrenotazioneDTO::getOra));
 
         Object[][] tabella = new Object[lista.size()][3];
 
         for (int i = 0; i < lista.size(); i++) {
-            Prenotazione p = lista.get(i);
+            PrenotazioneDTO p = lista.get(i);
             String dettaglio = p.getAnimale().getNome() + " - " + p.getAnimale().getTipo();
             tabella[i] = new Object[]{
                     p.getData(),
@@ -73,7 +74,7 @@ public class AgendaController {
             });
         }
 
-        for (Prenotazione p : agenda.getPrenotazioni()) {
+        for (PrenotazioneDTO p : agenda.getPrenotazioni()) {
             String info = p.getAnimale().getNome() + " - " + p.getAnimale().getTipo();
             righe.add(new Object[]{
                     "Prenotazione",
