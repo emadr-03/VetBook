@@ -28,7 +28,7 @@ public class Disponibilita {
         return ora;
     }
 
-    public String getStato() {
+    public String getStatoString() {
         return stato.toString();
     }
 }

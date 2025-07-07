@@ -25,10 +25,7 @@ public class AuthController {
     }
 
     public void registrati(String username, String email, String nome, String cognome, String password) {
-        // 1. Il Controller crea l'entità
         Utente nuovoUtente = UtenteFactory.creaProprietario(username, email, nome, cognome, password);
-
-        // 2. Il Controller chiama il metodo dell'entità per la registrazione
         nuovoUtente.registrati();
     }
 }

@@ -1,5 +1,6 @@
 package it.unina.vetbook.control;
 
+import it.unina.vetbook.dto.AnimaleDomesticoDTO;
 import it.unina.vetbook.entity.Agenda;
 import it.unina.vetbook.entity.AnimaleDomestico;
 import it.unina.vetbook.entity.Prenotazione;
@@ -16,13 +17,13 @@ public class ProprietarioController {
 
     private static ProprietarioController instance;
     private Proprietario proprietarioCorrente;
-    private List<AnimaleDomestico> animaliMock;
+    private List<AnimaleDomesticoDTO> animaliMock;
 
     private ProprietarioController() {
         // Dati mockati nel controller
         animaliMock = new ArrayList<>();
-        animaliMock.add(new AnimaleDomestico(1234567890, "Fido", "Cane", "Golden Retriever", "Biondo", LocalDate.of(2020, 5, 10)));
-        animaliMock.add(new AnimaleDomestico(987654321, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
+        animaliMock.add(new AnimaleDomesticoDTO(1234567890, "Fido", "Cane", "Golden Retriever", "Biondo", LocalDate.of(2020, 5, 10)));
+        animaliMock.add(new AnimaleDomesticoDTO(987654321, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
     }
 
     public static synchronized ProprietarioController getInstance() {
@@ -37,13 +38,13 @@ public class ProprietarioController {
         if (chipEsistente) {
             throw new IllegalStateException("Codice chip già esistente.");
         }
-        AnimaleDomestico nuovoAnimale = new AnimaleDomestico(codiceChip, nome, tipo, razza, colore, dataDiNascita);
+        AnimaleDomesticoDTO nuovoAnimale = new AnimaleDomesticoDTO(codiceChip, nome, tipo, razza, colore, dataDiNascita);
         animaliMock.add(nuovoAnimale);
     }
 
     public void modificaAnimale(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
         animaliMock.removeIf(a -> a.getCodiceChip() == codiceChip);
-        animaliMock.add(new AnimaleDomestico(codiceChip, nome, tipo, razza, colore, dataDiNascita));
+        animaliMock.add(new AnimaleDomesticoDTO(codiceChip, nome, tipo, razza, colore, dataDiNascita));
     }
 
     public void eliminaAnimale(int codiceChip) {
@@ -55,17 +56,17 @@ public class ProprietarioController {
         Agenda.getInstance().prenotaVisita(p);
     }
 
-    public List<AnimaleDomestico> getAnimaliProprietario() {
+    public List<AnimaleDomesticoDTO> getAnimaliProprietario() {
         return new ArrayList<>(animaliMock);
     }
 
     public Object[][] visualizzaAnimaliInTabella() {
-        List<AnimaleDomestico> animali = getAnimaliProprietario();
+        List<AnimaleDomesticoDTO> animali = getAnimaliProprietario();
         Object[][] tabella = new Object[animali.size()][6];
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         for (int i = 0; i < animali.size(); i++) {
-            AnimaleDomestico a = animali.get(i);
+            AnimaleDomesticoDTO a = animali.get(i);
             tabella[i][0] = a.getCodiceChip();
             tabella[i][1] = a.getNome();
             tabella[i][2] = a.getTipo();
