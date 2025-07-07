@@ -63,7 +63,7 @@ public class VisitorBoundary extends JFrame {
                // UserRole role = ctrl.login(u, p);   // se fallisce, lancia eccezione
                ------------------------------------------------------- */
 
-            UserRole role = UserRole.PROPRIETARIO;          // ← MOCK risposta
+            UserRole role = UserRole.VETERINARIO;          // ← MOCK risposta
 
             JOptionPane.showMessageDialog(this, "Login OK come " + role);
             // switch di instradamento
@@ -73,6 +73,7 @@ public class VisitorBoundary extends JFrame {
                     break;
                 }
                 case VETERINARIO: {
+                    new VeterinarioBoundary().setVisible(true);
                     System.out.println("Apri VeterinarioBoundary");
                     break;
                 }

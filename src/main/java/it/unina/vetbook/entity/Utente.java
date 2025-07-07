@@ -9,8 +9,6 @@ public abstract class Utente {
 
     public abstract boolean checkPassword(String password);
 
-    // I METODI login() E registrati() SONO STATI RIMOSSI DA QUI
-
     public String getUsername() {
         return username;
     }
