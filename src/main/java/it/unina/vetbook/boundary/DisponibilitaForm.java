@@ -3,6 +3,7 @@ package it.unina.vetbook.boundary;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.TimePicker;
 import it.unina.vetbook.control.AgendaController;
+import it.unina.vetbook.dto.AgendaEntryDTO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,49 +11,45 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class DisponibilitaForm extends JDialog {
 
-    private final DefaultTableModel model =
-            new DefaultTableModel(new String[]{"Data","Ora"}, 0);
-    private final DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private final DefaultTableModel model;
     private final AgendaController ctrl = AgendaController.getInstance();
 
     public DisponibilitaForm(Frame owner) {
-        super(owner, "Inserisci disponibilità", true);
+        super(owner, "Gestisci Agenda", true);
         setSize(620, 460);
         setLocationRelativeTo(owner);
         setContentPane(VetcareStyle.createSpotlightBackground());
         setLayout(new BorderLayout(12,12));
 
-        /* ---------------- pickers -------------------------------------- */
         JPanel pick = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 15));
         pick.setOpaque(false);
 
         DatePicker dp = VetcareStyle.makeDatePicker();
         TimePicker tp = VetcareStyle.makeHourPicker();
-        JButton add  = new JButton("Inserisci");
+        JButton add  = new JButton("Inserisci Disponibilità");
 
         pick.add(new JLabel("Data:")); pick.add(dp);
         pick.add(new JLabel("Ora:"));  pick.add(tp);
         pick.add(add);
         add(pick, BorderLayout.NORTH);
 
-        /* ---------------- tabella -------------------------------------- */
-        JTable table = VetcareStyle.makeTable(new Object[0][0], new String[]{"Data","Ora"});
+        String[] cols = {"Tipo Evento", "Data", "Ora", "Descrizione"};
+        model = new DefaultTableModel(cols, 0);
+        JTable table = VetcareStyle.makeTable(new Object[0][0], cols);
         table.setModel(model);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        /* ---------------- chiudi --------------------------------------- */
         JButton close = new JButton("Chiudi");
         close.addActionListener(e -> dispose());
         JPanel south = new JPanel(); south.setOpaque(false); south.add(close);
         add(south, BorderLayout.SOUTH);
 
-        /* ---------------- dati iniziali -------------------------------- */
-        caricaDisponibilita();
+        caricaAgenda();
 
-        /* ---------------- inserimento ---------------------------------- */
         add.addActionListener(e -> {
             LocalDate data = dp.getDate();
             LocalTime ora  = tp.getTime();
@@ -61,25 +58,30 @@ public class DisponibilitaForm extends JDialog {
                 return;
             }
 
-            try {
-                boolean ok = ctrl.inserisciDisponibilita(data, ora);
-                if (ok) {
-                    caricaDisponibilita();
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                            "Esiste già una disponibilità per "
-                                    + df.format(data) + " alle " + ora,
-                            "Duplicato", JOptionPane.WARNING_MESSAGE);
-                }
-            } catch (UnsupportedOperationException unsupportedOperationException){
-                JOptionPane.showMessageDialog(this,"Operazione non ancora supportata");
+            boolean ok = ctrl.inserisciDisponibilita(data, ora);
+            if (ok) {
+                caricaAgenda();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Esiste già una disponibilità per questa data e ora",
+                        "Duplicato", JOptionPane.WARNING_MESSAGE);
             }
         });
     }
 
-    private void caricaDisponibilita() {
+    private void caricaAgenda() {
         model.setRowCount(0);
-        Object[][] rows = ctrl.visualizzaAgenda();
-        for (Object[] r : rows) model.addRow(r);
+        List<AgendaEntryDTO> righe = ctrl.visualizzaAgenda();
+        DateTimeFormatter formatterData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatterOra = DateTimeFormatter.ofPattern("HH:mm");
+
+        for (AgendaEntryDTO r : righe) {
+            model.addRow(new Object[]{
+                    r.getTipoEvento(),
+                    r.getData().format(formatterData),
+                    r.getOra().format(formatterOra),
+                    r.getDescrizione()
+            });
+        }
     }
 }

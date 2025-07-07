@@ -1,18 +1,21 @@
 package it.unina.vetbook.boundary;
 
 import it.unina.vetbook.control.ProprietarioController;
+import it.unina.vetbook.dto.AnimaleDomesticoDTO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class AnimaliProprietarioBoundary extends JFrame {
 
     private final DefaultTableModel model;
     private final JTable table;
     private final ProprietarioController ctrl = ProprietarioController.getInstance();
+    private final List<AnimaleDomesticoDTO> animali;
 
     public AnimaliProprietarioBoundary() {
         super("I Tuoi Animali");
@@ -26,10 +29,22 @@ public class AnimaliProprietarioBoundary extends JFrame {
         ((JPanel)getContentPane()).setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
 
         String[] cols = {"Codice Chip", "Nome", "Tipo", "Razza", "Colore", "Data Nascita"};
+        model = new DefaultTableModel(cols, 0);
 
-        Object[][] data = ctrl.visualizzaAnimaliInTabella();
+        this.animali = ctrl.getAnimaliProprietario();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        model = new DefaultTableModel(data, cols);
+        for (AnimaleDomesticoDTO a : animali) {
+            model.addRow(new Object[]{
+                    a.getCodiceChip(),
+                    a.getNome(),
+                    a.getTipo(),
+                    a.getRazza(),
+                    a.getColore(),
+                    a.getDataDiNascita().format(formatter)
+            });
+        }
+
         table = VetcareStyle.makeTable(new Object[0][0], cols);
         table.setModel(model);
         add(new JScrollPane(table), BorderLayout.CENTER);
@@ -51,14 +66,16 @@ public class AnimaliProprietarioBoundary extends JFrame {
                 return;
             }
 
-            String codiceChip = model.getValueAt(selectedRow, 0).toString();
-            String nome = model.getValueAt(selectedRow, 1).toString();
-            String tipo = model.getValueAt(selectedRow, 2).toString();
-            String razza = model.getValueAt(selectedRow, 3).toString();
-            String colore = model.getValueAt(selectedRow, 4).toString();
-            LocalDate dataNascita = LocalDate.parse(model.getValueAt(selectedRow, 5).toString(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            AnimaleDomesticoDTO animaleSelezionato = animali.get(selectedRow);
 
-            new FormAnimale(codiceChip, nome, tipo, razza, colore, dataNascita).setVisible(true);
+            new FormAnimale(
+                    String.valueOf(animaleSelezionato.getCodiceChip()),
+                    animaleSelezionato.getNome(),
+                    animaleSelezionato.getTipo(),
+                    animaleSelezionato.getRazza(),
+                    animaleSelezionato.getColore(),
+                    animaleSelezionato.getDataDiNascita()
+            ).setVisible(true);
             dispose();
         });
 
@@ -73,6 +90,7 @@ public class AnimaliProprietarioBoundary extends JFrame {
                 int codiceChip = (int) model.getValueAt(selectedRow, 0);
                 ctrl.eliminaAnimale(codiceChip);
                 model.removeRow(selectedRow);
+                animali.remove(selectedRow);
                 JOptionPane.showMessageDialog(this, "Animale eliminato con successo!");
             }
         });

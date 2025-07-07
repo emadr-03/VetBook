@@ -1,15 +1,16 @@
 package it.unina.vetbook.control;
 
+import it.unina.vetbook.dto.VisitaDTO;
 import it.unina.vetbook.entity.Agenda;
 import it.unina.vetbook.entity.Visita;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdminController {
 
     private static AdminController instance = null;
-
-    private Agenda agenda = Agenda.getInstance();
+    private final Agenda agenda = Agenda.getInstance();
 
     private AdminController() {}
 
@@ -20,27 +21,21 @@ public class AdminController {
         return instance;
     }
 
-    public Object[][] visualizzaIncassiGiornalieri() {
+    public List<VisitaDTO> getVisiteGiornaliere() {
+        List<Visita> visiteEntity = agenda.visualizzaVisiteGiornaliere();
+        List<VisitaDTO> visiteDto = new ArrayList<>();
+        for (Visita v : visiteEntity) {
+            visiteDto.add(new VisitaDTO(v.getTipo(), v.getDescrizione(), v.getCosto()));
+        }
+        return visiteDto;
+    }
+
+    public double getTotaleIncassoGiornaliero() {
         List<Visita> visiteGiornaliere = agenda.visualizzaVisiteGiornaliere();
-        double incasso = agenda.ottieniIncasso(visiteGiornaliere);
-        return convertiVisiteIncasso(visiteGiornaliere, incasso);
+        return agenda.ottieniIncasso(visiteGiornaliere);
     }
 
     public Object[][] visualizzaAnimaliNonVaccinati() {
         throw new UnsupportedOperationException("Not supported yet");
     }
-
-    private Object[][] convertiVisiteIncasso(List<Visita> visite, double incasso) {
-        Object[][] tabella = new Object[visite.size() + 1][];
-
-        for (int i = 0; i < visite.size(); i++) {
-            Visita v = visite.get(i);
-            tabella[i] = new Object[]{v.getTipo(), v.getDescrizione(), v.getCosto()};
-        }
-
-        tabella[visite.size()] = new Object[]{"", "TOTALE", incasso};
-
-        return tabella;
-    }
 }
-

@@ -1,10 +1,13 @@
 package it.unina.vetbook.boundary;
 
 import it.unina.vetbook.control.AgendaController;
+import it.unina.vetbook.dto.PrenotazioneDTO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class PrenotazioniBoundary extends JFrame {
 
@@ -20,9 +23,21 @@ public class PrenotazioniBoundary extends JFrame {
         ((JPanel)getContentPane()).setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
 
         String[] cols = {"Data", "Ora", "Dettaglio Animale"};
-        Object[][] data = AgendaController.getInstance().visualizzaPrenotazioni();
+        DefaultTableModel model = new DefaultTableModel(cols, 0);
 
-        DefaultTableModel model = new DefaultTableModel(data, cols);
+        List<PrenotazioneDTO> prenotazioni = AgendaController.getInstance().visualizzaPrenotazioni();
+        DateTimeFormatter formatterData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatterOra = DateTimeFormatter.ofPattern("HH:mm");
+
+        for (PrenotazioneDTO p : prenotazioni) {
+            String dettaglio = p.getAnimale().getNome() + " - " + p.getAnimale().getTipo();
+            model.addRow(new Object[]{
+                    p.getData().format(formatterData),
+                    p.getOra().format(formatterOra),
+                    dettaglio
+            });
+        }
+
         JTable table = VetcareStyle.makeTable(new Object[0][0], cols);
         table.setModel(model);
         add(new JScrollPane(table), BorderLayout.CENTER);

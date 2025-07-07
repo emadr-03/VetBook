@@ -8,6 +8,13 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+/*Questa classe rappresenta l'intero stato dell'agenda in un dato momento.
+E' un container che raggruppa diverse liste: lista delle disponibilità, delle prenotazioni etc...
+E' utile, ad esempio, ad inviare l'intera agenda in un'unica chiamata.
+Ma non è adatta a rappresentare una singola riga in una tabella di visualizzazione (es. disponibilità, o prenotazione, o visita)
+*/
 public class AgendaDTO {
 
     private AnimaleDomesticoDTO animaleTest;

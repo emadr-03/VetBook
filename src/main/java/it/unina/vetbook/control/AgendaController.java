@@ -1,5 +1,6 @@
 package it.unina.vetbook.control;
 
+import it.unina.vetbook.dto.AgendaEntryDTO;
 import it.unina.vetbook.dto.DisponibilitaDTO;
 import it.unina.vetbook.dto.PrenotazioneDTO;
 import it.unina.vetbook.entity.*;
@@ -35,24 +36,11 @@ public class AgendaController {
         return lista;
     }
 
-    public Object[][] visualizzaPrenotazioni() {
+    public List<PrenotazioneDTO> visualizzaPrenotazioni() {
         List<PrenotazioneDTO> lista = agenda.getPrenotazioni();
-
         lista.sort(Comparator.comparing(PrenotazioneDTO::getData)
                 .thenComparing(PrenotazioneDTO::getOra));
-
-        Object[][] tabella = new Object[lista.size()][3];
-
-        for (int i = 0; i < lista.size(); i++) {
-            PrenotazioneDTO p = lista.get(i);
-            String dettaglio = p.getAnimale().getNome() + " - " + p.getAnimale().getTipo();
-            tabella[i] = new Object[]{
-                    p.getData(),
-                    p.getOra(),
-                    dettaglio
-            };
-        }
-        return tabella;
+        return lista;
     }
 
     public void registraVisita(TipoVisita tipo, String descrizione, double costo, String prodFarmaco, String nomeFarmaco) {
@@ -63,45 +51,40 @@ public class AgendaController {
         agenda.registraVisita(v);
     }
 
-    public Object[][] visualizzaAgenda() {
-        List<Object[]> righe = new ArrayList<>();
+    public List<AgendaEntryDTO> visualizzaAgenda() {
+        List<AgendaEntryDTO> righe = new ArrayList<>();
 
         for (DisponibilitaDTO d : agenda.getDisponibilita()) {
-            righe.add(new Object[]{
+            righe.add(new AgendaEntryDTO(
                     "Disponibilità",
                     d.getData(),
                     d.getOra(),
                     ""
-            });
+            ));
         }
 
         for (PrenotazioneDTO p : agenda.getPrenotazioni()) {
             String info = p.getAnimale().getNome() + " - " + p.getAnimale().getTipo();
-            righe.add(new Object[]{
+            righe.add(new AgendaEntryDTO(
                     "Prenotazione",
                     p.getData(),
                     p.getOra(),
                     info
-            });
+            ));
         }
 
         for (Visita v : agenda.getVisite()) {
-            righe.add(new Object[]{
+            righe.add(new AgendaEntryDTO(
                     "Visita",
                     v.getData(),
                     v.getOra(),
                     v.getTipo().toString()
-            });
+            ));
         }
 
-        righe.sort(Comparator.comparing((Object[] r) -> (LocalDate) r[1])
-                .thenComparing(r -> (LocalTime) r[2]));
+        righe.sort(Comparator.comparing(AgendaEntryDTO::getData)
+                .thenComparing(AgendaEntryDTO::getOra));
 
-        Object[][] tabella = new Object[righe.size()][4];
-        for (int i = 0; i < righe.size(); i++) {
-            tabella[i] = righe.get(i);
-        }
-
-        return tabella;
+        return righe;
     }
 }
