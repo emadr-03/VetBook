@@ -1,5 +1,6 @@
 package it.unina.vetbook.control;
 
+import it.unina.vetbook.dto.DisponibilitaDTO;
 import it.unina.vetbook.dto.PrenotazioneDTO;
 import it.unina.vetbook.entity.*;
 
@@ -24,13 +25,13 @@ public class AgendaController {
     }
 
     public boolean inserisciDisponibilita(LocalDate data, LocalTime ora) {
-        return agenda.addDisponibilita(new Disponibilita(data, ora));
+        return agenda.addDisponibilita(new DisponibilitaDTO(data, ora));
     }
 
-    public List<Disponibilita> visualizzaDisponibilita() {
-        List<Disponibilita> lista = agenda.getDisponibilita();
-        lista.sort(Comparator.comparing(Disponibilita::getData)
-                .thenComparing(Disponibilita::getOra));
+    public List<DisponibilitaDTO> visualizzaDisponibilita() {
+        List<DisponibilitaDTO> lista = agenda.getDisponibilita();
+        lista.sort(Comparator.comparing(DisponibilitaDTO::getData)
+                .thenComparing(DisponibilitaDTO::getOra));
         return lista;
     }
 
@@ -65,7 +66,7 @@ public class AgendaController {
     public Object[][] visualizzaAgenda() {
         List<Object[]> righe = new ArrayList<>();
 
-        for (Disponibilita d : agenda.getDisponibilita()) {
+        for (DisponibilitaDTO d : agenda.getDisponibilita()) {
             righe.add(new Object[]{
                     "Disponibilità",
                     d.getData(),

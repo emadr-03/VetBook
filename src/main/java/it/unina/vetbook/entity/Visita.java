@@ -29,7 +29,6 @@ public class Visita {
         this.farmaciPrescritti.add(f);
     }
 
-    // Getters e Setters...
     public LocalDate getData() { return data; }
     public LocalTime getOra() { return ora; }
     public TipoVisita getTipo() { return tipo; }

@@ -1,6 +1,7 @@
 package it.unina.vetbook.entity;
 
 import it.unina.vetbook.dto.AnimaleDomesticoDTO;
+import it.unina.vetbook.dto.DisponibilitaDTO;
 import it.unina.vetbook.dto.PrenotazioneDTO;
 
 import java.time.LocalDate;
@@ -12,23 +13,24 @@ import java.util.stream.Collectors;
 public class Agenda {
 
     private static Agenda instance;
-    List<Disponibilita> disponibilita;
-    List<PrenotazioneDTO> prenotazioni;
-    List<Visita> visite;
+    private AnimaleDomesticoDTO animaleTest;
+    private List<DisponibilitaDTO> disponibilita;
+    private List<PrenotazioneDTO> prenotazioni;
+    private List<Visita> visite;
 
     private Agenda() {
         this.disponibilita = new ArrayList<>();
         this.prenotazioni = new ArrayList<>();
         this.visite = new ArrayList<>();
 
-        disponibilita.add(new Disponibilita(LocalDate.now().plusDays(1), LocalTime.of(9, 0)));
-        disponibilita.add(new Disponibilita(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
-        disponibilita.add(new Disponibilita(LocalDate.now().plusDays(2), LocalTime.of(11, 0)));
-        disponibilita.add(new Disponibilita(LocalDate.now().plusDays(2), LocalTime.of(12, 0)));
+        disponibilita.add(new DisponibilitaDTO(LocalDate.now().plusDays(1), LocalTime.of(9, 0)));
+        disponibilita.add(new DisponibilitaDTO(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+        disponibilita.add(new DisponibilitaDTO(LocalDate.now().plusDays(2), LocalTime.of(11, 0)));
+        disponibilita.add(new DisponibilitaDTO(LocalDate.now().plusDays(2), LocalTime.of(12, 0)));
 
 
         //dati MOCKATI per far visualizzare una prenotazione al Veterinario
-        AnimaleDomesticoDTO animaleTest = new AnimaleDomesticoDTO(111222333, "Rex", "Cane", "Pastore Tedesco", "Nero", LocalDate.now().minusYears(3));
+        animaleTest = new AnimaleDomesticoDTO(111222333, "Rex", "Cane", "Pastore Tedesco", "Nero", LocalDate.now().minusYears(3));
         this.prenotazioni.add(new PrenotazioneDTO(LocalDate.now().plusDays(1), LocalTime.of(9, 0), animaleTest));
     }
 
@@ -39,7 +41,7 @@ public class Agenda {
         return instance;
     }
 
-    public List<Disponibilita> getDisponibilita() {
+    public List<DisponibilitaDTO> getDisponibilita() {
         return disponibilita;
     }
 
@@ -53,7 +55,7 @@ public class Agenda {
         return prenotazioni;
     }
 
-    public boolean addDisponibilita(Disponibilita nuovaDisp) {
+    public boolean addDisponibilita(DisponibilitaDTO nuovaDisp) {
         boolean esisteGia = disponibilita.stream()
                 .anyMatch(d -> d.getData().equals(nuovaDisp.getData()) && d.getOra().equals(nuovaDisp.getOra()));
         if (esisteGia) {

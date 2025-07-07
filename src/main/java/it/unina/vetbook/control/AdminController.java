@@ -9,7 +9,7 @@ public class AdminController {
 
     private static AdminController instance = null;
 
-    Agenda agenda = Agenda.getInstance();
+    private Agenda agenda = Agenda.getInstance();
 
     private AdminController() {}
 

@@ -3,6 +3,7 @@ package it.unina.vetbook.boundary;
 import it.unina.vetbook.control.AgendaController;
 import it.unina.vetbook.control.ProprietarioController;
 import it.unina.vetbook.dto.AnimaleDomesticoDTO;
+import it.unina.vetbook.dto.DisponibilitaDTO;
 import it.unina.vetbook.entity.AnimaleDomestico;
 import it.unina.vetbook.entity.Disponibilita;
 import it.unina.vetbook.entity.Proprietario;
@@ -18,7 +19,7 @@ public class SelezionaDisponibilitaForm extends JFrame {
     private final AnimaleDomesticoDTO animaleSelezionato;
     private final JTable table;
     private final DefaultTableModel model;
-    private final List<Disponibilita> disponibilita;
+    private final List<DisponibilitaDTO> disponibilita;
 
     public SelezionaDisponibilitaForm(AnimaleDomesticoDTO a) {
         super("Prenota Visita - Seleziona Disponibilità");
@@ -45,7 +46,7 @@ public class SelezionaDisponibilitaForm extends JFrame {
         DateTimeFormatter formatterOra = DateTimeFormatter.ofPattern("HH:mm");
 
         for (int i = 0; i < disponibilita.size(); i++) {
-            Disponibilita d = disponibilita.get(i);
+            DisponibilitaDTO d = disponibilita.get(i);
             data[i][0] = d.getData().format(formatterData);
             data[i][1] = d.getOra().format(formatterOra);
         }
@@ -69,7 +70,7 @@ public class SelezionaDisponibilitaForm extends JFrame {
                 return;
             }
 
-            Disponibilita slotSelezionato = disponibilita.get(selectedRow);
+            DisponibilitaDTO slotSelezionato = disponibilita.get(selectedRow);
 
             ProprietarioController.getInstance().effettuaPrenotazione(animaleSelezionato, slotSelezionato.getData(), slotSelezionato.getOra());
 
