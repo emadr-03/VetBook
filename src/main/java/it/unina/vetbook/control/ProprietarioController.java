@@ -4,12 +4,13 @@ import it.unina.vetbook.dto.AnimaleDomesticoDTO;
 import it.unina.vetbook.dto.PrenotazioneDTO;
 import it.unina.vetbook.dto.ProprietarioDTO;
 import it.unina.vetbook.entity.Agenda;
+import it.unina.vetbook.entity.AnimaleDomestico;
+import it.unina.vetbook.entity.Prenotazione;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ProprietarioController {
 
@@ -20,7 +21,7 @@ public class ProprietarioController {
     private ProprietarioController() {
         animaliMock = new ArrayList<>();
         animaliMock.add(new AnimaleDomesticoDTO(1234567890, "Fido", "Cane", "Golden Retriever", "Biondo", LocalDate.of(2020, 5, 10)));
-        animaliMock.add(new AnimaleDomesticoDTO(1234567891, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
+        animaliMock.add(new AnimaleDomesticoDTO(987654321, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
     }
 
     public static synchronized ProprietarioController getInstance() {
@@ -28,6 +29,16 @@ public class ProprietarioController {
             instance = new ProprietarioController();
         }
         return instance;
+    }
+
+    public void gestioneProfilo(String username, String nome, String cognome, String email, String password) {
+        ProprietarioDTO utente = getProprietario();
+        utente.setUsername(username);
+        utente.setNome(nome);
+        utente.setCognome(cognome);
+        utente.setEmail(email);
+
+        System.out.println("Profilo aggiornato. Nuovo username: " + utente.getUsername());
     }
 
     public void inserisciAnimale(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
@@ -60,6 +71,8 @@ public class ProprietarioController {
     public ProprietarioDTO getProprietario() {
         if (proprietarioCorrente == null) {
             proprietarioCorrente = new ProprietarioDTO();
+            proprietarioCorrente.setUsername("mrossi");
+            proprietarioCorrente.setEmail("mario.rossi@email.com");
             proprietarioCorrente.setNome("Mario");
             proprietarioCorrente.setCognome("Rossi");
         }

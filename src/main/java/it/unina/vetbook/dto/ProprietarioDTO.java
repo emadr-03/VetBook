@@ -1,13 +1,14 @@
 package it.unina.vetbook.dto;
 
 import it.unina.vetbook.entity.AnimaleDomestico;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProprietarioDTO {
 
+    private String username;
+    private String email;
     private String nome;
     private String cognome;
     private InputStream immagineProfilo;
@@ -17,40 +18,48 @@ public class ProprietarioDTO {
         this.animali = new ArrayList<>();
     }
 
+    public String getUsername() {
+        return username;
+    }
 
-    public ProprietarioDTO(String cognome, InputStream immagineProfilo, List<AnimaleDomestico> animali, String nome) {
-        this.cognome = cognome;
-        this.immagineProfilo = immagineProfilo;
-        this.animali = animali;
-        this.nome = nome;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getNome() {
         return nome;
     }
 
-    public String getCognome() {
-        return cognome;
-    }
-
-    public InputStream getImmagineProfilo() {
-        return immagineProfilo;
-    }
-
-    public List<AnimaleDomestico> getAnimali() {
-        return animali;
-    }
-
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getCognome() {
+        return cognome;
     }
 
     public void setCognome(String cognome) {
         this.cognome = cognome;
     }
 
+    public InputStream getImmagineProfilo() {
+        return immagineProfilo;
+    }
+
     public void setImmagineProfilo(InputStream immagineProfilo) {
         this.immagineProfilo = immagineProfilo;
+    }
+
+    public List<AnimaleDomestico> getAnimali() {
+        return animali;
     }
 
     public void setAnimali(List<AnimaleDomestico> animali) {

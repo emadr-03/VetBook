@@ -2,7 +2,6 @@ package it.unina.vetbook.boundary;
 
 import it.unina.vetbook.control.ProprietarioController;
 import it.unina.vetbook.dto.ProprietarioDTO;
-import it.unina.vetbook.entity.Proprietario;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -66,11 +65,11 @@ public class ProfiloProprietarioBoundary extends JFrame {
         JTextField txtCognome = VetcareStyle.textField("Cognome");
         txtCognome.setText(proprietarioCorrente.getCognome());
         JTextField txtUsername = VetcareStyle.textField("Username");
-        // txtUsername.setText(proprietarioCorrente.getUsername());
-        txtUsername.setEditable(false);
+        txtUsername.setText(proprietarioCorrente.getUsername());
+
         JTextField txtEmail = VetcareStyle.textField("Email");
-        // txtEmail.setText(proprietarioCorrente.getEmail());
-        JPasswordField password = VetcareStyle.passwordField("Nuova password");
+        txtEmail.setText(proprietarioCorrente.getEmail());
+        JPasswordField password = VetcareStyle.passwordField("Nuova password (lasciare vuoto per non modificare)");
 
         c.gridx = 0; c.gridy = 0; formSectionPanel.add(new JLabel("Nome:"), c);
         c.gridx = 1; c.gridy = 0; formSectionPanel.add(txtNome, c);
@@ -97,7 +96,18 @@ public class ProfiloProprietarioBoundary extends JFrame {
         modificaBtn.addActionListener(e -> handleImageUpload());
 
         salvaBtn.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Funzionalità non richiesta in questo contesto.");
+            try {
+                ProprietarioController.getInstance().gestioneProfilo(
+                        txtUsername.getText(),
+                        txtNome.getText(),
+                        txtCognome.getText(),
+                        txtEmail.getText(),
+                        String.valueOf(password.getPassword())
+                );
+                JOptionPane.showMessageDialog(this, "Profilo aggiornato con successo!");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         esciBtn.addActionListener(e -> {
