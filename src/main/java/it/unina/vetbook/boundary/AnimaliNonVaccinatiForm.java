@@ -9,13 +9,33 @@ public class AnimaliNonVaccinatiForm extends JDialog {
 
     private final String[] COLS = { "ID", "Nome", "Specie", "Ult. vaccino" };
 
+    private JTable table;
+    private JScrollPane scrollPane;
+    private JButton chiudiButton;
+    private JPanel southPanel;
+
     public AnimaliNonVaccinatiForm(Frame owner) {
         super(owner, "Animali Non Vaccinati", true);
-        setSize(600, 400);
-        setLocationRelativeTo(owner);
-        setContentPane(VetcareStyle.createSpotlightBackground());
-        setLayout(new BorderLayout(12,12));
 
+        initDialog();
+        initComponents();
+        layoutComponents();
+        addListeners();
+    }
+
+    private void initDialog() {
+        setSize(600, 400);
+        setLocationRelativeTo(getOwner());
+        setContentPane(VetcareStyle.createSpotlightBackground());
+        setLayout(new BorderLayout(12, 12));
+    }
+
+    private void initComponents() {
+        initTable();
+        initSouthPanel();
+    }
+
+    private void initTable() {
         Object[][] rows;
         try {
             AdminController ctrl = AdminController.getInstance();
@@ -26,20 +46,29 @@ public class AnimaliNonVaccinatiForm extends JDialog {
                             + "verranno mostrati dati di esempio.",
                     "Non disponibile", JOptionPane.INFORMATION_MESSAGE);
 
-            // Mock
             rows = new Object[][]{
-                    { 101, "Luna", "Gatto",   "27/04/2025" },
-                    { 207, "Milo", "Cane",    "27/04/2023" },
-                    { 315, "Kiwi", "Coniglio","25/04/2022" },
+                    {101, "Luna", "Gatto", "27/04/2025"},
+                    {207, "Milo", "Cane", "27/04/2023"},
+                    {315, "Kiwi", "Coniglio", "25/04/2022"},
             };
         }
+        table = VetcareStyle.makeTable(rows, COLS);
+        scrollPane = new JScrollPane(table);
+    }
 
-        JTable table = VetcareStyle.makeTable(rows, COLS);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+    private void initSouthPanel() {
+        chiudiButton = new JButton("Chiudi");
+        southPanel = new JPanel();
+        southPanel.setOpaque(false);
+        southPanel.add(chiudiButton);
+    }
 
-        JButton chiudi = new JButton("Chiudi");
-        chiudi.addActionListener(e -> dispose());
-        JPanel south = new JPanel(); south.setOpaque(false); south.add(chiudi);
-        add(south, BorderLayout.SOUTH);
+    private void layoutComponents() {
+        add(scrollPane, BorderLayout.CENTER);
+        add(southPanel, BorderLayout.SOUTH);
+    }
+
+    private void addListeners() {
+        chiudiButton.addActionListener(e -> dispose());
     }
 }

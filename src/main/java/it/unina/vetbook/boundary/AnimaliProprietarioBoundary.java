@@ -6,32 +6,49 @@ import it.unina.vetbook.dto.AnimaleDomesticoDTO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AnimaliProprietarioBoundary extends JFrame {
 
-    private final DefaultTableModel model;
-    private final JTable table;
+    private DefaultTableModel model;
+    private JTable table;
+    private JScrollPane scrollPane;
+    private JPanel buttonPanel;
+    private JButton modificaBtn, eliminaBtn, indietroBtn;
+
     private final ProprietarioController ctrl = ProprietarioController.getInstance();
-    private final List<AnimaleDomesticoDTO> animali;
+    private List<AnimaleDomesticoDTO> animali;
 
     public AnimaliProprietarioBoundary() {
         super("I Tuoi Animali");
         VetcareStyle.initLookAndFeel();
 
+        initFrame();
+        initComponents();
+        layoutComponents();
+        addListeners();
+    }
+
+    private void initFrame() {
         setSize(800, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setLayout(new BorderLayout(10, 10));
-        ((JPanel)getContentPane()).setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
+        ((JPanel) getContentPane()).setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+    }
 
+    private void initComponents() {
+        initTableAndModel();
+        initButtonPanel();
+    }
+
+    private void initTableAndModel() {
         String[] cols = {"Codice Chip", "Nome", "Tipo", "Razza", "Colore", "Data Nascita"};
         model = new DefaultTableModel(cols, 0);
 
-        this.animali = ctrl.getAnimaliProprietario();
+        animali = ctrl.getAnimaliProprietario();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         for (AnimaleDomesticoDTO a : animali) {
@@ -47,18 +64,26 @@ public class AnimaliProprietarioBoundary extends JFrame {
 
         table = VetcareStyle.makeTable(new Object[0][0], cols);
         table.setModel(model);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        scrollPane = new JScrollPane(table);
+    }
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        JButton modificaBtn = new JButton("Modifica Selezionato");
-        JButton eliminaBtn = new JButton("Elimina Selezionato");
-        JButton indietroBtn = new JButton("Indietro");
+    private void initButtonPanel() {
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        modificaBtn = new JButton("Modifica Selezionato");
+        eliminaBtn = new JButton("Elimina Selezionato");
+        indietroBtn = new JButton("Indietro");
 
         buttonPanel.add(modificaBtn);
         buttonPanel.add(eliminaBtn);
         buttonPanel.add(indietroBtn);
-        add(buttonPanel, BorderLayout.SOUTH);
+    }
 
+    private void layoutComponents() {
+        add(scrollPane, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private void addListeners() {
         modificaBtn.addActionListener(e -> {
             int selectedRow = table.getSelectedRow();
             if (selectedRow == -1) {
@@ -67,7 +92,6 @@ public class AnimaliProprietarioBoundary extends JFrame {
             }
 
             AnimaleDomesticoDTO animaleSelezionato = animali.get(selectedRow);
-
             new FormAnimale(
                     String.valueOf(animaleSelezionato.getCodiceChip()),
                     animaleSelezionato.getNome(),

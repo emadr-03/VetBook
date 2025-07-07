@@ -7,18 +7,32 @@ import java.awt.image.BufferedImage;
 public class VeterinarioBoundary extends JFrame {
 
     private static final String RES = "src/main/resources/img/";
+    private JButton logoutButton;
 
     public VeterinarioBoundary() {
         super("Area Veterinario");
-        VetcareStyle.initLookAndFeel();
 
+        initFrame();
+        initComponents();
+        layoutComponents();
+        addListeners();
+    }
+
+    private void initFrame() {
+        VetcareStyle.initLookAndFeel();
         setSize(750, 520);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setContentPane(VetcareStyle.createSpotlightBackground());
         setLayout(new BorderLayout());
+    }
 
+    private void initComponents() {
+        logoutButton = new JButton("Logout");
+    }
+
+    private void layoutComponents() {
         ImageIcon logo = new ImageIcon(
                 new ImageIcon(RES + "logo_clinica.png")
                         .getImage().getScaledInstance(140,140,Image.SCALE_SMOOTH));
@@ -48,16 +62,18 @@ public class VeterinarioBoundary extends JFrame {
         ));
         add(box, BorderLayout.CENTER);
 
-        JButton logout = new JButton("Logout");
-        logout.addActionListener(e -> {
-            dispose();
-            new VisitorBoundary().setVisible(true);
-        });
         JPanel south = new JPanel();
         south.setOpaque(false);
         south.setBorder(BorderFactory.createEmptyBorder(0,0,15,0));
-        south.add(logout);
+        south.add(logoutButton);
         add(south, BorderLayout.SOUTH);
+    }
+
+    private void addListeners() {
+        logoutButton.addActionListener(e -> {
+            dispose();
+            new VisitorBoundary().setVisible(true);
+        });
     }
 
     private ImageIcon icon(String file) {

@@ -7,63 +7,84 @@ import java.awt.*;
 
 public class RegisterDialog extends JDialog {
 
+    private JTextField emailField, userField, nomeField, cognomeField;
+    private JPasswordField passwordField1, passwordField2;
+    private JButton okButton, cancelButton;
+
     public RegisterDialog(Frame owner) {
         super(owner, "Registrazione proprietario", true);
-        setSize(480, 420);
-        setLocationRelativeTo(owner);
 
+        initDialog();
+        initComponents();
+        layoutComponents();
+        addListeners();
+    }
+
+    private void initDialog() {
+        setSize(480, 450);
+        setLocationRelativeTo(getOwner());
         setContentPane(VetcareStyle.createSpotlightBackground());
         setLayout(new GridBagLayout());
+    }
 
+    private void initComponents() {
+        emailField = VetcareStyle.textField("E-mail");
+        userField = VetcareStyle.textField("Username");
+        nomeField = VetcareStyle.textField("Nome");
+        cognomeField = VetcareStyle.textField("Cognome");
+        passwordField1 = VetcareStyle.passwordField("Password");
+        passwordField2 = VetcareStyle.passwordField("Ripeti password");
+        okButton = new JButton("Registrati");
+        cancelButton = new JButton("Annulla");
+    }
+
+    private void layoutComponents() {
         JPanel card = VetcareStyle.makeDialogCard();
         add(card);
 
         GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(12,20,12,20);
-        c.gridx = 0; c.gridy = 0; c.anchor = GridBagConstraints.CENTER;
+        c.insets = new Insets(12, 20, 12, 20);
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.CENTER;
 
-        JTextField email = VetcareStyle.textField("E-mail");
-        JTextField user  = VetcareStyle.textField("Username");
-        JTextField nome = VetcareStyle.textField("Nome");
-        JTextField cognome = VetcareStyle.textField("Cognome");
-        JPasswordField p1= VetcareStyle.passwordField("Password");
-        JPasswordField p2= VetcareStyle.passwordField("Ripeti password");
+        card.add(emailField, c);   c.gridy++;
+        card.add(userField, c);    c.gridy++;
+        card.add(nomeField, c);     c.gridy++;
+        card.add(cognomeField, c);  c.gridy++;
+        card.add(passwordField1, c); c.gridy++;
+        card.add(passwordField2, c); c.gridy++;
 
-        card.add(email, c);   c.gridy++;
-        card.add(user , c);   c.gridy++;
-        card.add(nome, c);    c.gridy++;
-        card.add(cognome, c); c.gridy++;
-        card.add(p1   , c);   c.gridy++;
-        card.add(p2   , c);   c.gridy++;
-
-        JPanel btnBox = new JPanel(new FlowLayout(FlowLayout.CENTER,20,0));
-        JButton ok = new JButton("Registrati");
-        JButton cancel = new JButton("Annulla");
+        JPanel btnBox = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         btnBox.setOpaque(false);
-        btnBox.add(ok); btnBox.add(cancel);
+        btnBox.add(okButton);
+        btnBox.add(cancelButton);
         card.add(btnBox, c);
+    }
 
-        ok.addActionListener(e -> {
-            if (!String.valueOf(p1.getPassword()).equals(String.valueOf(p2.getPassword()))) {
-                JOptionPane.showMessageDialog(this,"Le password non coincidono");
-                return;
-            }
+    private void addListeners() {
+        okButton.addActionListener(e -> handleOk());
+        cancelButton.addActionListener(e -> dispose());
+    }
 
-            try {
-                // Chiama il Controller per eseguire la registrazione
-                AuthController.getInstance().registrati(
-                        user.getText(),
-                        email.getText(),
-                        nome.getText(),
-                        cognome.getText(),
-                        String.valueOf(p1.getPassword())
-                );
-                JOptionPane.showMessageDialog(this, "Registrazione avvenuta con successo!");
-                dispose();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Errore di registrazione: " + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-        cancel.addActionListener(e -> dispose());
+    private void handleOk() {
+        if (!String.valueOf(passwordField1.getPassword()).equals(String.valueOf(passwordField2.getPassword()))) {
+            JOptionPane.showMessageDialog(this, "Le password non coincidono");
+            return;
+        }
+
+        try {
+            AuthController.getInstance().registrati(
+                    userField.getText(),
+                    emailField.getText(),
+                    nomeField.getText(),
+                    cognomeField.getText(),
+                    String.valueOf(passwordField1.getPassword())
+            );
+            JOptionPane.showMessageDialog(this, "Registrazione avvenuta con successo!");
+            dispose();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Errore di registrazione: " + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

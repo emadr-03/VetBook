@@ -1,6 +1,5 @@
 package it.unina.vetbook.boundary;
 
-import it.unina.vetbook.entity.Proprietario;
 import it.unina.vetbook.entity.UserRole;
 
 import javax.swing.*;
@@ -10,19 +9,38 @@ public class VisitorBoundary extends JFrame {
 
     private static final String RES = "src/main/resources/img/";
 
+    private JTextField userField;
+    private JPasswordField passField;
+    private JButton loginButton;
+    private JButton registerButton;
+
     public VisitorBoundary() {
         super("Benvenuto");
-        VetcareStyle.initLookAndFeel();
 
-        /* finestra -------------------------------------------------------- */
+        initFrame();
+        initComponents();
+        layoutComponents();
+        addListeners();
+    }
+
+    private void initFrame() {
+        VetcareStyle.initLookAndFeel();
         setSize(520, 420);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setContentPane(VetcareStyle.createSpotlightBackground());
         setLayout(new BorderLayout());
+    }
 
-        /* logo ------------------------------------------------------------ */
+    private void initComponents() {
+        userField = new JTextField(18);
+        passField = new JPasswordField(18);
+        loginButton = new JButton("Login");
+        registerButton = new JButton("Registrati");
+    }
+
+    private void layoutComponents() {
         ImageIcon logo = new ImageIcon(
                 new ImageIcon(RES + "logo_clinica.png")
                         .getImage().getScaledInstance(120,120,Image.SCALE_SMOOTH));
@@ -30,65 +48,56 @@ public class VisitorBoundary extends JFrame {
         head.setBorder(BorderFactory.createEmptyBorder(30,0,10,0));
         add(head, BorderLayout.NORTH);
 
-        /* pannello login -------------------------------------------------- */
-        JPanel center = new JPanel(new GridBagLayout());
-        center.setOpaque(false);
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.setOpaque(false);
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(10,10,10,10);
         c.anchor = GridBagConstraints.EAST;
 
-        JTextField user = new JTextField(18);
-        JPasswordField pass = new JPasswordField(18);
-        Dimension size = new Dimension(180,28);
-        user.setPreferredSize(size);  pass.setPreferredSize(size);
+        Dimension fieldSize = new Dimension(180,28);
+        userField.setPreferredSize(fieldSize);
+        passField.setPreferredSize(fieldSize);
 
-        c.gridx = 0; c.gridy = 0; center.add(new JLabel("Username:"), c);
-        c.gridx = 1; c.anchor = GridBagConstraints.WEST; center.add(user, c);
-        c.gridx = 0; c.gridy = 1; c.anchor = GridBagConstraints.EAST;
-        center.add(new JLabel("Password:"), c);
-        c.gridx = 1; c.anchor = GridBagConstraints.WEST; center.add(pass, c);
+        c.gridx = 0; c.gridy = 0; centerPanel.add(new JLabel("Username:"), c);
+        c.gridx = 1; c.anchor = GridBagConstraints.WEST; centerPanel.add(userField, c);
+        c.gridx = 0; c.gridy = 1; c.anchor = GridBagConstraints.EAST; centerPanel.add(new JLabel("Password:"), c);
+        c.gridx = 1; c.anchor = GridBagConstraints.WEST; centerPanel.add(passField, c);
+        add(centerPanel, BorderLayout.CENTER);
 
-        add(center, BorderLayout.CENTER);
+        JPanel southPanel = new JPanel();
+        southPanel.setOpaque(false);
+        southPanel.add(loginButton);
+        southPanel.add(registerButton);
+        add(southPanel, BorderLayout.SOUTH);
+    }
 
-        /* pulsanti -------------------------------------------------------- */
-        JButton login = new JButton("Login");
-        JButton reg   = new JButton("Registrati");
+    private void addListeners() {
+        loginButton.addActionListener(e -> handleLogin());
+        registerButton.addActionListener(e -> new RegisterDialog(this).setVisible(true));
+    }
 
-        login.addActionListener(e -> {
-            String u = user.getText();
-            String p = String.valueOf(pass.getPassword());
+    private void handleLogin() {
+        String u = userField.getText();
+        String p = String.valueOf(passField.getPassword());
 
-            /* --------- CONTROL (BCED) -------------------------------
-               // AuthController ctrl = new AuthController();
-               // UserRole role = ctrl.login(u, p);   // se fallisce, lancia eccezione
-               ------------------------------------------------------- */
+        UserRole role = UserRole.PROPRIETARIO;
 
-            UserRole role = UserRole.VETERINARIO;          // ← MOCK risposta
+        JOptionPane.showMessageDialog(this, "Login OK come " + role);
 
-            JOptionPane.showMessageDialog(this, "Login OK come " + role);
-            // switch di instradamento
-            switch (role) {
-                case PROPRIETARIO: {
-                    new ProprietarioBoundary().setVisible(true);
-                    break;
-                }
-                case VETERINARIO: {
-                    new VeterinarioBoundary().setVisible(true);
-                    System.out.println("Apri VeterinarioBoundary");
-                    break;
-                }
-                case AMMINISTRATORE_DELL_AMBULATORIO: {
-                    new AmministratoreBoundary().setVisible(true);
-                    break;
-                }
+        switch (role) {
+            case PROPRIETARIO: {
+                new ProprietarioBoundary().setVisible(true);
+                break;
             }
-            dispose();
-        });
-
-        reg.addActionListener(e -> new RegisterDialog(this).setVisible(true));
-
-        JPanel south = new JPanel(); south.setOpaque(false);
-        south.add(login); south.add(reg);
-        add(south, BorderLayout.SOUTH);
+            case VETERINARIO: {
+                new VeterinarioBoundary().setVisible(true);
+                break;
+            }
+            case AMMINISTRATORE_DELL_AMBULATORIO: {
+                new AmministratoreBoundary().setVisible(true);
+                break;
+            }
+        }
+        dispose();
     }
 }

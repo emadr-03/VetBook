@@ -15,46 +15,81 @@ import java.util.List;
 
 public class DisponibilitaForm extends JDialog {
 
-    private final DefaultTableModel model;
+    private DefaultTableModel model;
+    private JTable table;
+    private JScrollPane scrollPane;
+    private JPanel northPanel, southPanel;
+    private DatePicker datePicker;
+    private TimePicker timePicker;
+    private JButton addButton, closeButton;
+
     private final AgendaController ctrl = AgendaController.getInstance();
 
     public DisponibilitaForm(Frame owner) {
         super(owner, "Gestisci Agenda", true);
+
+        initDialog();
+        initComponents();
+        layoutComponents();
+        addListeners();
+    }
+
+    private void initDialog() {
         setSize(620, 460);
-        setLocationRelativeTo(owner);
+        setLocationRelativeTo(getOwner());
         setContentPane(VetcareStyle.createSpotlightBackground());
-        setLayout(new BorderLayout(12,12));
+        setLayout(new BorderLayout(12, 12));
+    }
 
-        JPanel pick = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 15));
-        pick.setOpaque(false);
+    private void initComponents() {
+        initNorthPanel();
+        initTable();
+        initSouthPanel();
+    }
 
-        DatePicker dp = VetcareStyle.makeDatePicker();
-        TimePicker tp = VetcareStyle.makeHourPicker();
-        JButton add  = new JButton("Inserisci Disponibilità");
+    private void initNorthPanel() {
+        northPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 15));
+        northPanel.setOpaque(false);
 
-        pick.add(new JLabel("Data:")); pick.add(dp);
-        pick.add(new JLabel("Ora:"));  pick.add(tp);
-        pick.add(add);
-        add(pick, BorderLayout.NORTH);
+        datePicker = VetcareStyle.makeDatePicker();
+        timePicker = VetcareStyle.makeHourPicker();
+        addButton = new JButton("Inserisci Disponibilità");
 
+        northPanel.add(new JLabel("Data:"));
+        northPanel.add(datePicker);
+        northPanel.add(new JLabel("Ora:"));
+        northPanel.add(timePicker);
+        northPanel.add(addButton);
+    }
+
+    private void initTable() {
         String[] cols = {"Tipo Evento", "Data", "Ora", "Descrizione"};
         model = new DefaultTableModel(cols, 0);
-        JTable table = VetcareStyle.makeTable(new Object[0][0], cols);
+        table = VetcareStyle.makeTable(new Object[0][0], cols);
         table.setModel(model);
-        add(new JScrollPane(table), BorderLayout.CENTER);
-
-        JButton close = new JButton("Chiudi");
-        close.addActionListener(e -> dispose());
-        JPanel south = new JPanel(); south.setOpaque(false); south.add(close);
-        add(south, BorderLayout.SOUTH);
-
+        scrollPane = new JScrollPane(table);
         caricaAgenda();
+    }
 
-        add.addActionListener(e -> {
-            LocalDate data = dp.getDate();
-            LocalTime ora  = tp.getTime();
+    private void initSouthPanel() {
+        southPanel = new JPanel();
+        southPanel.setOpaque(false);
+        closeButton = new JButton("Chiudi");
+        southPanel.add(closeButton);
+    }
+
+    private void layoutComponents() {
+        add(northPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        add(southPanel, BorderLayout.SOUTH);
+    }
+
+    private void addListeners() {
+        addButton.addActionListener(e -> {
+            LocalDate data = datePicker.getDate();
+            LocalTime ora = timePicker.getTime();
             if (data == null || ora == null) {
-                JOptionPane.showMessageDialog(this,"Seleziona data e ora");
+                JOptionPane.showMessageDialog(this, "Seleziona data e ora");
                 return;
             }
 
@@ -67,6 +102,8 @@ public class DisponibilitaForm extends JDialog {
                         "Duplicato", JOptionPane.WARNING_MESSAGE);
             }
         });
+
+        closeButton.addActionListener(e -> dispose());
     }
 
     private void caricaAgenda() {

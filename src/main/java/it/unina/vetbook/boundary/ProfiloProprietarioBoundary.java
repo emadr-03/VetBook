@@ -12,23 +12,59 @@ import java.io.File;
 public class ProfiloProprietarioBoundary extends JFrame {
 
     private static final String RES = "src/main/resources/img/";
-    private JLabel imageLabel;
     private final int IMG_SIZE = 128;
     private final ProprietarioDTO proprietarioCorrente;
+
+    private JLabel imageLabel;
+    private JTextField txtNome, txtCognome, txtUsername, txtEmail;
+    private JPasswordField password;
+    private JButton caricaBtn, modificaBtn, salvaBtn, esciBtn;
 
     public ProfiloProprietarioBoundary() {
         super("Gestione Profilo");
         this.proprietarioCorrente = ProprietarioController.getInstance().getProprietario();
-        VetcareStyle.initLookAndFeel();
 
+        initFrame();
+        initComponents();
+        layoutComponents();
+        addListeners();
+    }
+
+    private void initFrame() {
+        VetcareStyle.initLookAndFeel();
         setSize(800, 650);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
-
         setContentPane(VetcareStyle.createSpotlightBackground());
         setLayout(new GridBagLayout());
+    }
 
+    private void initComponents() {
+        imageLabel = new JLabel(icon("user_profile_icon.png", IMG_SIZE));
+        caricaBtn = new JButton("Carica Immagine");
+        modificaBtn = new JButton("Modifica Immagine");
+
+        txtNome = VetcareStyle.textField("Nome");
+        txtNome.setText(proprietarioCorrente.getNome());
+
+        txtCognome = VetcareStyle.textField("Cognome");
+        txtCognome.setText(proprietarioCorrente.getCognome());
+
+        txtUsername = VetcareStyle.textField("Username");
+        txtUsername.setText(proprietarioCorrente.getUsername());
+        txtUsername.setEditable(false);
+
+        txtEmail = VetcareStyle.textField("Email");
+        txtEmail.setText(proprietarioCorrente.getEmail());
+
+        password = VetcareStyle.passwordField("Nuova password (lasciare vuoto per non modificare)");
+
+        salvaBtn = new JButton("Salva");
+        esciBtn = new JButton("Esci");
+    }
+
+    private void layoutComponents() {
         JPanel mainContentPanel = new JPanel(new BorderLayout(20, 20));
         mainContentPanel.setOpaque(false);
         add(mainContentPanel, new GridBagConstraints());
@@ -37,14 +73,11 @@ public class ProfiloProprietarioBoundary extends JFrame {
         imageSectionPanel.setLayout(new BoxLayout(imageSectionPanel, BoxLayout.Y_AXIS));
         imageSectionPanel.setOpaque(false);
 
-        imageLabel = new JLabel(icon("user_profile_icon.png", IMG_SIZE));
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel imageButtonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         imageButtonsPanel.setOpaque(false);
-        JButton caricaBtn = new JButton("Carica Immagine");
-        JButton modificaBtn = new JButton("Modifica Immagine");
         imageButtonsPanel.add(caricaBtn);
         imageButtonsPanel.add(modificaBtn);
 
@@ -59,17 +92,6 @@ public class ProfiloProprietarioBoundary extends JFrame {
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.WEST;
         c.insets = new Insets(8, 8, 8, 8);
-
-        JTextField txtNome = VetcareStyle.textField("Nome");
-        txtNome.setText(proprietarioCorrente.getNome());
-        JTextField txtCognome = VetcareStyle.textField("Cognome");
-        txtCognome.setText(proprietarioCorrente.getCognome());
-        JTextField txtUsername = VetcareStyle.textField("Username");
-        txtUsername.setText(proprietarioCorrente.getUsername());
-
-        JTextField txtEmail = VetcareStyle.textField("Email");
-        txtEmail.setText(proprietarioCorrente.getEmail());
-        JPasswordField password = VetcareStyle.passwordField("Nuova password (lasciare vuoto per non modificare)");
 
         c.gridx = 0; c.gridy = 0; formSectionPanel.add(new JLabel("Nome:"), c);
         c.gridx = 1; c.gridy = 0; formSectionPanel.add(txtNome, c);
@@ -86,34 +108,36 @@ public class ProfiloProprietarioBoundary extends JFrame {
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         bottomPanel.setOpaque(false);
-        JButton salvaBtn = new JButton("Salva");
-        JButton esciBtn = new JButton("Esci");
         bottomPanel.add(salvaBtn);
         bottomPanel.add(esciBtn);
         mainContentPanel.add(bottomPanel, BorderLayout.SOUTH);
+    }
 
+    private void addListeners() {
         caricaBtn.addActionListener(e -> handleImageUpload());
         modificaBtn.addActionListener(e -> handleImageUpload());
+        salvaBtn.addActionListener(e -> handleSalva());
+        esciBtn.addActionListener(e -> handleEsci());
+    }
 
-        salvaBtn.addActionListener(e -> {
-            try {
-                ProprietarioController.getInstance().gestioneProfilo(
-                        txtUsername.getText(),
-                        txtNome.getText(),
-                        txtCognome.getText(),
-                        txtEmail.getText(),
-                        String.valueOf(password.getPassword())
-                );
-                JOptionPane.showMessageDialog(this, "Profilo aggiornato con successo!");
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+    private void handleSalva() {
+        try {
+            ProprietarioController.getInstance().gestioneProfilo(
+                    txtUsername.getText(),
+                    txtNome.getText(),
+                    txtCognome.getText(),
+                    txtEmail.getText(),
+                    String.valueOf(password.getPassword())
+            );
+            JOptionPane.showMessageDialog(this, "Profilo aggiornato con successo!");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-        esciBtn.addActionListener(e -> {
-            new ProprietarioBoundary().setVisible(true);
-            dispose();
-        });
+    private void handleEsci() {
+        new ProprietarioBoundary().setVisible(true);
+        dispose();
     }
 
     private void handleImageUpload() {

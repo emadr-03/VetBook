@@ -10,16 +10,29 @@ import java.time.LocalDate;
 public class FormAnimale extends JFrame {
 
     private final ProprietarioController ctrl = ProprietarioController.getInstance();
+    private final boolean isModifica;
+
+    private JTextField txtCodiceChip, txtNome, txtTipo, txtRazza, txtColore;
+    private DatePicker datePicker;
+    private JButton salvaBtn, indietroBtn;
+    private JPanel mainContentPanel;
 
     public FormAnimale() {
         this(null, "", "", "", "", null);
-        setTitle("Inserisci Nuovo Animale");
     }
 
     public FormAnimale(String codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataNascita) {
-        super("Modifica Animale");
-        boolean isModifica = (codiceChip != null);
+        this.isModifica = (codiceChip != null);
 
+        initFrame();
+        initComponents(codiceChip, nome, tipo, razza, colore, dataNascita);
+        layoutComponents();
+        addListeners();
+    }
+
+    private void initFrame() {
+        String title = isModifica ? "Modifica Animale" : "Inserisci Nuovo Animale";
+        setTitle(title);
         VetcareStyle.initLookAndFeel();
         setSize(800, 650);
         setLocationRelativeTo(null);
@@ -27,22 +40,21 @@ public class FormAnimale extends JFrame {
         setResizable(false);
         setContentPane(VetcareStyle.createSpotlightBackground());
         setLayout(new GridBagLayout());
+    }
 
-        JPanel mainContentPanel = new JPanel(new GridBagLayout());
+    private void initComponents(String codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataNascita) {
+        mainContentPanel = new JPanel(new GridBagLayout());
         mainContentPanel.setOpaque(false);
         mainContentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        add(mainContentPanel, new GridBagConstraints());
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.WEST;
-        c.insets = new Insets(8, 8, 8, 8);
-
-        JTextField txtCodiceChip = VetcareStyle.textField("Codice Chip (10 cifre)");
-        JTextField txtNome = VetcareStyle.textField("Nome dell'animale");
-        JTextField txtTipo = VetcareStyle.textField("Es. Cane, Gatto");
-        JTextField txtRazza = VetcareStyle.textField("Razza");
-        JTextField txtColore = VetcareStyle.textField("Colore del manto");
-        DatePicker datePicker = VetcareStyle.makeDatePicker();
+        txtCodiceChip = VetcareStyle.textField("Codice Chip (10 cifre)");
+        txtNome = VetcareStyle.textField("Nome dell'animale");
+        txtTipo = VetcareStyle.textField("Es. Cane, Gatto");
+        txtRazza = VetcareStyle.textField("Razza");
+        txtColore = VetcareStyle.textField("Colore del manto");
+        datePicker = VetcareStyle.makeDatePicker();
+        salvaBtn = new JButton(isModifica ? "Salva Modifiche" : "Inserisci Animale");
+        indietroBtn = new JButton("Indietro");
 
         if (isModifica) {
             txtCodiceChip.setText(codiceChip);
@@ -53,6 +65,13 @@ public class FormAnimale extends JFrame {
             txtColore.setText(colore);
             datePicker.setDate(dataNascita);
         }
+    }
+
+    private void layoutComponents() {
+        add(mainContentPanel, new GridBagConstraints());
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.WEST;
+        c.insets = new Insets(8, 8, 8, 8);
 
         c.gridx = 0; c.gridy = 0; mainContentPanel.add(new JLabel("Codice Chip:"), c);
         c.gridx = 1; c.gridy = 0; mainContentPanel.add(txtCodiceChip, c);
@@ -69,110 +88,86 @@ public class FormAnimale extends JFrame {
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         bottomPanel.setOpaque(false);
-        c.gridx = 0; c.gridy = 6; c.gridwidth = 2; c.insets = new Insets(20, 8, 8, 8);
-        mainContentPanel.add(bottomPanel, c);
-
-        JButton salvaBtn = new JButton(isModifica ? "Salva Modifiche" : "Inserisci Animale");
-        JButton indietroBtn = new JButton("Indietro");
         bottomPanel.add(salvaBtn);
         bottomPanel.add(indietroBtn);
 
-        salvaBtn.addActionListener(e -> {
-            String nomeInput = txtNome.getText().trim();
-            if (nomeInput.isEmpty()) {
-                mostraErrore("Il campo Nome è obbligatorio.");
-                return;
-            }
-            if (nomeInput.length() > 40) {
-                mostraErrore("Nome troppo lungo!");
-                return;
-            }
-            if (nomeInput.matches(".*\\d.*")) {
-                mostraErrore("Il nome non può contenere numeri!");
-                return;
-            }
-            if (!nomeInput.matches("[a-zA-Z\\s]+")) {
-                mostraErrore("Il nome non può contenere simboli speciali!");
-                return;
-            }
+        c.gridx = 0; c.gridy = 6; c.gridwidth = 2; c.insets = new Insets(20, 8, 8, 8);
+        mainContentPanel.add(bottomPanel, c);
+    }
 
-            String tipoInput = txtTipo.getText().trim();
-            String erroreTipo = validaCampoTesto(tipoInput, "Tipo", 20);
-            if (erroreTipo != null) {
-                mostraErrore(erroreTipo);
-                return;
-            }
+    private void addListeners() {
+        salvaBtn.addActionListener(e -> handleSalva());
+        indietroBtn.addActionListener(e -> handleIndietro());
+    }
 
-            String razzaInput = txtRazza.getText().trim();
-            String erroreRazza = validaCampoTesto(razzaInput, "Razza", 20);
-            if(erroreRazza != null) {
-                mostraErrore(erroreRazza);
-                return;
-            }
+    private void handleSalva() {
+        String nomeInput = txtNome.getText().trim();
+        if (nomeInput.isEmpty() || nomeInput.length() > 40 || nomeInput.matches(".*\\d.*") || !nomeInput.matches("[a-zA-Z\\s]+")) {
+            mostraErrore("Formato nome non valido.");
+            return;
+        }
 
-            String coloreInput = txtColore.getText().trim();
-            String erroreColore = validaCampoTesto(coloreInput, "Colore", 20);
-            if(erroreColore != null) {
-                mostraErrore(erroreColore);
-                return;
-            }
+        String tipoInput = txtTipo.getText().trim();
+        if (validaCampoTesto(tipoInput, "Tipo", 20) != null) {
+            mostraErrore(validaCampoTesto(tipoInput, "Tipo", 20));
+            return;
+        }
 
-            LocalDate dataNascitaInput = datePicker.getDate();
-            if (dataNascitaInput == null) {
-                mostraErrore("Formato data errato!");
-                return;
-            }
-            if (dataNascitaInput.isAfter(LocalDate.now())) {
-                mostraErrore("Non è possibile inserire una data futura!");
-                return;
-            }
+        String razzaInput = txtRazza.getText().trim();
+        if (validaCampoTesto(razzaInput, "Razza", 20) != null) {
+            mostraErrore(validaCampoTesto(razzaInput, "Razza", 20));
+            return;
+        }
 
-            try {
-                int codiceChipInt = Integer.parseInt(txtCodiceChip.getText().trim());
+        String coloreInput = txtColore.getText().trim();
+        if (validaCampoTesto(coloreInput, "Colore", 20) != null) {
+            mostraErrore(validaCampoTesto(coloreInput, "Colore", 20));
+            return;
+        }
 
-                if (isModifica) {
-                    ctrl.modificaAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
-                    JOptionPane.showMessageDialog(this, "Animale modificato con successo!");
-                } else {
-                    if (txtCodiceChip.getText().trim().length() != 10) {
-                        mostraErrore("Il Codice Chip deve essere di esattamente 10 cifre.");
-                        return;
-                    }
-                    ctrl.inserisciAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
-                    JOptionPane.showMessageDialog(this, "Animale inserito con successo!");
-                }
-                new AnimaliProprietarioBoundary().setVisible(true);
-                dispose();
-            } catch (NumberFormatException ex) {
-                mostraErrore("Il codice chip deve essere un numero valido.");
-            } catch (Exception ex) {
-                mostraErrore("Errore: " + ex.getMessage());
-            }
-        });
+        LocalDate dataNascitaInput = datePicker.getDate();
+        if (dataNascitaInput == null || dataNascitaInput.isAfter(LocalDate.now())) {
+            mostraErrore("Data di nascita non valida.");
+            return;
+        }
 
-        indietroBtn.addActionListener(e -> {
+        try {
+            int codiceChipInt = Integer.parseInt(txtCodiceChip.getText().trim());
+
             if (isModifica) {
-                new AnimaliProprietarioBoundary().setVisible(true);
+                ctrl.modificaAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
+                JOptionPane.showMessageDialog(this, "Animale modificato con successo!");
             } else {
-                new ProprietarioBoundary().setVisible(true);
+                if (txtCodiceChip.getText().trim().length() != 10) {
+                    mostraErrore("Il Codice Chip deve essere di esattamente 10 cifre.");
+                    return;
+                }
+                ctrl.inserisciAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
+                JOptionPane.showMessageDialog(this, "Animale inserito con successo!");
             }
+            new AnimaliProprietarioBoundary().setVisible(true);
             dispose();
-        });
+        } catch (NumberFormatException ex) {
+            mostraErrore("Il codice chip deve essere un numero valido.");
+        } catch (Exception ex) {
+            mostraErrore("Errore: " + ex.getMessage());
+        }
+    }
+
+    private void handleIndietro() {
+        if (isModifica) {
+            new AnimaliProprietarioBoundary().setVisible(true);
+        } else {
+            new ProprietarioBoundary().setVisible(true);
+        }
+        dispose();
     }
 
     private String validaCampoTesto(String testo, String nomeCampo, int lunghezzaMax) {
-        if (testo.isEmpty()) {
-            return "Il campo '" + nomeCampo + "' è obbligatorio.";
-        }
-        if (testo.length() > lunghezzaMax) {
-            return "Il campo '" + nomeCampo + "' è troppo lungo!";
-        }
-        if (testo.matches(".*\\d.*")) {
-            return "Il campo '" + nomeCampo + "' non può contenere un numero!";
-        }
-        if (!testo.matches("[a-zA-Z\\s]+")) {
-            return "Il campo '" + nomeCampo + "' non può contenere simboli speciali!";
-        }
+        if (testo.isEmpty()) return "Il campo '" + nomeCampo + "' è obbligatorio.";
+        if (testo.length() > lunghezzaMax) return "Il campo '" + nomeCampo + "' è troppo lungo!";
+        if (testo.matches(".*\\d.*")) return "Il campo '" + nomeCampo + "' non può contenere un numero!";
+        if (!testo.matches("[a-zA-Z\\s]+")) return "Il campo '" + nomeCampo + "' non può contenere simboli speciali!";
         return null;
     }
 

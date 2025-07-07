@@ -19,7 +19,7 @@ public class ProprietarioController {
     private ProprietarioController() {
         animaliMock = new ArrayList<>();
         animaliMock.add(new AnimaleDomesticoDTO(1234567890, "Fido", "Cane", "Golden Retriever", "Biondo", LocalDate.of(2020, 5, 10)));
-        animaliMock.add(new AnimaleDomesticoDTO(987654321, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
+        animaliMock.add(new AnimaleDomesticoDTO(1234567891, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
     }
 
     public static synchronized ProprietarioController getInstance() {

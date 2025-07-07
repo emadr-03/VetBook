@@ -10,46 +10,66 @@ public class ProprietarioBoundary extends JFrame {
     private static final String RES = "src/main/resources/img/";
     private final ProprietarioController ctrl = ProprietarioController.getInstance();
 
+    private JPanel northPanel;
+    private JPanel centerBoxPanel;
+    private JPanel southPanel;
+    private JButton logoutButton;
+
     public ProprietarioBoundary() {
         super("Area Proprietario");
-        VetcareStyle.initLookAndFeel();
 
+        initFrame();
+        initComponents();
+        layoutComponents();
+        addListeners();
+    }
+
+    private void initFrame() {
+        VetcareStyle.initLookAndFeel();
         setSize(750, 700);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setContentPane(VetcareStyle.createSpotlightBackground());
         setLayout(new BorderLayout());
+    }
 
-        /* logo -------------------------------------------------------------- */
+    private void initComponents() {
+        northPanel = new JPanel(new BorderLayout());
+        northPanel.setOpaque(false);
+
         ImageIcon logo = new ImageIcon(
                 new ImageIcon(RES + "logo_clinica.png")
                         .getImage().getScaledInstance(140,140,Image.SCALE_SMOOTH));
-        JLabel head = new JLabel(logo, SwingConstants.CENTER);
-        head.setBorder(BorderFactory.createEmptyBorder(20,0,10,0));
-        add(head, BorderLayout.NORTH);
+        JLabel headLabel = new JLabel(logo, SwingConstants.CENTER);
+        headLabel.setBorder(BorderFactory.createEmptyBorder(20,0,10,0));
 
-        String nomeProprietario = "Mario Rossi";
+        String nomeProprietario = ctrl.getProprietario().getNome();
         JLabel welcomeLabel = new JLabel("Benvenuto, " + nomeProprietario, SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
         welcomeLabel.setForeground(VetcareStyle.TXT);
         welcomeLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
-        add(welcomeLabel, BorderLayout.NORTH);
 
-        JPanel north = new JPanel(new BorderLayout());
-        north.setOpaque(false);
+        northPanel.add(headLabel, BorderLayout.NORTH);
+        northPanel.add(welcomeLabel, BorderLayout.SOUTH);
 
-        north.add(head, BorderLayout.NORTH);
-        north.add(welcomeLabel, BorderLayout.SOUTH);
+        centerBoxPanel = new JPanel();
+        centerBoxPanel.setLayout(new BoxLayout(centerBoxPanel, BoxLayout.Y_AXIS));
+        centerBoxPanel.setOpaque(false);
+        centerBoxPanel.setBorder(BorderFactory.createEmptyBorder(10, 200, 30, 200));
 
-        add(north, BorderLayout.NORTH);
+        southPanel = new JPanel();
+        southPanel.setOpaque(false);
+        southPanel.setBorder(BorderFactory.createEmptyBorder(0,0,15,0));
+        logoutButton = new JButton("Logout");
+    }
 
-        JPanel box = new JPanel();
-        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-        box.setOpaque(false);
-        box.setBorder(BorderFactory.createEmptyBorder(10, 200, 30, 200));
+    private void layoutComponents() {
+        add(northPanel, BorderLayout.NORTH);
+        add(centerBoxPanel, BorderLayout.CENTER);
+        add(southPanel, BorderLayout.SOUTH);
 
-        box.add(VetcareStyle.makeCard(
+        centerBoxPanel.add(VetcareStyle.makeCard(
                 "Gestisci Profilo",
                 icon("user_profile_icon.png"),
                 () -> {
@@ -57,9 +77,9 @@ public class ProprietarioBoundary extends JFrame {
                     dispose();
                 }
         ));
-        box.add(Box.createVerticalStrut(26));
+        centerBoxPanel.add(Box.createVerticalStrut(26));
 
-        box.add(VetcareStyle.makeCard(
+        centerBoxPanel.add(VetcareStyle.makeCard(
                 "Inserisci Nuovo Animale",
                 icon("add_pet_icon.png"),
                 () -> {
@@ -67,9 +87,9 @@ public class ProprietarioBoundary extends JFrame {
                     dispose();
                 }
         ));
-        box.add(Box.createVerticalStrut(26));
+        centerBoxPanel.add(Box.createVerticalStrut(26));
 
-        box.add(VetcareStyle.makeCard(
+        centerBoxPanel.add(VetcareStyle.makeCard(
                 "Visualizza i Tuoi Animali",
                 icon("pets_icon.png"),
                 () -> {
@@ -77,9 +97,9 @@ public class ProprietarioBoundary extends JFrame {
                     dispose();
                 }
         ));
-        box.add(Box.createVerticalStrut(26));
+        centerBoxPanel.add(Box.createVerticalStrut(26));
 
-        box.add(VetcareStyle.makeCard(
+        centerBoxPanel.add(VetcareStyle.makeCard(
                 "Prenota Visita",
                 icon("book_visit.png"),
                 () -> {
@@ -87,18 +107,15 @@ public class ProprietarioBoundary extends JFrame {
                     dispose();
                 }
         ));
-        add(box, BorderLayout.CENTER);
 
-        JButton logout = new JButton("Logout");
-        logout.addActionListener(e -> {
+        southPanel.add(logoutButton);
+    }
+
+    private void addListeners() {
+        logoutButton.addActionListener(e -> {
             dispose();
             new VisitorBoundary().setVisible(true);
         });
-        JPanel south = new JPanel();
-        south.setOpaque(false);
-        south.setBorder(BorderFactory.createEmptyBorder(0,0,15,0));
-        south.add(logout);
-        add(south, BorderLayout.SOUTH);
     }
 
     private ImageIcon icon(String file) {

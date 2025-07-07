@@ -10,33 +10,54 @@ import java.util.List;
 
 public class IncassiGiornalieriForm extends JDialog {
 
-    private final DefaultTableModel model;
+    private DefaultTableModel model;
+    private JTable table;
+    private JButton refreshButton;
+    private JButton closeButton;
+
     private final AdminController ctrl = AdminController.getInstance();
 
     public IncassiGiornalieriForm(Frame owner) {
         super(owner, "Incassi Giornalieri", true);
-        setSize(600, 420);
-        setLocationRelativeTo(owner);
-        setContentPane(VetcareStyle.createSpotlightBackground());
-        setLayout(new BorderLayout(12,12));
 
-        String[] cols = {"Tipo Visita", "Descrizione", "Costo"};
-        model = new DefaultTableModel(cols, 0);
-        JTable table = VetcareStyle.makeTable(new Object[0][0], cols);
-        table.setModel(model);
-        add(new JScrollPane(table), BorderLayout.CENTER);
-
-        JButton refresh = new JButton("Aggiorna");
-        refresh.addActionListener(e -> caricaDati());
-
-        JButton chiudi  = new JButton("Chiudi");
-        chiudi.addActionListener(e -> dispose());
-
-        JPanel south = new JPanel(); south.setOpaque(false);
-        south.add(refresh); south.add(chiudi);
-        add(south, BorderLayout.SOUTH);
+        initDialog();
+        initComponents();
+        layoutComponents();
+        addListeners();
 
         caricaDati();
+    }
+
+    private void initDialog() {
+        setSize(600, 420);
+        setLocationRelativeTo(getOwner());
+        setContentPane(VetcareStyle.createSpotlightBackground());
+        setLayout(new BorderLayout(12, 12));
+    }
+
+    private void initComponents() {
+        String[] cols = {"Tipo Visita", "Descrizione", "Costo"};
+        model = new DefaultTableModel(cols, 0);
+        table = VetcareStyle.makeTable(new Object[0][0], cols);
+        table.setModel(model);
+
+        refreshButton = new JButton("Aggiorna");
+        closeButton = new JButton("Chiudi");
+    }
+
+    private void layoutComponents() {
+        add(new JScrollPane(table), BorderLayout.CENTER);
+
+        JPanel southPanel = new JPanel();
+        southPanel.setOpaque(false);
+        southPanel.add(refreshButton);
+        southPanel.add(closeButton);
+        add(southPanel, BorderLayout.SOUTH);
+    }
+
+    private void addListeners() {
+        refreshButton.addActionListener(e -> caricaDati());
+        closeButton.addActionListener(e -> dispose());
     }
 
     private void caricaDati() {
