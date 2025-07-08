@@ -1,5 +1,7 @@
 package it.unina.vetbook.entity;
 
+import it.unina.vetbook.control.UserRole;
+
 public class UtenteFactory {
 
     public static Utente creaProprietario(String username, String email, String nome, String cognome, String password) {

@@ -1,5 +1,6 @@
 package it.unina.vetbook.database;
 
+import it.unina.vetbook.control.UserRole;
 import it.unina.vetbook.entity.*;
 
 import java.sql.*;

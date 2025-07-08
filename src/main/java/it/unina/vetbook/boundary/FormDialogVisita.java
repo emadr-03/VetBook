@@ -3,7 +3,6 @@ package it.unina.vetbook.boundary;
 import it.unina.vetbook.control.AgendaController;
 import it.unina.vetbook.dto.FarmacoDTO;
 import it.unina.vetbook.entity.Farmaco;
-import it.unina.vetbook.entity.TipoVisita;
 
 import javax.swing.*;
 import java.awt.*;

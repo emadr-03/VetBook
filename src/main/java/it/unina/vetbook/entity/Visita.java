@@ -1,5 +1,7 @@
 package it.unina.vetbook.entity;
 
+import it.unina.vetbook.boundary.TipoVisita;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;

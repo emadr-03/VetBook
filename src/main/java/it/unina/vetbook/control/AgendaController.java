@@ -1,5 +1,6 @@
 package it.unina.vetbook.control;
 
+import it.unina.vetbook.boundary.TipoVisita;
 import it.unina.vetbook.database.FarmacoDAO;
 import it.unina.vetbook.dto.AgendaDTO;
 import it.unina.vetbook.dto.DisponibilitaDTO;
@@ -10,7 +11,6 @@ import it.unina.vetbook.entity.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

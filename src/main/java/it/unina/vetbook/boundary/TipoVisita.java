@@ -1,4 +1,4 @@
-package it.unina.vetbook.entity;
+package it.unina.vetbook.boundary;
 
 public enum TipoVisita {
     CONTROLLO,

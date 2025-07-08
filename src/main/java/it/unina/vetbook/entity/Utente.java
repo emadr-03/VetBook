@@ -1,5 +1,6 @@
 package it.unina.vetbook.entity;
 
+import it.unina.vetbook.control.UserRole;
 import it.unina.vetbook.database.UtenteDAO;
 
 import java.sql.SQLException;

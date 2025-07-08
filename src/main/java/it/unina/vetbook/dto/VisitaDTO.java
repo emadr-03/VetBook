@@ -1,7 +1,7 @@
 package it.unina.vetbook.dto;
 
 import it.unina.vetbook.entity.AnimaleDomestico;
-import it.unina.vetbook.entity.TipoVisita;
+import it.unina.vetbook.boundary.TipoVisita;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -1,6 +1,6 @@
 package it.unina.vetbook.boundary;
 
-import it.unina.vetbook.entity.UserRole;
+import it.unina.vetbook.control.UserRole;
 
 import javax.swing.*;
 import java.awt.*;
