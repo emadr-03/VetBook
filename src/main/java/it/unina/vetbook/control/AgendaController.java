@@ -1,15 +1,20 @@
 package it.unina.vetbook.control;
 
+import it.unina.vetbook.database.FarmacoDAO;
 import it.unina.vetbook.dto.AgendaDTO;
 import it.unina.vetbook.dto.DisponibilitaDTO;
+import it.unina.vetbook.dto.FarmacoDTO;
 import it.unina.vetbook.dto.PrenotazioneDTO;
 import it.unina.vetbook.entity.*;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AgendaController {
 
@@ -25,6 +30,30 @@ public class AgendaController {
         return instance;
     }
 
+    public List<FarmacoDTO> getFarmaciDisponibili() {
+        try {
+            List<Farmaco> farmaciEntity = new FarmacoDAO().readAll();
+            return farmaciEntity.stream()
+                    .map(f -> new FarmacoDTO(f.getId(), f.getNome(), f.getProduttore()))
+                    .collect(Collectors.toList());
+        } catch (SQLException e) {
+            System.err.println("Errore nel caricamento dei farmaci dal DB: " + e.getMessage());
+            return new ArrayList<>();
+        }
+
+        //per testare il corretto comportamento della funzionalità di prescrizione dei farmaci
+        //sostituire il corpo di questo metodo con questo:
+        /*
+        List<FarmacoDTO> farmaciMock = new ArrayList<>();
+        farmaciMock.add(new FarmacoDTO(1, "Tachipirina", "Bayer"));
+        farmaciMock.add(new FarmacoDTO(2, "Moment", "Angelini"));
+        farmaciMock.add(new FarmacoDTO(3, "Aspirina", "Bayer"));
+        farmaciMock.add(new FarmacoDTO(4, "Gaviscon", "Reckitt"));
+        farmaciMock.add(new FarmacoDTO(5, "Frontline Combo", "Boehringer"));
+        return farmaciMock;
+        */
+    }
+
     public boolean inserisciDisponibilita(LocalDate data, LocalTime ora) {
         return agenda.addDisponibilita(new DisponibilitaDTO(data, ora));
     }
@@ -37,54 +66,31 @@ public class AgendaController {
     }
 
     public List<PrenotazioneDTO> visualizzaPrenotazioni() {
-        List<PrenotazioneDTO> lista = agenda.getPrenotazioni();
-        lista.sort(Comparator.comparing(PrenotazioneDTO::getData)
-                .thenComparing(PrenotazioneDTO::getOra));
-        return lista;
+        return agenda.getPrenotazioni();
     }
 
-    public void registraVisita(TipoVisita tipo, String descrizione, double costo, String prodFarmaco, String nomeFarmaco) {
+    public void registraVisita(TipoVisita tipo, String descrizione, double costo, List<Farmaco> farmaci) {
         Visita v = new Visita(tipo, descrizione, costo);
-        if((prodFarmaco!=null && !prodFarmaco.isEmpty()) && (nomeFarmaco!=null && !nomeFarmaco.isEmpty())){
-            v.prescrivi(new Farmaco(nomeFarmaco, prodFarmaco));
+        if (farmaci != null) {
+            farmaci.forEach(v::prescrivi);
         }
         agenda.registraVisita(v);
     }
 
     public List<AgendaDTO> visualizzaAgenda() {
         List<AgendaDTO> righe = new ArrayList<>();
-
         for (DisponibilitaDTO d : agenda.getDisponibilita()) {
-            righe.add(new AgendaDTO(
-                    "Disponibilità",
-                    d.getData(),
-                    d.getOra(),
-                    ""
-            ));
+            righe.add(new AgendaDTO("Disponibilità", d.getData(), d.getOra(), ""));
         }
-
         for (PrenotazioneDTO p : agenda.getPrenotazioni()) {
             String info = p.getAnimale().getNome() + " - " + p.getAnimale().getTipo();
-            righe.add(new AgendaDTO(
-                    "Prenotazione",
-                    p.getData(),
-                    p.getOra(),
-                    info
-            ));
+            righe.add(new AgendaDTO("Prenotazione", p.getData(), p.getOra(), info));
         }
-
         for (Visita v : agenda.getVisite()) {
-            righe.add(new AgendaDTO(
-                    "Visita",
-                    v.getData(),
-                    v.getOra(),
-                    v.getTipo().toString()
-            ));
+            righe.add(new AgendaDTO("Visita", v.getData(), v.getOra(), v.getTipo().toString()));
         }
-
         righe.sort(Comparator.comparing(AgendaDTO::getData)
                 .thenComparing(AgendaDTO::getOra));
-
         return righe;
     }
 }

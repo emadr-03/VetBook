@@ -1,20 +1,24 @@
 package it.unina.vetbook.boundary;
 
 import it.unina.vetbook.control.AgendaController;
+import it.unina.vetbook.dto.FarmacoDTO;
+import it.unina.vetbook.entity.Farmaco;
 import it.unina.vetbook.entity.TipoVisita;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FormDialogVisita extends JDialog {
 
     private JComboBox<TipoVisita> tipoVisitaCombo;
     private JTextField descrizioneText;
     private JTextField costoText;
-    private JTextField nomeFarmacoText;
-    private JTextField prodFarmacoText;
-    private JButton registraBtn;
-    private JButton chiudiBtn;
+    private JButton registraBtn, chiudiBtn, addFarmacoBtn, removeFarmacoBtn;
+    private DefaultListModel<FarmacoDTO> disponibiliModel;
+    private DefaultListModel<FarmacoDTO> prescrittiModel;
+    private JList<FarmacoDTO> disponibiliList, prescrittiList;
 
     public FormDialogVisita(Frame owner) {
         super(owner, "Registra Visita", true);
@@ -26,7 +30,7 @@ public class FormDialogVisita extends JDialog {
     }
 
     private void initDialog() {
-        setSize(500, 550);
+        setSize(750, 600);
         setLocationRelativeTo(getOwner());
         setContentPane(VetcareStyle.createSpotlightBackground());
         setLayout(new GridBagLayout());
@@ -36,44 +40,102 @@ public class FormDialogVisita extends JDialog {
         tipoVisitaCombo = new JComboBox<>(TipoVisita.values());
         descrizioneText = VetcareStyle.textField("Descrizione della visita...");
         costoText = VetcareStyle.textField("Costo (es. 50.00)");
-        nomeFarmacoText = VetcareStyle.textField("Nome farmaco/i (opzionale)");
-        prodFarmacoText = VetcareStyle.textField("Produttore farmaco/i (opzionale)");
+
+        disponibiliModel = new DefaultListModel<>();
+        prescrittiModel = new DefaultListModel<>();
+
+        List<FarmacoDTO> farmaciDisponibili = AgendaController.getInstance().getFarmaciDisponibili();
+        farmaciDisponibili.forEach(disponibiliModel::addElement);
+
+        disponibiliList = new JList<>(disponibiliModel);
+        prescrittiList = new JList<>(prescrittiModel);
+
+        disponibiliList.setCellRenderer(new FarmacoRenderer());
+        prescrittiList.setCellRenderer(new FarmacoRenderer());
+
+        addFarmacoBtn = new JButton(">>");
+        removeFarmacoBtn = new JButton("<<");
         registraBtn = new JButton("Registra");
         chiudiBtn = new JButton("Chiudi");
     }
 
     private void layoutComponents() {
         JPanel card = VetcareStyle.makeDialogCard();
+        card.setLayout(new GridBagLayout());
         add(card);
 
         GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(10, 20, 10, 20);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(8, 15, 8, 15);
         c.gridx = 0;
         c.gridy = 0;
+        c.gridwidth = 3;
 
-        card.add(new JLabel("Tipo Visita:"), c); c.gridy++;
-        card.add(tipoVisitaCombo, c); c.gridy++;
-        card.add(new JLabel("Descrizione:"), c); c.gridy++;
-        card.add(descrizioneText, c); c.gridy++;
-        card.add(new JLabel("Costo:"), c); c.gridy++;
-        card.add(costoText, c); c.gridy++;
-        card.add(new JLabel("Nome Farmaco/i:"), c); c.gridy++;
-        card.add(nomeFarmacoText, c); c.gridy++;
-        card.add(new JLabel("Produttore Farmaco/i:"), c); c.gridy++;
-        card.add(prodFarmacoText, c); c.gridy++;
+        card.add(new JLabel("Tipo Visita:"), c);
+        c.gridy++;
+        card.add(tipoVisitaCombo, c);
+        c.gridy++;
+        card.add(new JLabel("Descrizione:"), c);
+        c.gridy++;
+        card.add(descrizioneText, c);
+        c.gridy++;
+        card.add(new JLabel("Costo:"), c);
+        c.gridy++;
+        card.add(costoText, c);
+        c.gridy++;
+        card.add(new JLabel("Prescrivi Farmaci (Disponibili a sx, Prescritti a dx):"), c);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        c.gridy++;
+        c.gridwidth = 1;
+        c.weightx = 0.45;
+        c.weighty = 1.0;
+        c.fill = GridBagConstraints.BOTH;
+        card.add(new JScrollPane(disponibiliList), c);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setOpaque(false);
-        buttonPanel.add(registraBtn);
-        buttonPanel.add(chiudiBtn);
-
-        c.insets = new Insets(20, 20, 10, 20);
+        buttonPanel.add(addFarmacoBtn);
+        buttonPanel.add(Box.createVerticalStrut(10));
+        buttonPanel.add(removeFarmacoBtn);
+        c.gridx = 1;
+        c.weightx = 0.1;
+        c.weighty = 0;
+        c.fill = GridBagConstraints.NONE;
         card.add(buttonPanel, c);
+
+        c.gridx = 2;
+        c.weightx = 0.45;
+        c.weighty = 1.0;
+        c.fill = GridBagConstraints.BOTH;
+        card.add(new JScrollPane(prescrittiList), c);
+
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        bottomPanel.setOpaque(false);
+        bottomPanel.add(registraBtn);
+        bottomPanel.add(chiudiBtn);
+        c.gridy++;
+        c.gridx = 0;
+        c.gridwidth = 3;
+        c.weighty = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.insets = new Insets(20, 15, 8, 15);
+        card.add(bottomPanel, c);
     }
 
     private void addListeners() {
+        addFarmacoBtn.addActionListener(e -> spostaFarmaci(disponibiliList, disponibiliModel, prescrittiModel));
+        removeFarmacoBtn.addActionListener(e -> spostaFarmaci(prescrittiList, prescrittiModel, disponibiliModel));
         registraBtn.addActionListener(e -> handleRegistra());
         chiudiBtn.addActionListener(e -> dispose());
+    }
+
+    private void spostaFarmaci(JList<FarmacoDTO> sourceList, DefaultListModel<FarmacoDTO> sourceModel, DefaultListModel<FarmacoDTO> destModel) {
+        List<FarmacoDTO> selected = sourceList.getSelectedValuesList();
+        for (FarmacoDTO f : selected) {
+            destModel.addElement(f);
+            sourceModel.removeElement(f);
+        }
     }
 
     private void handleRegistra() {
@@ -101,21 +163,17 @@ public class FormDialogVisita extends JDialog {
             return;
         }
 
-        String nomeFarmaco = nomeFarmacoText.getText().trim();
-        if (nomeFarmaco.length() > 150) {
-            mostraErrore("Il nome del farmaco non può superare i 150 caratteri.");
-            return;
-        }
-
-        String prodFarmaco = prodFarmacoText.getText().trim();
-        if (prodFarmaco.length() > 150) {
-            mostraErrore("Il produttore del farmaco non può superare i 150 caratteri.");
-            return;
-        }
-
         try {
             TipoVisita tipo = (TipoVisita) tipoVisitaCombo.getSelectedItem();
-            AgendaController.getInstance().registraVisita(tipo, descrizione, costo, prodFarmaco, nomeFarmaco);
+
+            List<Farmaco> farmaciDaPrescrivere = new ArrayList<>();
+            for (int i = 0; i < prescrittiModel.size(); i++) {
+                FarmacoDTO dto = prescrittiModel.getElementAt(i);
+                farmaciDaPrescrivere.add(new Farmaco(dto.getNome(), dto.getProduttore()));
+            }
+
+            AgendaController.getInstance().registraVisita(tipo, descrizione, costo, farmaciDaPrescrivere);
+
             JOptionPane.showMessageDialog(this, "Visita registrata con successo!");
             dispose();
         } catch (Exception ex) {
@@ -125,5 +183,16 @@ public class FormDialogVisita extends JDialog {
 
     private void mostraErrore(String messaggio) {
         JOptionPane.showMessageDialog(this, messaggio, "Errore di Inserimento", JOptionPane.ERROR_MESSAGE);
+    }
+
+    static class FarmacoRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (value instanceof FarmacoDTO dto) {
+                setText(dto.getNome() + " (" + dto.getProduttore() + ")");
+            }
+            return this;
+        }
     }
 }
