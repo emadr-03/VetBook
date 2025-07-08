@@ -63,11 +63,11 @@ public class RegisterDialog extends JDialog {
     }
 
     private void addListeners() {
-        okButton.addActionListener(e -> handleOk());
+        okButton.addActionListener(e -> handleRegistrazione());
         cancelButton.addActionListener(e -> dispose());
     }
 
-    private void handleOk() {
+    private void handleRegistrazione() {
         if (!String.valueOf(passwordField1.getPassword()).equals(String.valueOf(passwordField2.getPassword()))) {
             JOptionPane.showMessageDialog(this, "Le password non coincidono");
             return;
