@@ -36,8 +36,8 @@ public class FormDialogVisita extends JDialog {
         tipoVisitaCombo = new JComboBox<>(TipoVisita.values());
         descrizioneText = VetcareStyle.textField("Descrizione della visita...");
         costoText = VetcareStyle.textField("Costo (es. 50.00)");
-        nomeFarmacoText = VetcareStyle.textField("Nome farmaco (opzionale)");
-        prodFarmacoText = VetcareStyle.textField("Produttore farmaco (opzionale)");
+        nomeFarmacoText = VetcareStyle.textField("Nome farmaco/i (opzionale)");
+        prodFarmacoText = VetcareStyle.textField("Produttore farmaco/i (opzionale)");
         registraBtn = new JButton("Registra");
         chiudiBtn = new JButton("Chiudi");
     }
@@ -57,9 +57,9 @@ public class FormDialogVisita extends JDialog {
         card.add(descrizioneText, c); c.gridy++;
         card.add(new JLabel("Costo:"), c); c.gridy++;
         card.add(costoText, c); c.gridy++;
-        card.add(new JLabel("Nome Farmaco:"), c); c.gridy++;
+        card.add(new JLabel("Nome Farmaco/i:"), c); c.gridy++;
         card.add(nomeFarmacoText, c); c.gridy++;
-        card.add(new JLabel("Produttore Farmaco:"), c); c.gridy++;
+        card.add(new JLabel("Produttore Farmaco/i:"), c); c.gridy++;
         card.add(prodFarmacoText, c); c.gridy++;
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));

@@ -80,7 +80,7 @@ public class VisitorBoundary extends JFrame {
         String u = userField.getText();
         String p = String.valueOf(passField.getPassword());
 
-        UserRole role = UserRole.PROPRIETARIO;
+        UserRole role = UserRole.VETERINARIO;
 
         JOptionPane.showMessageDialog(this, "Login OK come " + role);
 
