@@ -110,10 +110,8 @@ public class AnimaleDAO implements GenericDAO<AnimaleDomestico, Integer> {
         LocalDate dataDiNascita = rs.getDate("dataDiNascita").toLocalDate();
         String usernameProprietario = rs.getString("usernameProprietario");
 
-        // 1. Crea animale
         AnimaleDomestico animale = new AnimaleDomestico(codiceChip, nome, tipo, razza, colore, dataDiNascita);
 
-        // 2. Setta proprietario (puoi creare un oggetto minimo o usare un DAO)
         Proprietario proprietario = new Proprietario();
         proprietario.setUsername(usernameProprietario);
         animale.setProprietario(proprietario);
