@@ -69,14 +69,6 @@ public class AgendaController {
         return agenda.getPrenotazioni();
     }
 
-    public void registraVisita(TipoVisita tipo, String descrizione, double costo, List<Farmaco> farmaci) {
-        Visita v = new Visita(tipo, descrizione, costo);
-        if (farmaci != null) {
-            farmaci.forEach(v::prescrivi);
-        }
-        agenda.registraVisita(v);
-    }
-
     public List<AgendaDTO> visualizzaAgenda() {
         List<AgendaDTO> righe = new ArrayList<>();
         for (DisponibilitaDTO d : agenda.getDisponibilita()) {

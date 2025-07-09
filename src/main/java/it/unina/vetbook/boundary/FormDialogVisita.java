@@ -1,6 +1,7 @@
 package it.unina.vetbook.boundary;
 
 import it.unina.vetbook.control.AgendaController;
+import it.unina.vetbook.control.VeterinarioController;
 import it.unina.vetbook.dto.FarmacoDTO;
 import it.unina.vetbook.entity.Farmaco;
 
@@ -171,7 +172,7 @@ public class FormDialogVisita extends JDialog {
                 farmaciDaPrescrivere.add(new Farmaco(dto.getNome(), dto.getProduttore()));
             }
 
-            AgendaController.getInstance().registraVisita(tipo, descrizione, costo, farmaciDaPrescrivere);
+            VeterinarioController.getInstance().registraVisita(tipo, descrizione, costo, farmaciDaPrescrivere);
 
             JOptionPane.showMessageDialog(this, "Visita registrata con successo!");
             dispose();

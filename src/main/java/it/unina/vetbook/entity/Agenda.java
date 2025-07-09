@@ -64,10 +64,6 @@ public class Agenda {
         return this.disponibilita.add(nuovaDisp);
     }
 
-    public void registraVisita(Visita v) {
-        this.visite.add(v);
-    }
-
     public List<Visita> getVisite() {
         return this.visite;
     }
