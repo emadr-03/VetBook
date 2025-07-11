@@ -47,7 +47,7 @@ public class FormDialogVisita extends JDialog {
         disponibiliModel = new DefaultListModel<>();
         prescrittiModel = new DefaultListModel<>();
 
-        List<FarmacoDTO> farmaciDisponibili = AgendaController.getInstance().getFarmaciDisponibili();
+        List<FarmacoDTO> farmaciDisponibili = veterinarioController.getFarmaciDisponibili();
         farmaciDisponibili.forEach(disponibiliModel::addElement);
 
         disponibiliList = new JList<>(disponibiliModel);

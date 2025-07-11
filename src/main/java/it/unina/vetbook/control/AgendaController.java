@@ -24,13 +24,6 @@ public class AgendaController {
         return instance;
     }
 
-    public List<FarmacoDTO> getFarmaciDisponibili() {
-        List<Farmaco> farmaciEntity = Farmaco.readFarmaci();
-        return farmaciEntity.stream()
-                .map(f -> new FarmacoDTO(f.getId(), f.getNome(), f.getProduttore()))
-                .collect(Collectors.toList());
-    }
-
     public boolean inserisciDisponibilita(LocalDate data, LocalTime ora) {
         return agenda.addDisponibilita(new Disponibilita(data, ora));
     }

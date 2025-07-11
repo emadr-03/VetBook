@@ -7,6 +7,7 @@ import it.unina.vetbook.entity.Veterinario;
 import it.unina.vetbook.entity.Visita;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VeterinarioController {
 
@@ -16,6 +17,12 @@ public class VeterinarioController {
         this.veterinario = veterinario;
     }
 
+    public List<FarmacoDTO> getFarmaciDisponibili() {
+        List<Farmaco> farmaciEntity = Farmaco.readFarmaci();
+        return farmaciEntity.stream()
+                .map(f -> new FarmacoDTO(f.getId(), f.getNome(), f.getProduttore()))
+                .collect(Collectors.toList());
+    }
 
     public void registraVisita(TipoVisita tipo, String descrizione, double costo, List<FarmacoDTO> farmaci) {
         // 1. Verifica lunghezza descrizione
