@@ -43,31 +43,17 @@ public class AnimaliNonVaccinatiForm extends JDialog {
     }
 
     private void initTable() {
-        List<AnimaleDomesticoDTO> rows;
-        try {
-            rows = adminController.visualizzaAnimaliNonVaccinati();
-        } catch (UnsupportedOperationException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Funzionalità non ancora implementata,\n"
-                            + "verranno mostrati dati di esempio.",
-                    "Non disponibile", JOptionPane.INFORMATION_MESSAGE);
-
-            // Mock: crea lista di DTO fittizi
-            rows = List.of(
-                    new AnimaleDomesticoDTO(101, "Luna", "Gatto", null, null, LocalDate.of(2025, 4, 27), null),
-                    new AnimaleDomesticoDTO(207, "Milo", "Cane", null, null, LocalDate.of(2023, 4, 27), null),
-                    new AnimaleDomesticoDTO(315, "Kiwi", "Coniglio", null, null, LocalDate.of(2022, 4, 25), null)
-            );
-        }
-
+        List<AnimaleDomesticoDTO> rows = adminController.visualizzaAnimaliNonVaccinati();
 
         Object[][] data = new Object[rows.size()][COLS.length];
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         for (int i = 0; i < rows.size(); i++) {
             AnimaleDomesticoDTO dto = rows.get(i);
             data[i][0] = dto.codiceChip();
             data[i][1] = dto.nome();
             data[i][2] = dto.tipo();
-            data[i][3] = dto.dataDiNascita().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            data[i][3] = dto.dataDiNascita() != null ? dto.dataDiNascita().format(formatter) : "-";
         }
 
         table = VetcareStyle.makeTable(data, COLS);
