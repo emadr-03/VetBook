@@ -46,7 +46,7 @@ public class ProprietarioBoundary extends JFrame {
         JLabel headLabel = new JLabel(logo, SwingConstants.CENTER);
         headLabel.setBorder(BorderFactory.createEmptyBorder(20,0,10,0));
 
-        String nomeProprietario = pController.getProprietarioMock().getNome();
+        String nomeProprietario = pController.getProprietarioDTO().nome();
         JLabel welcomeLabel = new JLabel("Benvenuto, " + nomeProprietario, SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
         welcomeLabel.setForeground(VetcareStyle.TXT);
