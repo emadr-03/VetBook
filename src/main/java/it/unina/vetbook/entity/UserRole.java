@@ -1,4 +1,4 @@
-package it.unina.vetbook.control;
+package it.unina.vetbook.entity;
 
 public enum UserRole {
     PROPRIETARIO,
