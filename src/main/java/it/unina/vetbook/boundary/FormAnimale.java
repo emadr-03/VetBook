@@ -9,7 +9,6 @@ import java.time.LocalDate;
 
 public class FormAnimale extends JFrame {
 
-    private final ProprietarioController ctrl = ProprietarioController.getInstance();
     private final boolean isModifica;
 
     private JTextField txtCodiceChip, txtNome, txtTipo, txtRazza, txtColore;
@@ -17,12 +16,15 @@ public class FormAnimale extends JFrame {
     private JButton salvaBtn, indietroBtn;
     private JPanel mainContentPanel;
 
-    public FormAnimale() {
-        this(null, "", "", "", "", null);
+    private ProprietarioController proprietarioController;
+
+    public FormAnimale(ProprietarioController proprietarioController) {
+        this(proprietarioController, null, "", "", "", "", null);
     }
 
-    public FormAnimale(String codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataNascita) {
+    public FormAnimale(ProprietarioController proprietarioController, String codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataNascita) {
         this.isModifica = (codiceChip != null);
+        this.proprietarioController = proprietarioController;
 
         initFrame();
         initComponents(codiceChip, nome, tipo, razza, colore, dataNascita);
@@ -135,17 +137,17 @@ public class FormAnimale extends JFrame {
             int codiceChipInt = Integer.parseInt(txtCodiceChip.getText().trim());
 
             if (isModifica) {
-                ctrl.modificaAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
+                proprietarioController.modificaAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
                 JOptionPane.showMessageDialog(this, "Animale modificato con successo!");
             } else {
                 if (txtCodiceChip.getText().trim().length() != 10) {
                     mostraErrore("Il Codice Chip deve essere di esattamente 10 cifre.");
                     return;
                 }
-                ctrl.inserisciAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
+                proprietarioController.inserisciAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
                 JOptionPane.showMessageDialog(this, "Animale inserito con successo!");
             }
-            new AnimaliProprietarioBoundary().setVisible(true);
+            new AnimaliProprietarioBoundary(proprietarioController).setVisible(true);
             dispose();
         } catch (NumberFormatException ex) {
             mostraErrore("Il codice chip deve essere un numero valido.");
@@ -156,9 +158,9 @@ public class FormAnimale extends JFrame {
 
     private void handleIndietro() {
         if (isModifica) {
-            new AnimaliProprietarioBoundary().setVisible(true);
+            new AnimaliProprietarioBoundary(proprietarioController).setVisible(true);
         } else {
-            new ProprietarioBoundary().setVisible(true);
+            new ProprietarioBoundary(proprietarioController).setVisible(true);
         }
         dispose();
     }

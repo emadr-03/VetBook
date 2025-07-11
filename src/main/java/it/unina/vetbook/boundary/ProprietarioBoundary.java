@@ -8,15 +8,17 @@ import java.awt.image.BufferedImage;
 public class ProprietarioBoundary extends JFrame {
 
     private static final String RES = "src/main/resources/img/";
-    private final ProprietarioController ctrl = ProprietarioController.getInstance();
 
     private JPanel northPanel;
     private JPanel centerBoxPanel;
     private JPanel southPanel;
     private JButton logoutButton;
 
-    public ProprietarioBoundary() {
+    private final ProprietarioController pController;
+
+    public ProprietarioBoundary(ProprietarioController pController) {
         super("Area Proprietario");
+        this.pController = pController;
 
         initFrame();
         initComponents();
@@ -44,7 +46,7 @@ public class ProprietarioBoundary extends JFrame {
         JLabel headLabel = new JLabel(logo, SwingConstants.CENTER);
         headLabel.setBorder(BorderFactory.createEmptyBorder(20,0,10,0));
 
-        String nomeProprietario = ctrl.getProprietario().getNome();
+        String nomeProprietario = pController.getProprietarioMock().getNome();
         JLabel welcomeLabel = new JLabel("Benvenuto, " + nomeProprietario, SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
         welcomeLabel.setForeground(VetcareStyle.TXT);
@@ -73,7 +75,7 @@ public class ProprietarioBoundary extends JFrame {
                 "Gestisci Profilo",
                 icon("user_profile_icon.png"),
                 () -> {
-                    new ProfiloProprietarioBoundary().setVisible(true);
+                    new ProfiloProprietarioBoundary(pController).setVisible(true);
                     dispose();
                 }
         ));
@@ -83,7 +85,7 @@ public class ProprietarioBoundary extends JFrame {
                 "Inserisci Nuovo Animale",
                 icon("add_pet_icon.png"),
                 () -> {
-                    new FormAnimale().setVisible(true);
+                    new FormAnimale(pController).setVisible(true);
                     dispose();
                 }
         ));
@@ -93,7 +95,7 @@ public class ProprietarioBoundary extends JFrame {
                 "Visualizza i Tuoi Animali",
                 icon("pets_icon.png"),
                 () -> {
-                    new AnimaliProprietarioBoundary().setVisible(true);
+                    new AnimaliProprietarioBoundary(pController).setVisible(true);
                     dispose();
                 }
         ));
@@ -103,7 +105,7 @@ public class ProprietarioBoundary extends JFrame {
                 "Prenota Visita",
                 icon("book_visit.png"),
                 () -> {
-                    new BoundaryPrenotaVisita().setVisible(true);
+                    new BoundaryPrenotaVisita(pController).setVisible(true);
                     dispose();
                 }
         ));

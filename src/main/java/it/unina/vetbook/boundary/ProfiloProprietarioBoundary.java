@@ -12,7 +12,6 @@ import java.io.File;
 public class ProfiloProprietarioBoundary extends JFrame {
 
     private static final String RES = "src/main/resources/img/";
-    private final int IMG_SIZE = 128;
     private final ProprietarioDTO proprietarioCorrente;
 
     private JLabel imageLabel;
@@ -20,9 +19,12 @@ public class ProfiloProprietarioBoundary extends JFrame {
     private JPasswordField password;
     private JButton caricaBtn, modificaBtn, salvaBtn, esciBtn;
 
-    public ProfiloProprietarioBoundary() {
+    private final ProprietarioController proprietarioController;
+
+    public ProfiloProprietarioBoundary(ProprietarioController proprietarioController) {
         super("Gestione Profilo");
-        this.proprietarioCorrente = ProprietarioController.getInstance().getProprietario();
+        this.proprietarioController = proprietarioController;
+        this.proprietarioCorrente = proprietarioController.getProprietarioDTO();
 
         initFrame();
         initComponents();
@@ -41,22 +43,22 @@ public class ProfiloProprietarioBoundary extends JFrame {
     }
 
     private void initComponents() {
-        imageLabel = new JLabel(icon("user_profile_icon.png", IMG_SIZE));
+        imageLabel = new JLabel(icon());
         caricaBtn = new JButton("Carica Immagine");
         modificaBtn = new JButton("Modifica Immagine");
 
         txtNome = VetcareStyle.textField("Nome");
-        txtNome.setText(proprietarioCorrente.getNome());
+        txtNome.setText(proprietarioCorrente.nome());
 
         txtCognome = VetcareStyle.textField("Cognome");
-        txtCognome.setText(proprietarioCorrente.getCognome());
+        txtCognome.setText(proprietarioCorrente.cognome());
 
         txtUsername = VetcareStyle.textField("Username");
-        txtUsername.setText(proprietarioCorrente.getUsername());
+        txtUsername.setText(proprietarioCorrente.username());
         txtUsername.setEditable(false);
 
         txtEmail = VetcareStyle.textField("Email");
-        txtEmail.setText(proprietarioCorrente.getEmail());
+        txtEmail.setText(proprietarioCorrente.email());
 
         password = VetcareStyle.passwordField("Nuova password (lasciare vuoto per non modificare)");
 
@@ -122,7 +124,7 @@ public class ProfiloProprietarioBoundary extends JFrame {
 
     private void handleSalva() {
         try {
-            ProprietarioController.getInstance().gestioneProfilo(
+            proprietarioController.gestioneProfilo(
                     txtUsername.getText(),
                     txtNome.getText(),
                     txtCognome.getText(),
@@ -136,7 +138,7 @@ public class ProfiloProprietarioBoundary extends JFrame {
     }
 
     private void handleEsci() {
-        new ProprietarioBoundary().setVisible(true);
+        new ProprietarioBoundary(proprietarioController).setVisible(true);
         dispose();
     }
 
@@ -150,39 +152,38 @@ public class ProfiloProprietarioBoundary extends JFrame {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             ImageIcon newIcon = new ImageIcon(selectedFile.getAbsolutePath());
-            imageLabel.setIcon(scaleImageIcon(newIcon, IMG_SIZE));
+            imageLabel.setIcon(scaleImageIcon(newIcon));
         }
     }
 
-    private ImageIcon scaleImageIcon(ImageIcon sourceIcon, int size) {
+    private ImageIcon scaleImageIcon(ImageIcon sourceIcon) {
         Image image = sourceIcon.getImage();
-        Image scaledImage = image.getScaledInstance(size, size, Image.SCALE_SMOOTH);
+        Image scaledImage = image.getScaledInstance(128, 128, Image.SCALE_SMOOTH);
         return new ImageIcon(scaledImage);
     }
 
-    private ImageIcon icon(String file, int size) {
+    private ImageIcon icon() {
         try {
-            return scaleImageIcon(new ImageIcon(RES + file), size);
+            return scaleImageIcon(new ImageIcon(RES + "user_profile_icon.png"));
         } catch (Exception e) {
-            return createPlaceholderIcon(size);
+            return createPlaceholderIcon();
         }
     }
 
-    private ImageIcon createPlaceholderIcon(int size) {
-        BufferedImage placeholder = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+    private ImageIcon createPlaceholderIcon() {
+        BufferedImage placeholder = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = placeholder.createGraphics();
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setColor(new Color(220, 220, 220));
-        g2d.fillOval(0, 0, size, size);
+        g2d.fillOval(0, 0, 128, 128);
 
         g2d.setColor(new Color(180, 180, 180));
-        int headSize = size / 2;
-        g2d.fillOval((size - headSize) / 2, size / 6, headSize, headSize);
+        int headSize = 128 / 2;
+        g2d.fillOval((128 - headSize) / 2, 128 / 6, headSize, headSize);
 
-        int bodyWidth = size;
-        int bodyHeight = size / 2;
-        g2d.fillArc(-bodyWidth / 4, size / 2, bodyWidth + bodyWidth/2, bodyHeight, 0, -180);
+        int bodyHeight = 128 / 2;
+        g2d.fillArc(-128 / 4, 128 / 2, 128 + 128 /2, bodyHeight, 0, -180);
 
         g2d.dispose();
         return new ImageIcon(placeholder);

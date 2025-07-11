@@ -19,8 +19,12 @@ public class BoundaryPrenotaVisita extends JFrame {
 
     private List<AnimaleDomesticoDTO> animali;
 
-    public BoundaryPrenotaVisita() {
+    private ProprietarioController proprietarioController;
+
+    public BoundaryPrenotaVisita(ProprietarioController proprietarioController) {
         super("Prenota Visita - Seleziona Animale");
+        this.proprietarioController = proprietarioController;
+
         VetcareStyle.initLookAndFeel();
 
         initFrame();
@@ -48,13 +52,13 @@ public class BoundaryPrenotaVisita extends JFrame {
         String[] cols = {"Codice Chip", "Nome", "Tipo", "Razza"};
         model = new DefaultTableModel(cols, 0);
 
-        animali = ProprietarioController.getInstance().getAnimaliProprietario();
+        animali = proprietarioController.getAnimaliProprietario();
         for (AnimaleDomesticoDTO a : animali) {
             model.addRow(new Object[]{
-                    a.getCodiceChip(),
-                    a.getNome(),
-                    a.getTipo(),
-                    a.getRazza()
+                    a.codiceChip(),
+                    a.nome(),
+                    a.tipo(),
+                    a.razza()
             });
         }
 
@@ -85,12 +89,12 @@ public class BoundaryPrenotaVisita extends JFrame {
                 return;
             }
             AnimaleDomesticoDTO animaleSelezionato = animali.get(selectedRow);
-            new SelezionaDisponibilitaForm(animaleSelezionato).setVisible(true);
+            new SelezionaDisponibilitaForm(animaleSelezionato, proprietarioController).setVisible(true);
             dispose();
         });
 
         annullaBtn.addActionListener(e -> {
-            new ProprietarioBoundary().setVisible(true);
+            new ProprietarioBoundary(proprietarioController).setVisible(true);
             dispose();
         });
     }

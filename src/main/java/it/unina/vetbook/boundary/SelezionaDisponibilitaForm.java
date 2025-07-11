@@ -20,9 +20,12 @@ public class SelezionaDisponibilitaForm extends JFrame {
     private DefaultTableModel model;
     private JButton selezionaDispBtn, annullaBtn;
 
-    public SelezionaDisponibilitaForm(AnimaleDomesticoDTO a) {
+    private final ProprietarioController proprietarioController;
+
+    public SelezionaDisponibilitaForm(AnimaleDomesticoDTO a, ProprietarioController proprietarioController) {
         super("Prenota Visita - Seleziona Disponibilità");
         this.animaleSelezionato = a;
+        this.proprietarioController = proprietarioController;
         this.disponibilita = AgendaController.getInstance().visualizzaDisponibilita();
 
         initFrame();
@@ -53,7 +56,7 @@ public class SelezionaDisponibilitaForm extends JFrame {
     }
 
     private void layoutComponents() {
-        String infoAnimale = String.format("Stai prenotando per: %s (%s)", animaleSelezionato.getNome(), animaleSelezionato.getTipo());
+        String infoAnimale = String.format("Stai prenotando per: %s (%s)", animaleSelezionato.nome(), animaleSelezionato.tipo());
         add(new JLabel(infoAnimale, SwingConstants.CENTER), BorderLayout.NORTH);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
@@ -77,15 +80,15 @@ public class SelezionaDisponibilitaForm extends JFrame {
 
         DisponibilitaDTO slotSelezionato = disponibilita.get(selectedRow);
 
-        ProprietarioController.getInstance().effettuaPrenotazione(animaleSelezionato, slotSelezionato.getData(), slotSelezionato.getOra());
+        proprietarioController.effettuaPrenotazione(animaleSelezionato, slotSelezionato.data(), slotSelezionato.ora());
         JOptionPane.showMessageDialog(this, "Prenotazione confermata!", "Successo", JOptionPane.INFORMATION_MESSAGE);
 
-        new ProprietarioBoundary().setVisible(true);
+        new ProprietarioBoundary(proprietarioController).setVisible(true);
         dispose();
     }
 
     private void handleAnnulla() {
-        new BoundaryPrenotaVisita().setVisible(true);
+        new BoundaryPrenotaVisita(proprietarioController).setVisible(true);
         dispose();
     }
 
@@ -96,8 +99,8 @@ public class SelezionaDisponibilitaForm extends JFrame {
 
         for (int i = 0; i < disponibilita.size(); i++) {
             DisponibilitaDTO d = disponibilita.get(i);
-            data[i][0] = d.getData().format(formatterData);
-            data[i][1] = d.getOra().format(formatterOra);
+            data[i][0] = d.data().format(formatterData);
+            data[i][1] = d.ora().format(formatterOra);
         }
         return data;
     }

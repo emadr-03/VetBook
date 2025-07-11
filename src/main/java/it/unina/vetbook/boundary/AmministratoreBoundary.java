@@ -1,5 +1,7 @@
 package it.unina.vetbook.boundary;
 
+import it.unina.vetbook.control.AdminController;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -15,11 +17,12 @@ public class AmministratoreBoundary extends JFrame {
 
     private JLabel head;
     private JPanel box;
-    private ImageIcon logo;
     private JComponent cardDisponibilita, cardIncassi, cardAnimali;
+    private final AdminController adminController;
 
-    public AmministratoreBoundary() {
+    public AmministratoreBoundary(AdminController adminController) {
         super("Area Amministratore");
+        this.adminController = adminController;
         VetcareStyle.initLookAndFeel();
 
         initFrame();
@@ -38,7 +41,7 @@ public class AmministratoreBoundary extends JFrame {
 
     private void initComponents() {
         // Inizializzazione header con logo
-        logo = new ImageIcon(
+        ImageIcon logo = new ImageIcon(
                 new ImageIcon(RES + "logo_clinica.png")
                         .getImage().getScaledInstance(140, 140, Image.SCALE_SMOOTH));
         head = new JLabel(logo, SwingConstants.CENTER);
@@ -60,13 +63,13 @@ public class AmministratoreBoundary extends JFrame {
         cardIncassi = VetcareStyle.makeCard(
                 "Incassi Giornalieri",
                 createIcon("health-report.png"),
-                () -> new IncassiGiornalieriForm(this).setVisible(true)
+                () -> new IncassiGiornalieriForm(this, adminController).setVisible(true)
         );
 
         cardAnimali = VetcareStyle.makeCard(
                 "Animali Non Vaccinati",
                 createIcon("medicine.png"),
-                () -> new AnimaliNonVaccinatiForm(this).setVisible(true)
+                () -> new AnimaliNonVaccinatiForm(this, adminController).setVisible(true)
         );
     }
 
@@ -86,9 +89,5 @@ public class AmministratoreBoundary extends JFrame {
         return new ImageIcon(
                 new ImageIcon(RES + file).getImage()
                         .getScaledInstance(32, 32, Image.SCALE_SMOOTH));
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new AmministratoreBoundary().setVisible(true));
     }
 }

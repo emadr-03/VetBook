@@ -1,6 +1,7 @@
 package it.unina.vetbook.boundary;
 
 import it.unina.vetbook.control.AgendaController;
+import it.unina.vetbook.control.VeterinarioController;
 import it.unina.vetbook.dto.PrenotazioneDTO;
 
 import javax.swing.*;
@@ -15,8 +16,11 @@ public class PrenotazioniBoundary extends JFrame {
     private JTable table;
     private JButton indietroBtn;
 
-    public PrenotazioniBoundary() {
+    private final VeterinarioController veterinarioController;
+
+    public PrenotazioniBoundary(VeterinarioController veterinarioController) {
         super("Elenco Prenotazioni");
+        this.veterinarioController = veterinarioController;
 
         initFrame();
         initComponents();
@@ -55,7 +59,7 @@ public class PrenotazioniBoundary extends JFrame {
 
     private void addListeners() {
         indietroBtn.addActionListener(e -> {
-            new VeterinarioBoundary().setVisible(true);
+            new VeterinarioBoundary(veterinarioController).setVisible(true);
             dispose();
         });
     }
@@ -68,10 +72,10 @@ public class PrenotazioniBoundary extends JFrame {
         DateTimeFormatter formatterOra = DateTimeFormatter.ofPattern("HH:mm");
 
         for (PrenotazioneDTO p : prenotazioni) {
-            String dettaglio = p.getAnimale().getNome() + " - " + p.getAnimale().getTipo();
+            String dettaglio = p.animale().nome() + " - " + p.animale().tipo();
             model.addRow(new Object[]{
-                    p.getData().format(formatterData),
-                    p.getOra().format(formatterOra),
+                    p.data().format(formatterData),
+                    p.ora().format(formatterOra),
                     dettaglio
             });
         }

@@ -1,6 +1,7 @@
 package it.unina.vetbook.boundary;
 
 import it.unina.vetbook.control.AuthController;
+import it.unina.vetbook.dto.RegistrationResult;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,9 +11,14 @@ public class RegisterDialog extends JDialog {
     private JTextField emailField, userField, nomeField, cognomeField;
     private JPasswordField passwordField1, passwordField2;
     private JButton okButton, cancelButton;
+    private final Frame parentFrame;
 
-    public RegisterDialog(Frame owner) {
+    private final AuthController authController;
+
+    public RegisterDialog(Frame owner, AuthController authController) {
         super(owner, "Registrazione proprietario", true);
+        this.authController = authController;
+        this.parentFrame = owner;
 
         initDialog();
         initComponents();
@@ -73,18 +79,22 @@ public class RegisterDialog extends JDialog {
             return;
         }
 
-        try {
-            AuthController.getInstance().registrati(
-                    userField.getText(),
-                    emailField.getText(),
-                    nomeField.getText(),
-                    cognomeField.getText(),
-                    String.valueOf(passwordField1.getPassword())
-            );
+        RegistrationResult result = authController.registrati(
+                userField.getText(),
+                emailField.getText(),
+                nomeField.getText(),
+                cognomeField.getText(),
+                String.valueOf(passwordField1.getPassword())
+        );
+
+        if (result.isSuccess()) {
             JOptionPane.showMessageDialog(this, "Registrazione avvenuta con successo!");
+            new ProprietarioBoundary(result.getController()).setVisible(true);
             dispose();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Errore di registrazione: " + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+            parentFrame.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, result.getErrorMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
         }
+
     }
 }

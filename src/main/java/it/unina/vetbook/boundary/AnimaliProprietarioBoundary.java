@@ -17,11 +17,14 @@ public class AnimaliProprietarioBoundary extends JFrame {
     private JPanel buttonPanel;
     private JButton modificaBtn, eliminaBtn, indietroBtn;
 
-    private final ProprietarioController ctrl = ProprietarioController.getInstance();
     private List<AnimaleDomesticoDTO> animali;
+    private  ProprietarioController proprietarioController;
 
-    public AnimaliProprietarioBoundary() {
+
+    public AnimaliProprietarioBoundary(ProprietarioController proprietarioController) {
         super("I Tuoi Animali");
+        this.proprietarioController = proprietarioController;
+
         VetcareStyle.initLookAndFeel();
 
         initFrame();
@@ -48,17 +51,17 @@ public class AnimaliProprietarioBoundary extends JFrame {
         String[] cols = {"Codice Chip", "Nome", "Tipo", "Razza", "Colore", "Data Nascita"};
         model = new DefaultTableModel(cols, 0);
 
-        animali = ctrl.getAnimaliProprietario();
+        animali = proprietarioController.getAnimaliProprietario();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         for (AnimaleDomesticoDTO a : animali) {
             model.addRow(new Object[]{
-                    a.getCodiceChip(),
-                    a.getNome(),
-                    a.getTipo(),
-                    a.getRazza(),
-                    a.getColore(),
-                    a.getDataDiNascita().format(formatter)
+                    a.codiceChip(),
+                    a.nome(),
+                    a.tipo(),
+                    a.razza(),
+                    a.colore(),
+                    a.dataDiNascita().format(formatter)
             });
         }
 
@@ -93,12 +96,13 @@ public class AnimaliProprietarioBoundary extends JFrame {
 
             AnimaleDomesticoDTO animaleSelezionato = animali.get(selectedRow);
             new FormAnimale(
-                    String.valueOf(animaleSelezionato.getCodiceChip()),
-                    animaleSelezionato.getNome(),
-                    animaleSelezionato.getTipo(),
-                    animaleSelezionato.getRazza(),
-                    animaleSelezionato.getColore(),
-                    animaleSelezionato.getDataDiNascita()
+                    proprietarioController,
+                    String.valueOf(animaleSelezionato.codiceChip()),
+                    animaleSelezionato.nome(),
+                    animaleSelezionato.tipo(),
+                    animaleSelezionato.razza(),
+                    animaleSelezionato.colore(),
+                    animaleSelezionato.dataDiNascita()
             ).setVisible(true);
             dispose();
         });
@@ -112,15 +116,15 @@ public class AnimaliProprietarioBoundary extends JFrame {
             int confirm = JOptionPane.showConfirmDialog(this, "Sei sicuro di voler eliminare l'animale selezionato?", "Conferma Eliminazione", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 int codiceChip = (int) model.getValueAt(selectedRow, 0);
-                ctrl.eliminaAnimale(codiceChip);
+                proprietarioController.eliminaAnimale(codiceChip);
                 model.removeRow(selectedRow);
                 animali.remove(selectedRow);
-                JOptionPane.showMessageDialog(this, "Animale eliminato con successo!");
+                JOptionPane.showMessageDialog(this, "Animale eliminato con successo! (MOCK)");
             }
         });
 
         indietroBtn.addActionListener(e -> {
-            new ProprietarioBoundary().setVisible(true);
+            new ProprietarioBoundary(proprietarioController).setVisible(true);
             dispose();
         });
     }

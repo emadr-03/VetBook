@@ -1,6 +1,9 @@
 package it.unina.vetbook.boundary;
 
-import it.unina.vetbook.control.UserRole;
+import it.unina.vetbook.control.AdminController;
+import it.unina.vetbook.control.AuthController;
+import it.unina.vetbook.control.ProprietarioController;
+import it.unina.vetbook.control.VeterinarioController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +17,12 @@ public class VisitorBoundary extends JFrame {
     private JButton loginButton;
     private JButton registerButton;
 
+    private final AuthController authController;
+
     public VisitorBoundary() {
         super("Benvenuto");
+
+        this.authController = AuthController.getInstance();
 
         initFrame();
         initComponents();
@@ -73,30 +80,29 @@ public class VisitorBoundary extends JFrame {
 
     private void addListeners() {
         loginButton.addActionListener(e -> handleLogin());
-        registerButton.addActionListener(e -> new RegisterDialog(this).setVisible(true));
+        registerButton.addActionListener(e -> new RegisterDialog(this, authController).setVisible(true));
     }
 
     private void handleLogin() {
         String u = userField.getText();
         String p = String.valueOf(passField.getPassword());
 
-        UserRole role = UserRole.VETERINARIO;
+        Object userController = authController.login(u, p);
 
-        JOptionPane.showMessageDialog(this, "Login OK come " + role);
-
-        switch (role) {
-            case PROPRIETARIO: {
-                new ProprietarioBoundary().setVisible(true);
-                break;
+        switch (userController) {
+            case ProprietarioController proprietarioController -> {
+                JOptionPane.showMessageDialog(this, "Login OK come PROPRIETARIO");
+                new ProprietarioBoundary(proprietarioController).setVisible(true);
             }
-            case VETERINARIO: {
-                new VeterinarioBoundary().setVisible(true);
-                break;
+            case VeterinarioController veterinarioController -> {
+                JOptionPane.showMessageDialog(this, "Login OK come VETERINARIO");
+                new VeterinarioBoundary(veterinarioController).setVisible(true);
             }
-            case AMMINISTRATORE_DELL_AMBULATORIO: {
-                new AmministratoreBoundary().setVisible(true);
-                break;
+            case AdminController adminController -> {
+                JOptionPane.showMessageDialog(this, "Login OK come AMMINISTRATORE");
+                new AmministratoreBoundary(adminController).setVisible(true);
             }
+            case null, default -> JOptionPane.showMessageDialog(this, "Ruolo non riconosciuto.");
         }
         dispose();
     }

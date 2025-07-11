@@ -1,5 +1,7 @@
 package it.unina.vetbook.boundary;
 
+import it.unina.vetbook.control.VeterinarioController;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -8,9 +10,11 @@ public class VeterinarioBoundary extends JFrame {
 
     private static final String RES = "src/main/resources/img/";
     private JButton logoutButton;
+    private final VeterinarioController veterinarioController;
 
-    public VeterinarioBoundary() {
+    public VeterinarioBoundary(VeterinarioController veterinarioController) {
         super("Area Veterinario");
+        this.veterinarioController = veterinarioController;
 
         initFrame();
         initComponents();
@@ -49,7 +53,7 @@ public class VeterinarioBoundary extends JFrame {
                 "Visualizza Prenotazioni",
                 icon("calendar_icon.png"),
                 () -> {
-                    new PrenotazioniBoundary().setVisible(true);
+                    new PrenotazioniBoundary(veterinarioController).setVisible(true);
                     dispose();
                 }
         ));
@@ -58,7 +62,7 @@ public class VeterinarioBoundary extends JFrame {
         box.add(VetcareStyle.makeCard(
                 "Registra Visita",
                 icon("health-report.png"),
-                () -> new FormDialogVisita(this).setVisible(true)
+                () -> new FormDialogVisita(this, veterinarioController).setVisible(true)
         ));
         add(box, BorderLayout.CENTER);
 

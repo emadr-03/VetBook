@@ -114,10 +114,10 @@ public class DisponibilitaForm extends JDialog {
 
         for (AgendaDTO r : righe) {
             model.addRow(new Object[]{
-                    r.getTipoEvento(),
-                    r.getData().format(formatterData),
-                    r.getOra().format(formatterOra),
-                    r.getDescrizione()
+                    r.tipoEvento(),
+                    r.data().format(formatterData),
+                    r.ora().format(formatterOra),
+                    r.descrizione()
             });
         }
     }

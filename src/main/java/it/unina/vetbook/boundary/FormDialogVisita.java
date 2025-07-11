@@ -3,7 +3,7 @@ package it.unina.vetbook.boundary;
 import it.unina.vetbook.control.AgendaController;
 import it.unina.vetbook.control.VeterinarioController;
 import it.unina.vetbook.dto.FarmacoDTO;
-import it.unina.vetbook.entity.Farmaco;
+import it.unina.vetbook.entity.TipoVisita;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,8 +20,11 @@ public class FormDialogVisita extends JDialog {
     private DefaultListModel<FarmacoDTO> prescrittiModel;
     private JList<FarmacoDTO> disponibiliList, prescrittiList;
 
-    public FormDialogVisita(Frame owner) {
+    private final VeterinarioController veterinarioController;
+
+    public FormDialogVisita(Frame owner, VeterinarioController veterinarioController) {
         super(owner, "Registra Visita", true);
+        this.veterinarioController = veterinarioController;
 
         initDialog();
         initComponents();
@@ -166,13 +169,12 @@ public class FormDialogVisita extends JDialog {
         try {
             TipoVisita tipo = (TipoVisita) tipoVisitaCombo.getSelectedItem();
 
-            List<Farmaco> farmaciDaPrescrivere = new ArrayList<>();
-            for (int i = 0; i < prescrittiModel.size(); i++) {
-                FarmacoDTO dto = prescrittiModel.getElementAt(i);
-                farmaciDaPrescrivere.add(new Farmaco(dto.getNome(), dto.getProduttore()));
+            List<FarmacoDTO> farmaciPrescritti = new ArrayList<>();
+            for (int i = 0; i < prescrittiModel.getSize(); i++) {
+                farmaciPrescritti.add(prescrittiModel.getElementAt(i));
             }
 
-            VeterinarioController.getInstance().registraVisita(tipo, descrizione, costo, farmaciDaPrescrivere);
+            veterinarioController.registraVisita(tipo, descrizione, costo, farmaciPrescritti);
 
             JOptionPane.showMessageDialog(this, "Visita registrata con successo!");
             dispose();
@@ -190,7 +192,7 @@ public class FormDialogVisita extends JDialog {
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             if (value instanceof FarmacoDTO dto) {
-                setText(dto.getNome() + " (" + dto.getProduttore() + ")");
+                setText(dto.nome() + " (" + dto.produttore() + ")");
             }
             return this;
         }

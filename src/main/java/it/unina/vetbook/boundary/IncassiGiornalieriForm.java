@@ -14,11 +14,11 @@ public class IncassiGiornalieriForm extends JDialog {
     private JTable table;
     private JButton refreshButton;
     private JButton closeButton;
+    private final AdminController adminController;
 
-    private final AdminController ctrl = AdminController.getInstance();
-
-    public IncassiGiornalieriForm(Frame owner) {
+    public IncassiGiornalieriForm(Frame owner, AdminController adminController) {
         super(owner, "Incassi Giornalieri", true);
+        this.adminController = adminController;
 
         initDialog();
         initComponents();
@@ -63,14 +63,14 @@ public class IncassiGiornalieriForm extends JDialog {
     private void caricaDati() {
         model.setRowCount(0);
 
-        List<VisitaDTO> visite = ctrl.getVisiteGiornaliere();
-        double totale = ctrl.getTotaleIncassoGiornaliero();
+        List<VisitaDTO> visite = adminController.getVisiteGiornaliere();
+        double totale = adminController.getTotaleIncassoGiornaliero();
 
         for (VisitaDTO v : visite) {
             model.addRow(new Object[]{
-                    v.getTipo().toString(),
-                    v.getDescrizione(),
-                    String.format("%.2f €", v.getCosto())
+                    v.tipo().toString(),
+                    v.descrizione(),
+                    String.format("%.2f €", v.costo())
             });
         }
 
