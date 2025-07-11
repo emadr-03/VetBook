@@ -23,7 +23,7 @@ public class DisponibilitaForm extends JDialog {
     private TimePicker timePicker;
     private JButton addButton, closeButton;
 
-    private final AgendaController ctrl = AgendaController.getInstance();
+    private final AgendaController agendaController = AgendaController.getInstance();
 
     public DisponibilitaForm(Frame owner) {
         super(owner, "Gestisci Agenda", true);
@@ -86,20 +86,15 @@ public class DisponibilitaForm extends JDialog {
 
     private void addListeners() {
         addButton.addActionListener(e -> {
-            LocalDate data = datePicker.getDate();
-            LocalTime ora = timePicker.getTime();
-            if (data == null || ora == null) {
-                JOptionPane.showMessageDialog(this, "Seleziona data e ora");
-                return;
-            }
+            try {
+                LocalDate data = datePicker.getDate();
+                LocalTime ora = timePicker.getTime();
 
-            boolean ok = ctrl.inserisciDisponibilita(data, ora);
-            if (ok) {
+                agendaController.inserisciDisponibilita(data, ora);
                 caricaAgenda();
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        "Esiste già una disponibilità per questa data e ora",
-                        "Duplicato", JOptionPane.WARNING_MESSAGE);
+
+            } catch (IllegalArgumentException | IllegalStateException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Errore", JOptionPane.WARNING_MESSAGE);
             }
         });
 
@@ -108,7 +103,7 @@ public class DisponibilitaForm extends JDialog {
 
     private void caricaAgenda() {
         model.setRowCount(0);
-        List<AgendaDTO> righe = ctrl.visualizzaAgenda();
+        List<AgendaDTO> righe = agendaController.visualizzaAgenda();
         DateTimeFormatter formatterData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter formatterOra = DateTimeFormatter.ofPattern("HH:mm");
 

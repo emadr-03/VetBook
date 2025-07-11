@@ -24,8 +24,22 @@ public class AgendaController {
         return instance;
     }
 
-    public boolean inserisciDisponibilita(LocalDate data, LocalTime ora) {
-        return agenda.addDisponibilita(new Disponibilita(data, ora));
+    public void inserisciDisponibilita(LocalDate data, LocalTime ora) {
+        //1. Verifica che data e ora non siano nulli
+        if (data == null || ora == null) {
+            throw new IllegalArgumentException("Data e ora sono obbligatorie.");
+        }
+        // 2. Verifica che la data/ora non sia nel passato
+        LocalDate oggi = LocalDate.now();
+        LocalTime oraAttuale = LocalTime.now();
+        if (data.isBefore(oggi) || (data.equals(oggi) && ora.isBefore(oraAttuale))) {
+            throw new IllegalArgumentException("Non è possibile inserire disponibilità in una data o ora passata.");
+        }
+        // 3. Verifica che lo slot orario sia disponibile
+        if (agenda.isSlotOccupato(data, ora)) {
+            throw new IllegalStateException("Lo slot è già occupato da una disponibilità, prenotazione o visita.");
+        }
+        agenda.addDisponibilita(new Disponibilita(data, ora));
     }
 
     public List<DisponibilitaDTO> visualizzaDisponibilita() {

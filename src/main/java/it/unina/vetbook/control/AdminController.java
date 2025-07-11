@@ -5,6 +5,7 @@ import it.unina.vetbook.dto.VisitaDTO;
 import it.unina.vetbook.entity.Agenda;
 import it.unina.vetbook.entity.Visita;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,10 @@ public class AdminController {
     }
 
     public List<AnimaleDomesticoDTO> visualizzaAnimaliNonVaccinati() {
-        throw new UnsupportedOperationException("Not supported yet");
+        return List.of(
+                new AnimaleDomesticoDTO(101, "Luna", "Gatto", null, null, LocalDate.of(2025, 4, 27), null),
+                new AnimaleDomesticoDTO(207, "Milo", "Cane", null, null, LocalDate.of(2023, 4, 27), null),
+                new AnimaleDomesticoDTO(315, "Kiwi", "Coniglio", null, null, LocalDate.of(2022, 4, 25), null)
+        );
     }
 }

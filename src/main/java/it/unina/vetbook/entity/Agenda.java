@@ -85,6 +85,12 @@ public class Agenda {
                 .collect(Collectors.toList());
     }
 
+    public boolean isSlotOccupato(LocalDate data, LocalTime ora) {
+        return disponibilita.stream().anyMatch(d -> d.getData().equals(data) && d.getOra().equals(ora)) ||
+                prenotazioni.stream().anyMatch(p -> p.getData().equals(data) && p.getOra().equals(ora)) ||
+                visite.stream().anyMatch(v -> v.getData().equals(data) && v.getOra().equals(ora));
+    }
+
     public double ottieniIncasso(List<Visita> visite) {
         return visite.stream().mapToDouble(Visita::getCosto).sum();
     }
