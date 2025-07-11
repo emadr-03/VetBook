@@ -21,12 +21,14 @@ public class SelezionaDisponibilitaForm extends JFrame {
     private JButton selezionaDispBtn, annullaBtn;
 
     private final ProprietarioController proprietarioController;
+    private final AgendaController agendaController;
 
     public SelezionaDisponibilitaForm(AnimaleDomesticoDTO a, ProprietarioController proprietarioController) {
         super("Prenota Visita - Seleziona Disponibilità");
         this.animaleSelezionato = a;
         this.proprietarioController = proprietarioController;
-        this.disponibilita = AgendaController.getInstance().visualizzaDisponibilita();
+        this.agendaController = AgendaController.getInstance();
+        this.disponibilita = agendaController.visualizzaDisponibilita();
 
         initFrame();
         initComponents();
@@ -80,12 +82,18 @@ public class SelezionaDisponibilitaForm extends JFrame {
 
         DisponibilitaDTO slotSelezionato = disponibilita.get(selectedRow);
 
-        proprietarioController.effettuaPrenotazione(animaleSelezionato, slotSelezionato.data(), slotSelezionato.ora());
-        JOptionPane.showMessageDialog(this, "Prenotazione confermata!", "Successo", JOptionPane.INFORMATION_MESSAGE);
-
-        new ProprietarioBoundary(proprietarioController).setVisible(true);
-        dispose();
+        try {
+            proprietarioController.effettuaPrenotazione(animaleSelezionato, slotSelezionato);
+            JOptionPane.showMessageDialog(this, "Prenotazione confermata!", "Successo", JOptionPane.INFORMATION_MESSAGE);
+            new ProprietarioBoundary(proprietarioController).setVisible(true);
+            dispose();
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage(), "Errore di prenotazione", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Errore imprevisto: " + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+        }
     }
+
 
     private void handleAnnulla() {
         new BoundaryPrenotaVisita(proprietarioController).setVisible(true);

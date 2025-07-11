@@ -17,6 +17,7 @@ public class AdminController {
     private AdminController() {
     }
 
+    //A: uso di synchronized per futuro scaling del lato server-side
     public static synchronized AdminController getInstance() {
         if (instance == null) {
             instance = new AdminController();

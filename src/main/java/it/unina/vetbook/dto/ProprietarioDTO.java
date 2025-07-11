@@ -13,7 +13,6 @@ public record ProprietarioDTO(
         byte[] immagineProfilo,
         List<AnimaleDomestico> animali
 ) {
-    // Costruttore ausiliario se vuoi inizializzarlo con lista vuota
     public ProprietarioDTO(String username, String email, String nome, String cognome, byte[] immagineProfilo) {
         this(username, email, nome, cognome, immagineProfilo, List.of());
     }

@@ -151,10 +151,23 @@ public class ProfiloProprietarioBoundary extends JFrame {
         int returnValue = fileChooser.showOpenDialog(this);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            ImageIcon newIcon = new ImageIcon(selectedFile.getAbsolutePath());
-            imageLabel.setIcon(scaleImageIcon(newIcon));
+            try {
+                proprietarioController.aggiornaImmagineProfilo(selectedFile);
+
+                byte[] imgBytes = proprietarioController.getProprietarioDTO().immagineProfilo();
+                if (imgBytes != null) {
+                    ImageIcon icon = new ImageIcon(imgBytes);
+                    imageLabel.setIcon(scaleImageIcon(icon));
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                        "Errore durante il caricamento dell'immagine:\n" + ex.getMessage(),
+                        "Errore", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
+
 
     private ImageIcon scaleImageIcon(ImageIcon sourceIcon) {
         Image image = sourceIcon.getImage();

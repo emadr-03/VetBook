@@ -1,14 +1,17 @@
 package it.unina.vetbook.control;
 
 import it.unina.vetbook.dto.AnimaleDomesticoDTO;
+import it.unina.vetbook.dto.DisponibilitaDTO;
 import it.unina.vetbook.dto.ProprietarioDTO;
 import it.unina.vetbook.entity.Agenda;
 import it.unina.vetbook.entity.AnimaleDomestico;
 import it.unina.vetbook.entity.Prenotazione;
 import it.unina.vetbook.entity.Proprietario;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +34,48 @@ public class ProprietarioController {
     }
 
     public void gestioneProfilo(String username, String nome, String cognome, String email, String password) {
-        proprietarioCorrente.setUsername(username);
-        proprietarioCorrente.setNome(nome);
-        proprietarioCorrente.setCognome(cognome);
-        proprietarioCorrente.setEmail(email);
+        if (username == null || username.trim().isEmpty() || username.length() > 20) {
+            throw new IllegalArgumentException("Username non valido.");
+        }
+        if (!nome.matches("[a-zA-Z\\s]+") || nome.length() > 30) {
+            throw new IllegalArgumentException("Nome non valido.");
+        }
+        if (!cognome.matches("[a-zA-Z\\s]+") || cognome.length() > 30) {
+            throw new IllegalArgumentException("Cognome non valido.");
+        }
+        if (!email.matches("^[\\w-.]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
+            throw new IllegalArgumentException("Email non valida.");
+        }
+        if (password.length() < 6 && (!password.isEmpty())) {
+            throw new IllegalArgumentException("La password deve essere maggiore di 6 caratteri");
+        }
+
+        proprietarioCorrente.setUsername(username.trim());
+        proprietarioCorrente.setNome(nome.trim());
+        proprietarioCorrente.setCognome(cognome.trim());
+        proprietarioCorrente.setEmail(email.trim());
+        proprietarioCorrente.setPassword(password);
 
         System.out.println("Profilo aggiornato. Nuovo username: " + proprietarioCorrente.getUsername());
+    }
+
+    public void aggiornaImmagineProfilo(File file) {
+        if (file == null || !file.exists()) {
+            throw new IllegalArgumentException("File immagine non valido.");
+        }
+
+        String nomeFile = file.getName().toLowerCase();
+        if (!(nomeFile.endsWith(".jpg") || nomeFile.endsWith(".jpeg") ||
+                nomeFile.endsWith(".png") || nomeFile.endsWith(".gif"))) {
+            throw new IllegalArgumentException("Formato immagine non supportato.");
+        }
+
+        try (FileInputStream fis = new FileInputStream(file)) {
+            byte[] bytes = fis.readAllBytes();
+            proprietarioCorrente.setImmagineProfilo(bytes);
+        } catch (IOException e) {
+            throw new RuntimeException("Errore nella lettura del file immagine.", e);
+        }
     }
 
 
@@ -84,11 +123,19 @@ public class ProprietarioController {
         animaliMock.removeIf(a -> a.getCodiceChip() == codiceChip);
     }
 
-    public void effettuaPrenotazione(AnimaleDomesticoDTO animaleDto, LocalDate data, LocalTime ora) {
-        //TODO: Ricerca animale nel DB, se non presente ritorna errore
+    public void effettuaPrenotazione(AnimaleDomesticoDTO animaleDomesticoDTO, DisponibilitaDTO disponibilita) {
+        AnimaleDomestico animale = proprietarioCorrente.getAnimali().stream()
+                .filter(a -> a.getCodiceChip() == animaleDomesticoDTO.codiceChip())
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Animale non trovato per il codice chip specificato."));
 
-        Prenotazione p = new Prenotazione(data, ora, null);
-        agenda.prenotaVisita(p);
+        Prenotazione prenotazione = new Prenotazione(
+                disponibilita.data(),
+                disponibilita.ora(),
+                animale
+        );
+
+        agenda.prenotaVisita(prenotazione);
     }
 
     public List<AnimaleDomesticoDTO> getAnimaliProprietario() {
@@ -106,6 +153,8 @@ public class ProprietarioController {
     }
 
 
+    //A: La seguente classe permette di tener conto della sessione corrente del proprietario
+    //      Attualmente la classe è mockata
     private Proprietario getProprietarioMock() {
         if (proprietarioCorrente == null) {
             proprietarioCorrente = new Proprietario("mrossi", "mario.rossi@email.com", "prova");

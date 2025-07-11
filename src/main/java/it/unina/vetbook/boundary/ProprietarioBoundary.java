@@ -1,6 +1,8 @@
 package it.unina.vetbook.boundary;
 
 import it.unina.vetbook.control.ProprietarioController;
+import it.unina.vetbook.dto.ProprietarioDTO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,10 +17,12 @@ public class ProprietarioBoundary extends JFrame {
     private JButton logoutButton;
 
     private final ProprietarioController pController;
+    private final ProprietarioDTO proprietarioCorrente;
 
     public ProprietarioBoundary(ProprietarioController pController) {
         super("Area Proprietario");
         this.pController = pController;
+        this.proprietarioCorrente = pController.getProprietarioDTO();
 
         initFrame();
         initComponents();
