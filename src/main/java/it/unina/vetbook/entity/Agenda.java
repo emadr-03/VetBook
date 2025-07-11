@@ -22,16 +22,39 @@ public class Agenda {
         this.prenotazioni = new ArrayList<>();
         this.visite = new ArrayList<>();
 
+        // Disponibilità
         disponibilita.add(new Disponibilita(LocalDate.now().plusDays(1), LocalTime.of(9, 0)));
         disponibilita.add(new Disponibilita(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
         disponibilita.add(new Disponibilita(LocalDate.now().plusDays(2), LocalTime.of(11, 0)));
         disponibilita.add(new Disponibilita(LocalDate.now().plusDays(2), LocalTime.of(12, 0)));
 
+        // Animali di test
+        AnimaleDomestico rex = new AnimaleDomestico(111222333, "Rex", "Cane", "Pastore Tedesco", "Nero", LocalDate.now().minusYears(3));
+        AnimaleDomestico luna = new AnimaleDomestico(444555666, "Luna", "Gatto", "Europeo", "Bianco", LocalDate.now().minusYears(2));
+        AnimaleDomestico zorro = new AnimaleDomestico(777888999, "Zorro", "Cane", "Labrador", "Miele", LocalDate.now().minusYears(4));
 
-        //dati MOCKATI per far visualizzare una prenotazione al Veterinario
-        AnimaleDomestico animaleTest = new AnimaleDomestico(111222333, "Rex", "Cane", "Pastore Tedesco", "Nero", LocalDate.now().minusYears(3));
-        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(1), LocalTime.of(9, 0), animaleTest));
+        // Prenotazioni MOCK
+        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(1), LocalTime.of(9, 0), rex)); // DUPLICATA con disponibilità
+        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(2), LocalTime.of(12, 0), luna)); // DUPLICATA con disponibilità
+        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(3), LocalTime.of(15, 0), zorro)); // NUOVA prenotazione
+
+        // Visite MOCK
+        Visita v1 = new Visita(TipoVisita.CONTROLLO, "Controllo annuale", 35.00);
+        v1.setData(LocalDate.now());
+        v1.setOra(LocalTime.of(10, 0));
+        this.visite.add(v1);
+
+        Visita v2 = new Visita(TipoVisita.VACCINAZIONE, "Vaccino rabbia", 60.00);
+        v2.setData(LocalDate.now());
+        v2.setOra(LocalTime.of(11, 0));
+        this.visite.add(v2);
+
+        Visita v3 = new Visita(TipoVisita.INTERVENTO_CHIRURGICO, "Rimozione cisti", 120.00);
+        v3.setData(LocalDate.now().plusDays(1));
+        v3.setOra(LocalTime.of(9, 0));
+        this.visite.add(v3);
     }
+
 
     public static Agenda getInstance() {
         if (instance == null) {
