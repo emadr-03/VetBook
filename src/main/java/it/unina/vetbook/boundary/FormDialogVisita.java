@@ -143,45 +143,31 @@ public class FormDialogVisita extends JDialog {
 
     private void handleRegistra() {
         String descrizione = descrizioneText.getText().trim();
-        if (descrizione.length() > 150) {
-            mostraErrore("La descrizione non può superare i 150 caratteri.");
-            return;
-        }
-
         String costoStr = costoText.getText().trim();
-        if (costoStr.isEmpty()) {
-            mostraErrore("Il campo Costo è obbligatorio.");
-            return;
-        }
 
         double costo;
         try {
             costo = Double.parseDouble(costoStr);
-            if (costo < 0) {
-                mostraErrore("Il costo non può essere un numero minore di 0!");
-                return;
-            }
         } catch (NumberFormatException ex) {
             mostraErrore("Costo non valido! Inserire un numero.");
             return;
         }
 
+        TipoVisita tipo = (TipoVisita) tipoVisitaCombo.getSelectedItem();
+        List<FarmacoDTO> farmaciPrescritti = new ArrayList<>();
+        for (int i = 0; i < prescrittiModel.getSize(); i++) {
+            farmaciPrescritti.add(prescrittiModel.getElementAt(i));
+        }
+
         try {
-            TipoVisita tipo = (TipoVisita) tipoVisitaCombo.getSelectedItem();
-
-            List<FarmacoDTO> farmaciPrescritti = new ArrayList<>();
-            for (int i = 0; i < prescrittiModel.getSize(); i++) {
-                farmaciPrescritti.add(prescrittiModel.getElementAt(i));
-            }
-
             veterinarioController.registraVisita(tipo, descrizione, costo, farmaciPrescritti);
-
             JOptionPane.showMessageDialog(this, "Visita registrata con successo!");
             dispose();
         } catch (Exception ex) {
-            mostraErrore("Errore durante la registrazione: " + ex.getMessage());
+            mostraErrore("Errore: " + ex.getMessage());
         }
     }
+
 
     private void mostraErrore(String messaggio) {
         JOptionPane.showMessageDialog(this, messaggio, "Errore di Inserimento", JOptionPane.ERROR_MESSAGE);
