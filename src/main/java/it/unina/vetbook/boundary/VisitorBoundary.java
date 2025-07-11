@@ -4,6 +4,7 @@ import it.unina.vetbook.control.AdminController;
 import it.unina.vetbook.control.AuthController;
 import it.unina.vetbook.control.ProprietarioController;
 import it.unina.vetbook.control.VeterinarioController;
+import it.unina.vetbook.dto.LoginResultDTO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -87,9 +88,16 @@ public class VisitorBoundary extends JFrame {
         String u = userField.getText();
         String p = String.valueOf(passField.getPassword());
 
-        Object userController = authController.login(u, p);
+        LoginResultDTO result = authController.login(u, p);
 
-        switch (userController) {
+        if (!result.isSuccess()) {
+            JOptionPane.showMessageDialog(this, result.getErrorMessage(), "Errore di login", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Object controller = result.getController();
+
+        switch (controller) {
             case ProprietarioController proprietarioController -> {
                 JOptionPane.showMessageDialog(this, "Login OK come PROPRIETARIO");
                 new ProprietarioBoundary(proprietarioController).setVisible(true);
@@ -102,8 +110,10 @@ public class VisitorBoundary extends JFrame {
                 JOptionPane.showMessageDialog(this, "Login OK come AMMINISTRATORE");
                 new AmministratoreBoundary(adminController).setVisible(true);
             }
-            case null, default -> JOptionPane.showMessageDialog(this, "Ruolo non riconosciuto.");
+            default -> JOptionPane.showMessageDialog(this, "Ruolo non riconosciuto.");
         }
+
         dispose();
     }
+
 }

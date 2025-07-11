@@ -2,21 +2,21 @@ package it.unina.vetbook.dto;
 
 import it.unina.vetbook.control.ProprietarioController;
 
-public class RegistrationResult {
+public class RegistrationResultDTO {
     private final ProprietarioController controller;
     private final String errorMessage;
 
-    private RegistrationResult(ProprietarioController controller, String errorMessage) {
+    private RegistrationResultDTO(ProprietarioController controller, String errorMessage) {
         this.controller = controller;
         this.errorMessage = errorMessage;
     }
 
-    public static RegistrationResult success(ProprietarioController controller) {
-        return new RegistrationResult(controller, null);
+    public static RegistrationResultDTO success(ProprietarioController controller) {
+        return new RegistrationResultDTO(controller, null);
     }
 
-    public static RegistrationResult failure(String errorMessage) {
-        return new RegistrationResult(null, errorMessage);
+    public static RegistrationResultDTO failure(String errorMessage) {
+        return new RegistrationResultDTO(null, errorMessage);
     }
 
     public boolean isSuccess() {
