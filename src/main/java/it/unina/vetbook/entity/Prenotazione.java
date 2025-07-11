@@ -1,6 +1,5 @@
 package it.unina.vetbook.entity;
 
-import it.unina.vetbook.dto.AnimaleDomesticoDTO;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -9,10 +8,10 @@ public class Prenotazione {
 
     private LocalDate data;
     private LocalTime ora;
-    private AnimaleDomesticoDTO animale;
+    private AnimaleDomestico animale;
     private Proprietario proprietario;
 
-    public Prenotazione(LocalDate data, LocalTime ora, AnimaleDomesticoDTO animale) {
+    public Prenotazione(LocalDate data, LocalTime ora, AnimaleDomestico animale) {
         this.data = data;
         this.ora = ora;
         this.animale = animale;
@@ -29,7 +28,7 @@ public class Prenotazione {
         return ora;
     }
 
-    public AnimaleDomesticoDTO getAnimale() {
+    public AnimaleDomestico getAnimale() {
         return animale;
     }
 }

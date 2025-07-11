@@ -1,14 +1,11 @@
 package it.unina.vetbook.entity;
 
+import it.unina.vetbook.dto.DisponibilitaDTO;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Disponibilita {
-
-    enum Stato{
-        OCCUPATO,
-        LIBERO;
-    }
 
     private LocalDate data;
     private LocalTime ora;
@@ -26,5 +23,9 @@ public class Disponibilita {
 
     public LocalTime getOra() {
         return ora;
+    }
+
+    public Stato getStato() {
+        return stato;
     }
 }

@@ -1,7 +1,5 @@
 package it.unina.vetbook.entity;
 
-import it.unina.vetbook.boundary.TipoVisita;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -25,10 +23,7 @@ public class Visita {
     }
 
     public void prescrivi(Farmaco f) {
-        if (this.farmaciPrescritti == null) {
-            this.farmaciPrescritti = new ArrayList<>();
-        }
-        this.farmaciPrescritti.add(f);
+        farmaciPrescritti.add(f);
     }
 
     public LocalDate getData() { return data; }

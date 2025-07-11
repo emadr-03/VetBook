@@ -1,9 +1,9 @@
 package it.unina.vetbook.entity;
 
-import it.unina.vetbook.dto.AnimaleDomesticoDTO;
-import it.unina.vetbook.dto.DisponibilitaDTO;
-import it.unina.vetbook.dto.PrenotazioneDTO;
+import it.unina.vetbook.database.DisponibilitaDAO;
+import it.unina.vetbook.database.PrenotazioneDAO;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -13,9 +13,8 @@ import java.util.stream.Collectors;
 public class Agenda {
 
     private static Agenda instance;
-    private AnimaleDomesticoDTO animaleTest;
-    private List<DisponibilitaDTO> disponibilita;
-    private List<PrenotazioneDTO> prenotazioni;
+    private final List<Disponibilita> disponibilita;
+    private final List<Prenotazione> prenotazioni;
     private List<Visita> visite;
 
     private Agenda() {
@@ -23,15 +22,15 @@ public class Agenda {
         this.prenotazioni = new ArrayList<>();
         this.visite = new ArrayList<>();
 
-        disponibilita.add(new DisponibilitaDTO(LocalDate.now().plusDays(1), LocalTime.of(9, 0)));
-        disponibilita.add(new DisponibilitaDTO(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
-        disponibilita.add(new DisponibilitaDTO(LocalDate.now().plusDays(2), LocalTime.of(11, 0)));
-        disponibilita.add(new DisponibilitaDTO(LocalDate.now().plusDays(2), LocalTime.of(12, 0)));
+        disponibilita.add(new Disponibilita(LocalDate.now().plusDays(1), LocalTime.of(9, 0)));
+        disponibilita.add(new Disponibilita(LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
+        disponibilita.add(new Disponibilita(LocalDate.now().plusDays(2), LocalTime.of(11, 0)));
+        disponibilita.add(new Disponibilita(LocalDate.now().plusDays(2), LocalTime.of(12, 0)));
 
 
         //dati MOCKATI per far visualizzare una prenotazione al Veterinario
-        animaleTest = new AnimaleDomesticoDTO(111222333, "Rex", "Cane", "Pastore Tedesco", "Nero", LocalDate.now().minusYears(3));
-        this.prenotazioni.add(new PrenotazioneDTO(LocalDate.now().plusDays(1), LocalTime.of(9, 0), animaleTest));
+        AnimaleDomestico animaleTest = new AnimaleDomestico(111222333, "Rex", "Cane", "Pastore Tedesco", "Nero", LocalDate.now().minusYears(3));
+        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(1), LocalTime.of(9, 0), animaleTest));
     }
 
     public static Agenda getInstance() {
@@ -41,25 +40,37 @@ public class Agenda {
         return instance;
     }
 
-    public List<DisponibilitaDTO> getDisponibilita() {
+    public List<Disponibilita> getDisponibilita() {
         return disponibilita;
     }
 
-    public void prenotaVisita(PrenotazioneDTO p) {
+    public void prenotaVisita(Prenotazione p) {
         disponibilita.removeIf(d -> d.getData().equals(p.getData()) && d.getOra().equals(p.getOra()));
+        PrenotazioneDAO dao = new PrenotazioneDAO();
+        try {
+            dao.create(p);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         this.prenotazioni.add(p);
         System.out.println("Prenotazione aggiunta in memoria per: " + p.getAnimale().getNome());
     }
 
-    public List<PrenotazioneDTO> getPrenotazioni() {
+    public List<Prenotazione> getPrenotazioni() {
         return prenotazioni;
     }
 
-    public boolean addDisponibilita(DisponibilitaDTO nuovaDisp) {
+    public boolean addDisponibilita(Disponibilita nuovaDisp) {
         boolean esisteGia = disponibilita.stream()
                 .anyMatch(d -> d.getData().equals(nuovaDisp.getData()) && d.getOra().equals(nuovaDisp.getOra()));
         if (esisteGia) {
             return false;
+        }
+        DisponibilitaDAO dao = new DisponibilitaDAO();
+        try {
+            dao.create(nuovaDisp);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return this.disponibilita.add(nuovaDisp);
     }

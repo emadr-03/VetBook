@@ -1,5 +1,10 @@
 package it.unina.vetbook.entity;
 
+import it.unina.vetbook.database.FarmacoDAO;
+
+import java.sql.SQLException;
+import java.util.List;
+
 public class Farmaco {
 
     private int id;
@@ -9,6 +14,15 @@ public class Farmaco {
     public Farmaco(String nome, String produttore) {
         this.nome = nome;
         this.produttore = produttore;
+    }
+
+    public static List<Farmaco> readFarmaci(){
+        FarmacoDAO farmacoDAO = new FarmacoDAO();
+        try {
+            return farmacoDAO.executeQuery("");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int getId() {

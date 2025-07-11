@@ -56,6 +56,26 @@ public class AnimaleDomestico {
     public void setProprietario(Proprietario proprietario) {
         this.proprietario = proprietario;
     }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public void setRazza(String razza) {
+        this.razza = razza;
+    }
+
+    public void setColore(String colore) {
+        this.colore = colore;
+    }
+
+    public void setDataDiNascita(LocalDate dataDiNascita) {
+        this.dataDiNascita = dataDiNascita;
+    }
 }
 
 
