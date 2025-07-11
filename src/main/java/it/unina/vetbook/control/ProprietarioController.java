@@ -39,29 +39,46 @@ public class ProprietarioController {
         System.out.println("Profilo aggiornato. Nuovo username: " + proprietarioCorrente.getUsername());
     }
 
+
     public void inserisciAnimale(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
-        boolean chipEsistente = animaliMock.stream().anyMatch(a -> a.getCodiceChip() == codiceChip);
-        if (chipEsistente) {
+        if (String.valueOf(codiceChip).length() != 10)
+            throw new IllegalArgumentException("Il codice chip deve essere di 10 cifre.");
+
+        if (animaliMock.stream().anyMatch(a -> a.getCodiceChip() == codiceChip))
             throw new IllegalStateException("Codice chip già esistente.");
-        }
-        AnimaleDomestico nuovoAnimale = new AnimaleDomestico(codiceChip, nome, tipo, razza, colore, dataDiNascita);
-        animaliMock.add(nuovoAnimale);
+
+        validaCampoTesto(nome, "Nome", 40);
+        validaCampoTesto(tipo, "Tipo", 20);
+        validaCampoTesto(razza, "Razza", 20);
+        validaCampoTesto(colore, "Colore", 20);
+
+        if (dataDiNascita == null || dataDiNascita.isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("Data di nascita non valida.");
+
+        animaliMock.add(new AnimaleDomestico(codiceChip, nome, tipo, razza, colore, dataDiNascita));
     }
+
 
     public void modificaAnimale(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
-        for (AnimaleDomestico a : animaliMock) {
-            if (a.getCodiceChip() == codiceChip) {
-                a.setNome(nome);
-                a.setTipo(tipo);
-                a.setRazza(razza);
-                a.setColore(colore);
-                a.setDataDiNascita(dataDiNascita);
-                return;
-            }
-        }
-        throw new IllegalArgumentException("Animale con codice chip " + codiceChip + " non trovato.");
-    }
+        validaCampoTesto(nome, "Nome", 40);
+        validaCampoTesto(tipo, "Tipo", 20);
+        validaCampoTesto(razza, "Razza", 20);
+        validaCampoTesto(colore, "Colore", 20);
 
+        if (dataDiNascita == null || dataDiNascita.isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("Data di nascita non valida.");
+
+        AnimaleDomestico animale = animaliMock.stream()
+                .filter(a -> a.getCodiceChip() == codiceChip)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Animale con codice chip " + codiceChip + " non trovato."));
+
+        animale.setNome(nome);
+        animale.setTipo(tipo);
+        animale.setRazza(razza);
+        animale.setColore(colore);
+        animale.setDataDiNascita(dataDiNascita);
+    }
 
     public void eliminaAnimale(int codiceChip) {
         animaliMock.removeIf(a -> a.getCodiceChip() == codiceChip);
@@ -89,7 +106,7 @@ public class ProprietarioController {
     }
 
 
-    public Proprietario getProprietarioMock() {
+    private Proprietario getProprietarioMock() {
         if (proprietarioCorrente == null) {
             proprietarioCorrente = new Proprietario("mrossi", "mario.rossi@email.com", "prova");
             proprietarioCorrente.setNome("Mario");
@@ -110,4 +127,16 @@ public class ProprietarioController {
                 proprietarioCorrente.getAnimali()
         );
     }
+
+    private void validaCampoTesto(String testo, String nomeCampo, int lunghezzaMax) {
+        if (testo == null || testo.trim().isEmpty())
+            throw new IllegalArgumentException("Il campo '" + nomeCampo + "' è obbligatorio.");
+        if (testo.length() > lunghezzaMax)
+            throw new IllegalArgumentException("Il campo '" + nomeCampo + "' è troppo lungo (max " + lunghezzaMax + ").");
+        if (testo.matches(".*\\d.*"))
+            throw new IllegalArgumentException("Il campo '" + nomeCampo + "' non può contenere numeri.");
+        if (!testo.matches("[a-zA-Z\\s]+"))
+            throw new IllegalArgumentException("Il campo '" + nomeCampo + "' contiene simboli non validi.");
+    }
+
 }

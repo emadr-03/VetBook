@@ -103,50 +103,22 @@ public class FormAnimale extends JFrame {
     }
 
     private void handleSalva() {
-        String nomeInput = txtNome.getText().trim();
-        if (nomeInput.isEmpty() || nomeInput.length() > 40 || nomeInput.matches(".*\\d.*") || !nomeInput.matches("[a-zA-Z\\s]+")) {
-            mostraErrore("Formato nome non valido.");
-            return;
-        }
-
-        String tipoInput = txtTipo.getText().trim();
-        if (validaCampoTesto(tipoInput, "Tipo", 20) != null) {
-            mostraErrore(validaCampoTesto(tipoInput, "Tipo", 20));
-            return;
-        }
-
-        String razzaInput = txtRazza.getText().trim();
-        if (validaCampoTesto(razzaInput, "Razza", 20) != null) {
-            mostraErrore(validaCampoTesto(razzaInput, "Razza", 20));
-            return;
-        }
-
-        String coloreInput = txtColore.getText().trim();
-        if (validaCampoTesto(coloreInput, "Colore", 20) != null) {
-            mostraErrore(validaCampoTesto(coloreInput, "Colore", 20));
-            return;
-        }
-
-        LocalDate dataNascitaInput = datePicker.getDate();
-        if (dataNascitaInput == null || dataNascitaInput.isAfter(LocalDate.now())) {
-            mostraErrore("Data di nascita non valida.");
-            return;
-        }
-
         try {
             int codiceChipInt = Integer.parseInt(txtCodiceChip.getText().trim());
+            String nomeInput = txtNome.getText().trim();
+            String tipoInput = txtTipo.getText().trim();
+            String razzaInput = txtRazza.getText().trim();
+            String coloreInput = txtColore.getText().trim();
+            LocalDate dataNascitaInput = datePicker.getDate();
 
             if (isModifica) {
                 proprietarioController.modificaAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
                 JOptionPane.showMessageDialog(this, "Animale modificato con successo!");
             } else {
-                if (txtCodiceChip.getText().trim().length() != 10) {
-                    mostraErrore("Il Codice Chip deve essere di esattamente 10 cifre.");
-                    return;
-                }
                 proprietarioController.inserisciAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
                 JOptionPane.showMessageDialog(this, "Animale inserito con successo!");
             }
+
             new AnimaliProprietarioBoundary(proprietarioController).setVisible(true);
             dispose();
         } catch (NumberFormatException ex) {
@@ -155,6 +127,7 @@ public class FormAnimale extends JFrame {
             mostraErrore("Errore: " + ex.getMessage());
         }
     }
+
 
     private void handleIndietro() {
         if (isModifica) {
@@ -165,13 +138,6 @@ public class FormAnimale extends JFrame {
         dispose();
     }
 
-    private String validaCampoTesto(String testo, String nomeCampo, int lunghezzaMax) {
-        if (testo.isEmpty()) return "Il campo '" + nomeCampo + "' è obbligatorio.";
-        if (testo.length() > lunghezzaMax) return "Il campo '" + nomeCampo + "' è troppo lungo!";
-        if (testo.matches(".*\\d.*")) return "Il campo '" + nomeCampo + "' non può contenere un numero!";
-        if (!testo.matches("[a-zA-Z\\s]+")) return "Il campo '" + nomeCampo + "' non può contenere simboli speciali!";
-        return null;
-    }
 
     private void mostraErrore(String messaggio) {
         JOptionPane.showMessageDialog(this, messaggio, "Errore di Inserimento", JOptionPane.ERROR_MESSAGE);
