@@ -1,5 +1,6 @@
 package it.unina.vetbook.control;
 
+import it.unina.vetbook.dto.AnimaleDomesticoDTO;
 import it.unina.vetbook.dto.VisitaDTO;
 import it.unina.vetbook.entity.Agenda;
 import it.unina.vetbook.entity.Visita;
@@ -12,9 +13,10 @@ public class AdminController {
     private static AdminController instance = null;
     private final Agenda agenda = Agenda.getInstance();
 
-    private AdminController() {}
+    private AdminController() {
+    }
 
-    public static AdminController getInstance() {
+    public static synchronized AdminController getInstance() {
         if (instance == null) {
             instance = new AdminController();
         }
@@ -35,7 +37,7 @@ public class AdminController {
         return agenda.ottieniIncasso(visiteGiornaliere);
     }
 
-    public Object[][] visualizzaAnimaliNonVaccinati() {
+    public List<AnimaleDomesticoDTO> visualizzaAnimaliNonVaccinati() {
         throw new UnsupportedOperationException("Not supported yet");
     }
 }

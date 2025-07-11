@@ -1,7 +1,8 @@
 package it.unina.vetbook.control;
 
-import it.unina.vetbook.entity.Utente;
-import it.unina.vetbook.entity.UtenteFactory;
+import it.unina.vetbook.dto.RegistrationResult;
+import it.unina.vetbook.dto.UtenteDTO;
+import it.unina.vetbook.entity.*;
 
 public class AuthController {
 
@@ -9,23 +10,38 @@ public class AuthController {
 
     private AuthController() {}
 
-    public static AuthController getInstance() {
+    public static synchronized AuthController getInstance() {
         if (instance == null) {
             instance = new AuthController();
         }
         return instance;
     }
 
-    public Utente login(String username, String password) {
-        Utente u = Utente.login(username, password);
-        if (u == null) {
+    public Object login(String username, String password) {
+        Utente utente = Utente.login(username, password);
+        if (utente == null) {
             throw new IllegalArgumentException("Credenziali non valide");
         }
-        return u;
+        return switch (utente.getRuolo()) {
+            case VETERINARIO -> new VeterinarioController((Veterinario) utente);
+            case PROPRIETARIO -> new ProprietarioController((Proprietario) utente);
+            case AMMINISTRATORE_DELL_AMBULATORIO -> AdminController.getInstance();
+        };
     }
 
-    public void registrati(String username, String email, String nome, String cognome, String password) {
+    public RegistrationResult registrati(String username, String email, String nome, String cognome, String password) {
+        if (Utente.exists(username)) {
+            return RegistrationResult.failure("Username già presente");
+        }
+
         Utente nuovoUtente = UtenteFactory.creaProprietario(username, email, nome, cognome, password);
-        nuovoUtente.registrati();
+        try {
+            nuovoUtente.registrati();
+            ProprietarioController controller = new ProprietarioController((Proprietario) nuovoUtente);
+            return RegistrationResult.success(controller);
+        } catch (Exception e) {
+            return RegistrationResult.failure("Errore durante la registrazione: " + e.getMessage());
+        }
     }
+
 }
