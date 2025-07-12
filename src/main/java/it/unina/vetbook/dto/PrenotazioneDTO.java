@@ -9,10 +9,10 @@ public record PrenotazioneDTO(
         LocalDate data,
         LocalTime ora,
         AnimaleDomesticoDTO animale,
-        ProprietarioDTO proprietario
+        int idProprietario
 ) {
 
     public PrenotazioneDTO(LocalDate data, LocalTime ora, AnimaleDomesticoDTO animale) {
-        this(data, ora, animale, animale != null ? animale.proprietario() : null);
+        this(data, ora, animale, animale != null ? animale.idProprietario() : null);
     }
 }
