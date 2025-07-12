@@ -3,6 +3,7 @@ package it.unina.vetbook.control;
 import it.unina.vetbook.dto.AnimaleDomesticoDTO;
 import it.unina.vetbook.dto.VisitaDTO;
 import it.unina.vetbook.entity.Agenda;
+import it.unina.vetbook.entity.Amministratore;
 import it.unina.vetbook.entity.Visita;
 
 import java.time.LocalDate;
@@ -13,14 +14,16 @@ public class AdminController {
 
     private static AdminController instance = null;
     private final Agenda agenda = Agenda.getInstance();
+    private final Amministratore user;
 
-    private AdminController() {
+    private AdminController(Amministratore user) {
+        this.user = user;
     }
 
     //A: uso di synchronized per futuro scaling del lato server-side
-    public static synchronized AdminController getInstance() {
+    public static synchronized AdminController getInstance(Amministratore user) {
         if (instance == null) {
-            instance = new AdminController();
+            instance = new AdminController(user);
         }
         return instance;
     }
@@ -36,7 +39,7 @@ public class AdminController {
 
     public double getTotaleIncassoGiornaliero() {
         List<Visita> visiteGiornaliere = agenda.visualizzaVisiteGiornaliere();
-        return agenda.ottieniIncasso(visiteGiornaliere);
+        return user.ottieniIncasso(visiteGiornaliere);
     }
 
     public List<AnimaleDomesticoDTO> visualizzaAnimaliNonVaccinati() {

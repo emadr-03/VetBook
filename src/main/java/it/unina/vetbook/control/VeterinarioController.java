@@ -38,7 +38,7 @@ public class VeterinarioController {
             v.prescrivi(new Farmaco(farmaco.id(), farmaco.nome(), farmaco.produttore()));
         }
 
-        agenda.registraVisita(v);
+        veterinario.registraVisita(v);
     }
 
 }

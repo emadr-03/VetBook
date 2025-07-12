@@ -44,21 +44,11 @@ public class Visita {
         this.tipo = tipo;
     }
 
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-    }
-
-    public void setCosto(double costo) {
-        this.costo = costo;
-    }
 
     public List<Farmaco> getFarmaciPrescritti() {
         return farmaciPrescritti;
     }
 
-    public void setFarmaciPrescritti(List<Farmaco> farmaciPrescritti) {
-        this.farmaciPrescritti = farmaciPrescritti;
-    }
 
     public int getIdVisita() {
         return idVisita;
@@ -68,7 +58,5 @@ public class Visita {
         return idVeterinario;
     }
 
-    public void setIdVeterinario(int idVeterinario) {
-        this.idVeterinario = idVeterinario;
-    }
+
 }

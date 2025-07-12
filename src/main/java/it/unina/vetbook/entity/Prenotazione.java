@@ -37,10 +37,7 @@ public class Prenotazione {
     public int getIdProprietario() {
         return idProprietario;
     }
-
-    public void setAnimale(AnimaleDomestico animale) {
-        this.animale = animale;
-    }
+    
 
     public void setOra(LocalTime ora) {
         this.ora = ora;

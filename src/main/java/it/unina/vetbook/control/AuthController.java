@@ -35,7 +35,7 @@ public class AuthController {
         return switch (utente.getRuolo()) {
             case VETERINARIO -> LoginResult.success(new VeterinarioController((Veterinario) utente));
             case PROPRIETARIO -> LoginResult.success(new ProprietarioController((Proprietario) utente));
-            case AMMINISTRATORE -> LoginResult.success(AdminController.getInstance());
+            case AMMINISTRATORE -> LoginResult.success(AdminController.getInstance((Amministratore) utente));
         };
     }
 

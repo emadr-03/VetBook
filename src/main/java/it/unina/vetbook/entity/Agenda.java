@@ -113,16 +113,6 @@ public class Agenda {
         return this.disponibilita.add(nuovaDisp);
     }
 
-    public void registraVisita(Visita v) {
-        try(Connection conn = DBManager.getInstance().getConnection()){
-            VisitaDAO visitaDAO = new VisitaDAO(conn);
-            visitaDAO.create(v);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        this.getVisite().add(v);
-    }
-
     public List<Visita> getVisite() {
         return this.visite;
     }
@@ -139,7 +129,4 @@ public class Agenda {
                 visite.stream().anyMatch(v -> v.getData().equals(data) && v.getOra().equals(ora));
     }
 
-    public double ottieniIncasso(List<Visita> visite) {
-        return visite.stream().mapToDouble(Visita::getCosto).sum();
-    }
 }

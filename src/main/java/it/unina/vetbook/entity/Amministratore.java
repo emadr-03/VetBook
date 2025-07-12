@@ -1,5 +1,7 @@
 package it.unina.vetbook.entity;
 
+import java.util.List;
+
 public class Amministratore extends Utente {
 
     private final Agenda agenda = Agenda.getInstance();
@@ -9,4 +11,7 @@ public class Amministratore extends Utente {
         this.ruolo = UserRole.AMMINISTRATORE;
     }
 
+    public double ottieniIncasso(List<Visita> visite) {
+        return agenda.getVisite().stream().mapToDouble(Visita::getCosto).sum();
+    }
 }

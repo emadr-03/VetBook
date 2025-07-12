@@ -83,7 +83,4 @@ public abstract class Utente {
         this.id = id;
     }
 
-    public void setRuolo(UserRole ruolo) {
-        this.ruolo = ruolo;
-    }
 }
