@@ -77,6 +77,12 @@ public class AnimaleDomesticoDAO extends GenericDAO<AnimaleDomestico, Integer> {
         }
     }
 
+    public List<AnimaleDomestico> readByIdProprietario(int idProprietario) throws SQLException {
+        String sql = "SELECT * FROM animali WHERE idproprietario = ?";
+        return executeQuery(sql, idProprietario);
+    }
+
+
     @Override
     protected AnimaleDomestico mapRow(ResultSet rs) throws SQLException {
         AnimaleDomestico a = new AnimaleDomestico(

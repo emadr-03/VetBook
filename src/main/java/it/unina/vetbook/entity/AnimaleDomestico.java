@@ -1,6 +1,13 @@
 package it.unina.vetbook.entity;
 
+import it.unina.vetbook.database.AnimaleDomesticoDAO;
+import it.unina.vetbook.database.DBManager;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AnimaleDomestico {
 
@@ -92,6 +99,17 @@ public class AnimaleDomestico {
 
     public void setDataUltimaVaccinazione(LocalDate dataUltimaVaccinazione) {
         this.dataUltimaVaccinazione = dataUltimaVaccinazione;
+    }
+
+    public List<AnimaleDomestico> getAnimaliByIdProprietario(int idProprietario){
+        List<AnimaleDomestico> animali = new ArrayList<>();
+        try (Connection conn = DBManager.getInstance().getConnection()){
+            AnimaleDomesticoDAO dao = new AnimaleDomesticoDAO(conn);
+            animali = dao.readByIdProprietario(idProprietario);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return animali;
     }
 }
 

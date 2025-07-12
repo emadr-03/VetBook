@@ -3,6 +3,7 @@ package it.unina.vetbook.entity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class Prenotazione {
 
@@ -53,4 +54,5 @@ public class Prenotazione {
     public void setId(int id) {
         this.id = id;
     }
+
 }

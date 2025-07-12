@@ -6,6 +6,7 @@ import it.unina.vetbook.database.VisitaDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Veterinario extends Utente {
@@ -16,7 +17,7 @@ public class Veterinario extends Utente {
     public Veterinario(String username, String email, String password) {
         super(username, email, password);
         this.ruolo = UserRole.VETERINARIO;
-        this.visite = Visita.getVisiteVeterinario(this.id);
+        this.visite = new ArrayList<>();
     }
 
     public void registraVisita(Visita v) {
@@ -30,7 +31,7 @@ public class Veterinario extends Utente {
     }
 
     public List<Visita> getVisite() {
-        return visite;
+        return Visita.getVisiteVeterinario(this.id);
     }
 
     public static Veterinario mockVet(){

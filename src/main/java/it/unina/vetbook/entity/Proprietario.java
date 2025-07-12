@@ -10,11 +10,13 @@ public class Proprietario extends Utente {
     private String cognome;
     byte[] immagineProfilo;
     private List<AnimaleDomestico> animali;
+    private List<Prenotazione> prenotazioni;
 
     public Proprietario(String username, String email, String password) {
         super(username, email, password);
         this.ruolo = UserRole.PROPRIETARIO;
         this.animali = new ArrayList<>();
+        this.prenotazioni = new ArrayList<>();
     }
 
     public void setNome(String nome) {
