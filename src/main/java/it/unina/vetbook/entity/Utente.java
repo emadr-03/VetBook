@@ -23,7 +23,7 @@ public abstract class Utente {
 
     public static Utente login(String username, String password) {
         try(Connection conn = DBManager.getInstance().getConnection()) {
-            Optional<Utente> utente = new UtenteDAO(conn).read(new String[]{username, password});
+            Optional<Utente> utente = new UtenteDAO(conn).readLogin(new String[]{username, password});
             return utente.orElse(null);
         } catch (SQLException e) {
             throw new RuntimeException("Errore durante il login", e);

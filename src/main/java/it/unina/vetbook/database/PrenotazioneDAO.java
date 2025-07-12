@@ -3,8 +3,6 @@ package it.unina.vetbook.database;
 import it.unina.vetbook.entity.Prenotazione;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 public class PrenotazioneDAO extends GenericDAO<Prenotazione, Integer> {

@@ -42,25 +42,21 @@ public class VisitaDAO extends GenericDAO<Visita, Integer> {
 
     @Override
     public Optional<Visita> read(Integer[] key) throws SQLException {
-        // TODO: implementazione realistica basata su id_visita
-        return Optional.empty();
+        throw new UnsupportedOperationException("read() non implementato per VisitaDAO.");
     }
 
     @Override
     public void update(Visita entity) throws SQLException {
-        // TODO: implementazione di update
         throw new UnsupportedOperationException("update() non implementato per VisitaDAO.");
     }
 
     @Override
     public void delete(Integer id) throws SQLException {
-        // TODO: implementazione di delete
         throw new UnsupportedOperationException("delete() non implementato per VisitaDAO.");
     }
 
     @Override
     protected Visita mapRow(ResultSet rs) throws SQLException {
-        // TODO: implementazione per costruire un oggetto Visita dal ResultSet
         throw new UnsupportedOperationException("mapRow() non implementato per VisitaDAO.");
     }
 }

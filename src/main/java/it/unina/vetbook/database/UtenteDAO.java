@@ -44,7 +44,7 @@ public class UtenteDAO extends GenericDAO<Utente, Integer> {
         return Optional.empty();
     }
 
-    public Optional<Utente> read(String[] usernamePassword) throws SQLException {
+    public Optional<Utente> readLogin(String[] usernamePassword) throws SQLException {
         String sql = "SELECT * FROM utenti WHERE username = ? AND password = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, usernamePassword[0]);
