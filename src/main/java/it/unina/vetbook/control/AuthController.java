@@ -63,13 +63,10 @@ public class AuthController {
         }
 
         Utente nuovoUtente = UtenteFactory.creaProprietario(username, email, nome, cognome, password);
-        try {
-            nuovoUtente.registrati();
-            ProprietarioController controller = new ProprietarioController((Proprietario) nuovoUtente);
-            return RegistrationResult.success(controller);
-        } catch (Exception e) {
-            return RegistrationResult.failure("Errore durante la registrazione: " + e.getMessage());
-        }
+
+        nuovoUtente.registrati();
+        ProprietarioController controller = new ProprietarioController((Proprietario) nuovoUtente);
+        return RegistrationResult.success(controller);
     }
 
     private boolean isNullOrEmpty(String s) {

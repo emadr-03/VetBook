@@ -2,13 +2,14 @@ package it.unina.vetbook.control;
 
 import it.unina.vetbook.dto.*;
 import it.unina.vetbook.entity.*;
+import it.unina.vetbook.exception.BusinessRuleViolationException;
+import it.unina.vetbook.exception.ValidationException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AgendaController {
 
@@ -27,17 +28,17 @@ public class AgendaController {
     public void inserisciDisponibilita(LocalDate data, LocalTime ora) {
         //1. Verifica che data e ora non siano nulli
         if (data == null || ora == null) {
-            throw new IllegalArgumentException("Data e ora sono obbligatorie.");
+            throw new ValidationException("Data e ora sono obbligatorie.");
         }
         // 2. Verifica che la data/ora non sia nel passato
         LocalDate oggi = LocalDate.now();
         LocalTime oraAttuale = LocalTime.now();
         if (data.isBefore(oggi) || (data.equals(oggi) && ora.isBefore(oraAttuale))) {
-            throw new IllegalArgumentException("Non è possibile inserire disponibilità in una data o ora passata.");
+            throw new ValidationException("Non è possibile inserire disponibilità in una data o ora passata.");
         }
         // 3. Verifica che lo slot orario sia disponibile
         if (agenda.isSlotOccupato(data, ora)) {
-            throw new IllegalStateException("Lo slot è già occupato da una disponibilità, prenotazione o visita.");
+            throw new BusinessRuleViolationException("Lo slot è già occupato da una disponibilità, prenotazione o visita.");
         }
         agenda.addDisponibilita(new Disponibilita(data, ora));
     }

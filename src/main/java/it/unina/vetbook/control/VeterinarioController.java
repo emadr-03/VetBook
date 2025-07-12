@@ -2,6 +2,7 @@ package it.unina.vetbook.control;
 
 import it.unina.vetbook.entity.*;
 import it.unina.vetbook.dto.FarmacoDTO;
+import it.unina.vetbook.exception.ValidationException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,11 +26,11 @@ public class VeterinarioController {
     public void registraVisita(TipoVisita tipo, String descrizione, double costo, List<FarmacoDTO> farmaci) {
         // 1. Verifica lunghezza descrizione
         if (descrizione.length() > 150) {
-            throw new IllegalArgumentException("La descrizione non può superare i 150 caratteri.");
+            throw new ValidationException("La descrizione non può superare i 150 caratteri.");
         }
         // 2. Verifica costo valido
         if (costo < 0) {
-            throw new IllegalArgumentException("Il costo non può essere minore di 0.");
+            throw new ValidationException("Il costo non può essere minore di 0.");
         }
 
         Visita v = new Visita(tipo, descrizione, costo, veterinario);

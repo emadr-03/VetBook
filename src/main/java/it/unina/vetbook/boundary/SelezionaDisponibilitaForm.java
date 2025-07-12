@@ -87,10 +87,8 @@ public class SelezionaDisponibilitaForm extends JFrame {
             JOptionPane.showMessageDialog(this, "Prenotazione confermata!", "Successo", JOptionPane.INFORMATION_MESSAGE);
             new ProprietarioBoundary(proprietarioController).setVisible(true);
             dispose();
-        } catch (IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage(), "Errore di prenotazione", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Errore imprevisto: " + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Errore: " + ex.getMessage(), "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
 

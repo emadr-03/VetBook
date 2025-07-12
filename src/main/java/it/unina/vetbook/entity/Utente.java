@@ -2,6 +2,7 @@ package it.unina.vetbook.entity;
 
 import it.unina.vetbook.database.DBManager;
 import it.unina.vetbook.database.UtenteDAO;
+import it.unina.vetbook.exception.PersistenceException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,11 +31,11 @@ public abstract class Utente {
         }
     }
 
-    public void registrati() {
+    public void registrati() throws PersistenceException{
         try(Connection conn = DBManager.getInstance().getConnection()) {
             new UtenteDAO(conn).create(this);
         } catch (SQLException e) {
-            throw new RuntimeException("Errore nella registrazione dell'utente", e);
+            throw new PersistenceException("Errore nella registrazione dell'utente", e);
         }
     }
 

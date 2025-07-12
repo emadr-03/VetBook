@@ -93,7 +93,7 @@ public class DisponibilitaForm extends JDialog {
                 agendaController.inserisciDisponibilita(data, ora);
                 caricaAgenda();
 
-            } catch (IllegalArgumentException | IllegalStateException ex) {
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Errore", JOptionPane.WARNING_MESSAGE);
             }
         });

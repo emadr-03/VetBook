@@ -7,6 +7,8 @@ import it.unina.vetbook.entity.Agenda;
 import it.unina.vetbook.entity.AnimaleDomestico;
 import it.unina.vetbook.entity.Prenotazione;
 import it.unina.vetbook.entity.Proprietario;
+import it.unina.vetbook.exception.BusinessRuleViolationException;
+import it.unina.vetbook.exception.ValidationException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,19 +31,19 @@ public class ProprietarioController {
 
     public void gestioneProfilo(String username, String nome, String cognome, String email, String password) {
         if (username == null || username.trim().isEmpty() || username.length() > 20) {
-            throw new IllegalArgumentException("Username non valido.");
+            throw new ValidationException("Username non valido.");
         }
         if (!nome.matches("[a-zA-Z\\s]+") || nome.length() > 30) {
-            throw new IllegalArgumentException("Nome non valido.");
+            throw new ValidationException("Nome non valido.");
         }
         if (!cognome.matches("[a-zA-Z\\s]+") || cognome.length() > 30) {
-            throw new IllegalArgumentException("Cognome non valido.");
+            throw new ValidationException("Cognome non valido.");
         }
         if (!email.matches("^[\\w-.]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
-            throw new IllegalArgumentException("Email non valida.");
+            throw new ValidationException("Email non valida.");
         }
         if (password.length() < 6 && (!password.isEmpty())) {
-            throw new IllegalArgumentException("La password deve essere maggiore di 6 caratteri");
+            throw new ValidationException("La password deve essere maggiore di 6 caratteri");
         }
 
         proprietarioCorrente.setUsername(username.trim());
@@ -55,30 +57,30 @@ public class ProprietarioController {
 
     public void aggiornaImmagineProfilo(File file) {
         if (file == null || !file.exists()) {
-            throw new IllegalArgumentException("File immagine non valido.");
+            throw new ValidationException("File immagine non valido.");
         }
 
         String nomeFile = file.getName().toLowerCase();
         if (!(nomeFile.endsWith(".jpg") || nomeFile.endsWith(".jpeg") ||
                 nomeFile.endsWith(".png") || nomeFile.endsWith(".gif"))) {
-            throw new IllegalArgumentException("Formato immagine non supportato.");
+            throw new ValidationException("Formato immagine non supportato.");
         }
 
         try (FileInputStream fis = new FileInputStream(file)) {
             byte[] bytes = fis.readAllBytes();
             proprietarioCorrente.setImmagineProfilo(bytes);
         } catch (IOException e) {
-            throw new RuntimeException("Errore nella lettura del file immagine.", e);
+            throw new BusinessRuleViolationException("Errore nella lettura del file immagine.", e);
         }
     }
 
 
     public void inserisciAnimale(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
         if (String.valueOf(codiceChip).length() != 10)
-            throw new IllegalArgumentException("Il codice chip deve essere di 10 cifre.");
+            throw new ValidationException("Il codice chip deve essere di 10 cifre.");
 
         if (proprietarioCorrente.getAnimali().stream().anyMatch(a -> a.getCodiceChip() == codiceChip))
-            throw new IllegalStateException("Codice chip già esistente.");
+            throw new BusinessRuleViolationException("Codice chip già esistente.");
 
         validaCampoTesto(nome, "Nome", 40);
         validaCampoTesto(tipo, "Tipo", 20);
@@ -86,7 +88,7 @@ public class ProprietarioController {
         validaCampoTesto(colore, "Colore", 20);
 
         if (dataDiNascita == null || dataDiNascita.isAfter(LocalDate.now()))
-            throw new IllegalArgumentException("Data di nascita non valida.");
+            throw new ValidationException("Data di nascita non valida.");
 
         proprietarioCorrente.addAnimale(new AnimaleDomestico(codiceChip, proprietarioCorrente.getId(), nome, tipo, razza, colore, dataDiNascita));
     }
@@ -99,12 +101,12 @@ public class ProprietarioController {
         validaCampoTesto(colore, "Colore", 20);
 
         if (dataDiNascita == null || dataDiNascita.isAfter(LocalDate.now()))
-            throw new IllegalArgumentException("Data di nascita non valida.");
+            throw new ValidationException("Data di nascita non valida.");
 
         AnimaleDomestico animale = proprietarioCorrente.getAnimali().stream()
                 .filter(a -> a.getCodiceChip() == codiceChip)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Animale con codice chip " + codiceChip + " non trovato."));
+                .orElseThrow(() -> new ValidationException("Animale con codice chip " + codiceChip + " non trovato."));
 
         animale.setNome(nome);
         animale.setTipo(tipo);
@@ -121,7 +123,7 @@ public class ProprietarioController {
         AnimaleDomestico animale = proprietarioCorrente.getAnimali().stream()
                 .filter(a -> a.getCodiceChip() == animaleDomesticoDTO.codiceChip())
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Animale non trovato per il codice chip specificato."));
+                .orElseThrow(() -> new ValidationException("Animale non trovato per il codice chip specificato."));
 
         Prenotazione prenotazione = new Prenotazione(
                 disponibilita.data(),
@@ -173,13 +175,13 @@ public class ProprietarioController {
 
     private void validaCampoTesto(String testo, String nomeCampo, int lunghezzaMax) {
         if (testo == null || testo.trim().isEmpty())
-            throw new IllegalArgumentException("Il campo '" + nomeCampo + "' è obbligatorio.");
+            throw new ValidationException("Il campo '" + nomeCampo + "' è obbligatorio.");
         if (testo.length() > lunghezzaMax)
-            throw new IllegalArgumentException("Il campo '" + nomeCampo + "' è troppo lungo (max " + lunghezzaMax + ").");
+            throw new ValidationException("Il campo '" + nomeCampo + "' è troppo lungo (max " + lunghezzaMax + ").");
         if (testo.matches(".*\\d.*"))
-            throw new IllegalArgumentException("Il campo '" + nomeCampo + "' non può contenere numeri.");
+            throw new ValidationException("Il campo '" + nomeCampo + "' non può contenere numeri.");
         if (!testo.matches("[a-zA-Z\\s]+"))
-            throw new IllegalArgumentException("Il campo '" + nomeCampo + "' contiene simboli non validi.");
+            throw new ValidationException("Il campo '" + nomeCampo + "' contiene simboli non validi.");
     }
 
 }
