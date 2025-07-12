@@ -42,9 +42,9 @@ public class AdminController {
     public List<AnimaleDomesticoDTO> visualizzaAnimaliNonVaccinati() {
         // MOCK DATA: Method must not be implemented
         return List.of(
-                new AnimaleDomesticoDTO(101, "Luna", "Gatto", null, null, LocalDate.of(2025, 4, 27), null),
-                new AnimaleDomesticoDTO(207, "Milo", "Cane", null, null, LocalDate.of(2023, 4, 27), null),
-                new AnimaleDomesticoDTO(315, "Kiwi", "Coniglio", null, null, LocalDate.of(2022, 4, 25), null)
+                new AnimaleDomesticoDTO(101, "Luna", "Gatto", null, null, LocalDate.of(2025, 4, 27), 1),
+                new AnimaleDomesticoDTO(207, "Milo", "Cane", null, null, LocalDate.of(2023, 4, 27), 1),
+                new AnimaleDomesticoDTO(315, "Kiwi", "Coniglio", null, null, LocalDate.of(2022, 4, 25), 1)
         );
     }
 }
