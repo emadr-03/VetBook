@@ -20,16 +20,6 @@ public class AnimaleDomestico {
     private LocalDate dataDiNascita;
     private LocalDate dataUltimaVaccinazione;
 
-
-    public AnimaleDomestico(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
-        this.codiceChip = codiceChip;
-        this.nome = nome;
-        this.tipo = tipo;
-        this.razza = razza;
-        this.colore = colore;
-        this.dataDiNascita = dataDiNascita;
-    }
-
     public AnimaleDomestico(int codiceChip, Proprietario proprietario, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
         this.codiceChip = codiceChip;
         this.proprietario = proprietario;
@@ -110,6 +100,13 @@ public class AnimaleDomestico {
             throw new RuntimeException(e);
         }
         return animali;
+    }
+
+    public static List<AnimaleDomestico> mockAnimali(Proprietario proprietario){
+        List<AnimaleDomestico> animaliMock = new ArrayList<>();
+        animaliMock.add(new AnimaleDomestico(1234567890, proprietario, "Fido", "Cane", "Golden Retriever", "Biondo", LocalDate.of(2020, 5, 10)));
+        animaliMock.add(new AnimaleDomestico(1234567891, proprietario, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
+        return animaliMock;
     }
 }
 

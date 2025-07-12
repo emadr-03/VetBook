@@ -12,27 +12,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProprietarioController {
 
 
-    private Proprietario proprietarioCorrente;
-
-    // Tale istanza è un mock che permette il flusso completo delle 3 funzionalità codificate
-    // essa non è stata modellata nel diagramma BCED in quanto non sarà presente nella versione finale del software
-    private final List<AnimaleDomestico> animaliMock;
+    private final Proprietario proprietarioCorrente;
 
     private final Agenda agenda;
 
     public ProprietarioController(Proprietario proprietarioCorrente) {
-        animaliMock = new ArrayList<>();
         //Usiamo un proprietario mockato
-        this.proprietarioCorrente = getProprietarioMock();
-        animaliMock.add(new AnimaleDomestico(1234567890, this.proprietarioCorrente, "Fido", "Cane", "Golden Retriever", "Biondo", LocalDate.of(2020, 5, 10)));
-        animaliMock.add(new AnimaleDomestico(1234567891, this.proprietarioCorrente, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
-        //this.proprietarioCorrente = proprietarioCorrente;
+        this.proprietarioCorrente = Proprietario.mockProprietario();
+        proprietarioCorrente.setAnimali(AnimaleDomestico.mockAnimali(this.proprietarioCorrente));
         agenda = Agenda.getInstance();
     }
 
@@ -86,7 +78,7 @@ public class ProprietarioController {
         if (String.valueOf(codiceChip).length() != 10)
             throw new IllegalArgumentException("Il codice chip deve essere di 10 cifre.");
 
-        if (animaliMock.stream().anyMatch(a -> a.getCodiceChip() == codiceChip))
+        if (proprietarioCorrente.getAnimali().stream().anyMatch(a -> a.getCodiceChip() == codiceChip))
             throw new IllegalStateException("Codice chip già esistente.");
 
         validaCampoTesto(nome, "Nome", 40);
@@ -97,7 +89,7 @@ public class ProprietarioController {
         if (dataDiNascita == null || dataDiNascita.isAfter(LocalDate.now()))
             throw new IllegalArgumentException("Data di nascita non valida.");
 
-        animaliMock.add(new AnimaleDomestico(codiceChip, nome, tipo, razza, colore, dataDiNascita));
+        proprietarioCorrente.addAnimale(new AnimaleDomestico(codiceChip, this.proprietarioCorrente, nome, tipo, razza, colore, dataDiNascita));
     }
 
 
@@ -110,7 +102,7 @@ public class ProprietarioController {
         if (dataDiNascita == null || dataDiNascita.isAfter(LocalDate.now()))
             throw new IllegalArgumentException("Data di nascita non valida.");
 
-        AnimaleDomestico animale = animaliMock.stream()
+        AnimaleDomestico animale = proprietarioCorrente.getAnimali().stream()
                 .filter(a -> a.getCodiceChip() == codiceChip)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Animale con codice chip " + codiceChip + " non trovato."));
@@ -123,7 +115,7 @@ public class ProprietarioController {
     }
 
     public void eliminaAnimale(int codiceChip) {
-        animaliMock.removeIf(a -> a.getCodiceChip() == codiceChip);
+        proprietarioCorrente.getAnimali().removeIf(a -> a.getCodiceChip() == codiceChip);
     }
 
     public void effettuaPrenotazione(AnimaleDomesticoDTO animaleDomesticoDTO, DisponibilitaDTO disponibilita) {
@@ -141,7 +133,7 @@ public class ProprietarioController {
     }
 
     public List<AnimaleDomesticoDTO> getAnimaliProprietario() {
-        return animaliMock.stream()
+        return proprietarioCorrente.getAnimali().stream()
                 .map(a -> new AnimaleDomesticoDTO(
                         a.getCodiceChip(),
                         a.getNome(),
@@ -154,20 +146,6 @@ public class ProprietarioController {
                 .toList();
     }
 
-
-    //A: La seguente classe permette di tener conto della sessione corrente del proprietario
-    //      Attualmente la classe è mockata
-    private Proprietario getProprietarioMock() {
-        if (proprietarioCorrente == null) {
-            proprietarioCorrente = new Proprietario("mariorossi", "mariorossi@email.com", "prova");
-            proprietarioCorrente.setId(1);
-            proprietarioCorrente.setNome("Mario");
-            proprietarioCorrente.setCognome("Rossi");
-            proprietarioCorrente.setAnimali(animaliMock);
-            proprietarioCorrente.setImmagineProfilo(new byte[0]);
-        }
-        return proprietarioCorrente;
-    }
 
     public ProprietarioDTO getProprietarioDTO() {
         return new ProprietarioDTO(

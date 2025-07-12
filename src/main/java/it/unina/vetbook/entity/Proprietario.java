@@ -51,8 +51,15 @@ public class Proprietario extends Utente {
         this.animali = animali;
     }
 
+    public void addAnimale(AnimaleDomestico animaleDomestico){
+        animali.add(animaleDomestico);
+    }
+
     public static Proprietario mockProprietario() {
         Proprietario mock = new Proprietario("Mario", "mariorossi@libero.it", "mario123");
+        mock.setNome("Mario");
+        mock.setCognome("Di Lela");
+        mock.setImmagineProfilo(new byte[0]);
         mock.setId(1);
         return mock;
     }

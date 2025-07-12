@@ -33,14 +33,14 @@ public class Agenda {
         disponibilita.add(new Disponibilita(4, LocalDate.now().plusDays(2), LocalTime.of(12, 0)));
 
         // Animali di test
-        AnimaleDomestico rex = new AnimaleDomestico(111222333, "Rex", "Cane", "Pastore Tedesco", "Nero", LocalDate.now().minusYears(3));
-        AnimaleDomestico luna = new AnimaleDomestico(444555666, "Luna", "Gatto", "Europeo", "Bianco", LocalDate.now().minusYears(2));
-        AnimaleDomestico zorro = new AnimaleDomestico(777888999, "Zorro", "Cane", "Labrador", "Miele", LocalDate.now().minusYears(4));
+        AnimaleDomestico rex = new AnimaleDomestico(111222333, null,"Rex", "Cane", "Pastore Tedesco", "Nero", LocalDate.now().minusYears(3));
+        AnimaleDomestico luna = new AnimaleDomestico(444555666, null, "Luna", "Gatto", "Europeo", "Bianco", LocalDate.now().minusYears(2));
+        AnimaleDomestico zorro = new AnimaleDomestico(777888999, null, "Zorro", "Cane", "Labrador", "Miele", LocalDate.now().minusYears(4));
 
         // Prenotazioni MOCK
-        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(1), LocalTime.of(9, 0), rex)); // DUPLICATA con disponibilità
-        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(2), LocalTime.of(12, 0), luna)); // DUPLICATA con disponibilità
-        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(3), LocalTime.of(15, 0), zorro)); // NUOVA prenotazione
+        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(1), LocalTime.of(9, 0), rex));
+        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(2), LocalTime.of(12, 0), luna));
+        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(3), LocalTime.of(15, 0), zorro));
 
         // Visite MOCK
         Visita v1 = new Visita(TipoVisita.CONTROLLO, "Controllo annuale", 35.00, Veterinario.mockVet());
