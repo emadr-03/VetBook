@@ -17,8 +17,11 @@ import java.util.List;
 
 public class ProprietarioController {
 
-    //Istanza mockata del proprietario
+
     private Proprietario proprietarioCorrente;
+
+    // Tale istanza è un mock che permette il flusso completo delle 3 funzionalità codificate
+    // essa non è stata modellata nel diagramma BCED in quanto non sarà presente nella versione finale del software
     private final List<AnimaleDomestico> animaliMock;
 
     private final Agenda agenda;
@@ -134,7 +137,6 @@ public class ProprietarioController {
                 disponibilita.ora(),
                 animale
         );
-
         agenda.prenotaVisita(prenotazione);
     }
 
@@ -147,8 +149,7 @@ public class ProprietarioController {
                         a.getRazza(),
                         a.getColore(),
                         a.getDataDiNascita(),
-                        new ProprietarioDTO("", "", "", "", null)
-                        //a.getProprietario()
+                        proprietarioCorrente.getId()
                 ))
                 .toList();
     }
@@ -179,7 +180,7 @@ public class ProprietarioController {
         );
     }
 
-    public List<AnimaleDomesticoDTO> getAnimaliDTO() {
+    private List<AnimaleDomesticoDTO> getAnimaliDTO() {
         return proprietarioCorrente.getAnimali().stream()
                 .map(a -> new AnimaleDomesticoDTO(
                         a.getCodiceChip(),
@@ -188,8 +189,7 @@ public class ProprietarioController {
                         a.getRazza(),
                         a.getColore(),
                         a.getDataDiNascita(),
-                        new ProprietarioDTO("", "", "", "", null)
-                        //a.getProprietario()
+                        proprietarioCorrente.getId()
                 ))
                 .toList();
     }

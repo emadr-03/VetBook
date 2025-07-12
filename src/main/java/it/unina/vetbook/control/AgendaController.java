@@ -64,8 +64,7 @@ public class AgendaController {
                                 p.getAnimale().getRazza(),
                                 p.getAnimale().getColore(),
                                 p.getAnimale().getDataDiNascita(),
-                                new ProprietarioDTO("", "", "", "", null)
-                                //p.getAnimale().getProprietario()
+                                p.getAnimale().getIdProprietario()
                         )
                 ))
                 .toList();

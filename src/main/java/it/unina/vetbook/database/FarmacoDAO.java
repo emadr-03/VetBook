@@ -26,6 +26,7 @@ public class FarmacoDAO implements GenericDAO<Farmaco, Integer> {
         }
     }
 
+
     @Override
     public Optional<Farmaco> read(Integer[] key) throws SQLException {
         String sql = "SELECT * FROM farmaci WHERE id = ?";
@@ -56,6 +57,11 @@ public class FarmacoDAO implements GenericDAO<Farmaco, Integer> {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         }
+    }
+
+    public List<Farmaco> readAll() throws SQLException {
+        String sql = "SELECT * FROM farmaci";
+        return executeQuery(sql);
     }
 
     @Override
