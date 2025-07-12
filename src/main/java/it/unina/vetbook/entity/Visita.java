@@ -1,5 +1,10 @@
 package it.unina.vetbook.entity;
 
+import it.unina.vetbook.database.DBManager;
+import it.unina.vetbook.database.VisitaDAO;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -8,7 +13,7 @@ import java.util.List;
 public class Visita {
 
     private int idVisita;
-    private int idVeterinario;
+    private Veterinario veterinario;
     private TipoVisita tipo;
     private String descrizione;
     private double costo;
@@ -16,11 +21,11 @@ public class Visita {
     private LocalTime ora;
     private List<Farmaco> farmaciPrescritti;
 
-    public Visita(TipoVisita tipo, String descrizione, double costo, int idVeterinario) {
+    public Visita(TipoVisita tipo, String descrizione, double costo, Veterinario veterinario) {
+        this.veterinario = veterinario;
         this.tipo = tipo;
         this.descrizione = descrizione;
         this.costo = costo;
-        this.idVeterinario = idVeterinario;
         this.farmaciPrescritti = new ArrayList<>();
     }
 
@@ -55,7 +60,15 @@ public class Visita {
     }
 
     public int getIdVeterinario() {
-        return idVeterinario;
+        return this.veterinario.id;
+    }
+
+    public static List<Visita> getVisiteVeterinario(int idVeterinario) {
+        try (Connection conn = DBManager.getInstance().getConnection()) {
+            return new VisitaDAO(conn).readAllByVet(idVeterinario);
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante il recupero delle visite", e);
+        }
     }
 
 

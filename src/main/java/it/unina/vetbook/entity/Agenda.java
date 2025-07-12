@@ -43,17 +43,17 @@ public class Agenda {
         this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(3), LocalTime.of(15, 0), zorro)); // NUOVA prenotazione
 
         // Visite MOCK
-        Visita v1 = new Visita(TipoVisita.CONTROLLO, "Controllo annuale", 35.00, 2);
+        Visita v1 = new Visita(TipoVisita.CONTROLLO, "Controllo annuale", 35.00, Veterinario.mockVet());
         v1.setData(LocalDate.now());
         v1.setOra(LocalTime.of(10, 0));
         this.visite.add(v1);
 
-        Visita v2 = new Visita(TipoVisita.VACCINAZIONE, "Vaccino rabbia", 60.00, 1);
+        Visita v2 = new Visita(TipoVisita.VACCINAZIONE, "Vaccino rabbia", 60.00, Veterinario.mockVet());
         v2.setData(LocalDate.now());
         v2.setOra(LocalTime.of(11, 0));
         this.visite.add(v2);
 
-        Visita v3 = new Visita(TipoVisita.INTERVENTO_CHIRURGICO, "Rimozione cisti", 120.00, 4);
+        Visita v3 = new Visita(TipoVisita.INTERVENTO_CHIRURGICO, "Rimozione cisti", 120.00, Veterinario.mockVet());
         v3.setData(LocalDate.now().plusDays(1));
         v3.setOra(LocalTime.of(9, 0));
         this.visite.add(v3);

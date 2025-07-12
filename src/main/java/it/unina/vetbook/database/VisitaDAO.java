@@ -4,6 +4,7 @@ import it.unina.vetbook.entity.Farmaco;
 import it.unina.vetbook.entity.Visita;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 
 public class VisitaDAO extends GenericDAO<Visita, Integer> {
@@ -39,6 +40,12 @@ public class VisitaDAO extends GenericDAO<Visita, Integer> {
             ps.executeBatch();
         }
     }
+
+    public List<Visita> readAllByVet(int idVet) throws SQLException {
+        String sql = "SELECT * FROM visite WHERE id_veterinario = ?";
+        return executeQuery(sql, idVet);
+    }
+
 
     @Override
     public Optional<Visita> read(Integer[] key) throws SQLException {

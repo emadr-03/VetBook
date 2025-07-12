@@ -37,7 +37,7 @@ public class Prenotazione {
     public int getIdProprietario() {
         return idProprietario;
     }
-    
+
 
     public void setOra(LocalTime ora) {
         this.ora = ora;

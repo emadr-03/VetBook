@@ -32,7 +32,7 @@ public class VeterinarioController {
             throw new IllegalArgumentException("Il costo non può essere minore di 0.");
         }
 
-        Visita v = new Visita(tipo, descrizione, costo, veterinario.getId());
+        Visita v = new Visita(tipo, descrizione, costo, veterinario);
 
         for (FarmacoDTO farmaco : farmaci) {
             v.prescrivi(new Farmaco(farmaco.id(), farmaco.nome(), farmaco.produttore()));
