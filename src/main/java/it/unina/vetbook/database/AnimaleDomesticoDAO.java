@@ -1,6 +1,7 @@
 package it.unina.vetbook.database;
 
 import it.unina.vetbook.entity.AnimaleDomestico;
+import it.unina.vetbook.entity.Proprietario;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class AnimaleDomesticoDAO extends GenericDAO<AnimaleDomestico, Integer> {
             stmt.setString(4, animale.getRazza());
             stmt.setString(5, animale.getColore());
             stmt.setDate(6, Date.valueOf(animale.getDataDiNascita()));
-            stmt.setInt(7, animale.getProprietario().getId());
+            stmt.setInt(7, animale.getIdProprietario());
             stmt.setDate(8, animale.getDataUltimaVaccinazione() != null ? Date.valueOf(animale.getDataUltimaVaccinazione()) : null);
             stmt.executeUpdate();
         }
@@ -61,7 +62,7 @@ public class AnimaleDomesticoDAO extends GenericDAO<AnimaleDomestico, Integer> {
             stmt.setString(3, animale.getRazza());
             stmt.setString(4, animale.getColore());
             stmt.setDate(5, Date.valueOf(animale.getDataDiNascita()));
-            stmt.setInt(6, animale.getProprietario().getId());
+            stmt.setInt(6, animale.getIdProprietario());
             stmt.setDate(7, animale.getDataUltimaVaccinazione() != null ? Date.valueOf(animale.getDataUltimaVaccinazione()) : null);
             stmt.setLong(8, animale.getCodiceChip());
             stmt.executeUpdate();
@@ -77,7 +78,7 @@ public class AnimaleDomesticoDAO extends GenericDAO<AnimaleDomestico, Integer> {
         }
     }
 
-    public List<AnimaleDomestico> readByIdProprietario(int idProprietario) throws SQLException {
+    public List<AnimaleDomestico> readAll(int idProprietario) throws SQLException {
         String sql = "SELECT * FROM animali WHERE idproprietario = ?";
         return executeQuery(sql, idProprietario);
     }
@@ -87,6 +88,7 @@ public class AnimaleDomesticoDAO extends GenericDAO<AnimaleDomestico, Integer> {
     protected AnimaleDomestico mapRow(ResultSet rs) throws SQLException {
         AnimaleDomestico a = new AnimaleDomestico(
                 rs.getInt("codicechip"),
+                rs.getInt("idproprietario"),
                 rs.getString("nome"),
                 rs.getString("tipo"),
                 rs.getString("razza"),

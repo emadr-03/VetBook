@@ -24,7 +24,6 @@ public class ProprietarioController {
     public ProprietarioController(Proprietario proprietarioCorrente) {
         //Usiamo un proprietario mockato
         this.proprietarioCorrente = Proprietario.mockProprietario();
-        proprietarioCorrente.setAnimali(AnimaleDomestico.mockAnimali(this.proprietarioCorrente));
         agenda = Agenda.getInstance();
     }
 
@@ -89,7 +88,7 @@ public class ProprietarioController {
         if (dataDiNascita == null || dataDiNascita.isAfter(LocalDate.now()))
             throw new IllegalArgumentException("Data di nascita non valida.");
 
-        proprietarioCorrente.addAnimale(new AnimaleDomestico(codiceChip, this.proprietarioCorrente, nome, tipo, razza, colore, dataDiNascita));
+        proprietarioCorrente.addAnimale(new AnimaleDomestico(codiceChip, proprietarioCorrente.getId(), nome, tipo, razza, colore, dataDiNascita));
     }
 
 

@@ -1,6 +1,11 @@
 package it.unina.vetbook.entity;
 
-import java.io.InputStream;
+import it.unina.vetbook.database.AnimaleDomesticoDAO;
+import it.unina.vetbook.database.DBManager;
+import it.unina.vetbook.database.UtenteDAO;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +48,15 @@ public class Proprietario extends Utente {
         this.immagineProfilo = immagineProfilo;
     }
 
+
     public List<AnimaleDomestico> getAnimali() {
+        List<AnimaleDomestico> animali = new ArrayList<>();
+        try(Connection conn = DBManager.getInstance().getConnection()) {
+            AnimaleDomesticoDAO dao = new AnimaleDomesticoDAO(conn);
+            animali = dao.readAll(this.id);
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
         return animali;
     }
 

@@ -3,12 +3,11 @@ package it.unina.vetbook.entity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 public class Prenotazione {
 
     private int id;
-    private Proprietario proprietario;
+    private int idProprietario;
     private LocalDate data;
     private LocalTime ora;
     private AnimaleDomestico animale;
@@ -19,7 +18,7 @@ public class Prenotazione {
         this.ora = ora;
         this.animale = animale;
         if (animale != null) {
-            this.proprietario = animale.getProprietario();
+            this.idProprietario = animale.getIdProprietario();
         }
     }
 
@@ -35,8 +34,8 @@ public class Prenotazione {
         return animale;
     }
 
-    public Proprietario getProprietario() {
-        return proprietario;
+    public int getIdProprietario() {
+        return idProprietario;
     }
 
     public void setOra(LocalTime ora) {

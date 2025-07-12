@@ -60,7 +60,7 @@ public class Visita {
     }
 
     public int getIdVeterinario() {
-        return this.veterinario.id;
+        return this.veterinario.getId();
     }
 
     public static List<Visita> getVisiteVeterinario(int idVeterinario) {

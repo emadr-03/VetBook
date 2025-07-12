@@ -35,7 +35,7 @@ public class Veterinario extends Utente {
     }
 
     public static Veterinario mockVet(){
-        Veterinario mock = new Veterinario("dr_roberto", "email@outlook.it", "6e8feec77c620c73adf7c7f78e9bc9c1c4372195140a6d79225594b8961ab4f6");
+        Veterinario mock = new Veterinario("dr_roberto", "email@outlook.it", "veterinario");
         mock.setId(3);
         return mock;
     }

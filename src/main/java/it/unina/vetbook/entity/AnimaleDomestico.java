@@ -1,10 +1,5 @@
 package it.unina.vetbook.entity;
 
-import it.unina.vetbook.database.AnimaleDomesticoDAO;
-import it.unina.vetbook.database.DBManager;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +7,7 @@ import java.util.List;
 public class AnimaleDomestico {
 
     private int codiceChip;
-    private Proprietario proprietario;
+    private int idProprietario;
     private String nome;
     private String tipo;
     private String razza;
@@ -20,15 +15,16 @@ public class AnimaleDomestico {
     private LocalDate dataDiNascita;
     private LocalDate dataUltimaVaccinazione;
 
-    public AnimaleDomestico(int codiceChip, Proprietario proprietario, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
+    public AnimaleDomestico(int codiceChip, int idProprietario, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
         this.codiceChip = codiceChip;
-        this.proprietario = proprietario;
+        this.idProprietario = idProprietario;
         this.nome = nome;
         this.tipo = tipo;
         this.razza = razza;
         this.colore = colore;
         this.dataDiNascita = dataDiNascita;
     }
+
 
     public boolean isVaccinato(){
         throw new UnsupportedOperationException("Not supported yet");
@@ -79,8 +75,8 @@ public class AnimaleDomestico {
         this.dataDiNascita = dataDiNascita;
     }
 
-    public Proprietario getProprietario() {
-        return proprietario;
+    public int getIdProprietario() {
+        return idProprietario;
     }
 
     public LocalDate getDataUltimaVaccinazione() {
@@ -91,21 +87,11 @@ public class AnimaleDomestico {
         this.dataUltimaVaccinazione = dataUltimaVaccinazione;
     }
 
-    public List<AnimaleDomestico> getAnimaliByIdProprietario(int idProprietario){
-        List<AnimaleDomestico> animali = new ArrayList<>();
-        try (Connection conn = DBManager.getInstance().getConnection()){
-            AnimaleDomesticoDAO dao = new AnimaleDomesticoDAO(conn);
-            animali = dao.readByIdProprietario(idProprietario);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return animali;
-    }
 
     public static List<AnimaleDomestico> mockAnimali(Proprietario proprietario){
         List<AnimaleDomestico> animaliMock = new ArrayList<>();
-        animaliMock.add(new AnimaleDomestico(1234567890, proprietario, "Fido", "Cane", "Golden Retriever", "Biondo", LocalDate.of(2020, 5, 10)));
-        animaliMock.add(new AnimaleDomestico(1234567891, proprietario, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
+        animaliMock.add(new AnimaleDomestico(1234567890, proprietario.getId(), "Fido", "Cane", "Golden Retriever", "Biondo", LocalDate.of(2020, 5, 10)));
+        animaliMock.add(new AnimaleDomestico(1234567891, proprietario.getId(), "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
         return animaliMock;
     }
 }

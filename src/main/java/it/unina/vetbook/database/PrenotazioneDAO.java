@@ -15,7 +15,7 @@ public class PrenotazioneDAO extends GenericDAO<Prenotazione, Integer> {
     public void create(Prenotazione p) throws SQLException {
         String sql = "INSERT INTO prenotazioni (id_proprietario, id_animale, data_prenotazione, ora_prenotazione) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, p.getProprietario().getId());
+            stmt.setInt(1, p.getIdProprietario());
             stmt.setLong(2, p.getAnimale().getCodiceChip());
             stmt.setDate(3, Date.valueOf(p.getData()));
             stmt.setTime(4, Time.valueOf(p.getOra()));
