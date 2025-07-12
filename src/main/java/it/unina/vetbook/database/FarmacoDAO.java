@@ -5,12 +5,10 @@ import it.unina.vetbook.entity.Farmaco;
 import java.sql.*;
 import java.util.*;
 
-public class FarmacoDAO implements GenericDAO<Farmaco, Integer> {
-
-    private final Connection connection;
+public class FarmacoDAO extends GenericDAO<Farmaco, Integer> {
 
     public FarmacoDAO(Connection connection) {
-        this.connection = connection;
+        super(connection);
     }
 
     @Override
@@ -25,7 +23,6 @@ public class FarmacoDAO implements GenericDAO<Farmaco, Integer> {
             }
         }
     }
-
 
     @Override
     public Optional<Farmaco> read(Integer[] key) throws SQLException {
@@ -65,18 +62,7 @@ public class FarmacoDAO implements GenericDAO<Farmaco, Integer> {
     }
 
     @Override
-    public List<Farmaco> executeQuery(String sql, Object... params) throws SQLException {
-        List<Farmaco> results = new ArrayList<>();
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            for (int i = 0; i < params.length; i++) stmt.setObject(i + 1, params[i]);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) results.add(mapRow(rs));
-            }
-        }
-        return results;
-    }
-
-    private Farmaco mapRow(ResultSet rs) throws SQLException {
+    protected Farmaco mapRow(ResultSet rs) throws SQLException {
         Farmaco f = new Farmaco(rs.getString("nome"), rs.getString("produttore"));
         f.setId(rs.getInt("id"));
         return f;

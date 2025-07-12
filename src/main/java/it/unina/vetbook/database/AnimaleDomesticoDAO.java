@@ -3,24 +3,21 @@ package it.unina.vetbook.database;
 import it.unina.vetbook.entity.AnimaleDomestico;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AnimaleDomesticoDAO implements GenericDAO<AnimaleDomestico, Integer> {
+public class AnimaleDomesticoDAO extends GenericDAO<AnimaleDomestico, Integer> {
 
-    private final Connection conn;
-
-    public AnimaleDomesticoDAO(Connection conn) {
-        this.conn = conn;
+    public AnimaleDomesticoDAO(Connection connection) {
+        super(connection);
     }
 
     @Override
     public void create(AnimaleDomestico animale) throws SQLException {
         String sql = "INSERT INTO animali (codicechip, nome, tipo, razza, colore, data_nascita, idproprietario, vaccinazione) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, animale.getCodiceChip());
             stmt.setString(2, animale.getNome());
             stmt.setString(3, animale.getTipo());
@@ -36,7 +33,7 @@ public class AnimaleDomesticoDAO implements GenericDAO<AnimaleDomestico, Integer
     @Override
     public Optional<AnimaleDomestico> read(Integer[] codiceChip) throws SQLException {
         String sql = "SELECT * FROM animali WHERE codicechip = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, codiceChip[0]);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) return Optional.of(mapRow(rs));
@@ -46,7 +43,7 @@ public class AnimaleDomesticoDAO implements GenericDAO<AnimaleDomestico, Integer
 
     public List<AnimaleDomestico> readAll() throws SQLException {
         String sql = "SELECT * FROM animali";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
             List<AnimaleDomestico> lista = new ArrayList<>();
             while (rs.next()) lista.add(mapRow(rs));
@@ -58,7 +55,7 @@ public class AnimaleDomesticoDAO implements GenericDAO<AnimaleDomestico, Integer
     public void update(AnimaleDomestico animale) throws SQLException {
         String sql = "UPDATE animali SET nome = ?, tipo = ?, razza = ?, colore = ?, data_nascita = ?, idproprietario = ?, vaccinazione = ? " +
                 "WHERE codicechip = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, animale.getNome());
             stmt.setString(2, animale.getTipo());
             stmt.setString(3, animale.getRazza());
@@ -74,13 +71,14 @@ public class AnimaleDomesticoDAO implements GenericDAO<AnimaleDomestico, Integer
     @Override
     public void delete(Integer codiceChip) throws SQLException {
         String sql = "DELETE FROM animali WHERE codicechip = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setLong(1, codiceChip);
             stmt.executeUpdate();
         }
     }
 
-    private AnimaleDomestico mapRow(ResultSet rs) throws SQLException {
+    @Override
+    protected AnimaleDomestico mapRow(ResultSet rs) throws SQLException {
         AnimaleDomestico a = new AnimaleDomestico(
                 rs.getInt("codicechip"),
                 rs.getString("nome"),

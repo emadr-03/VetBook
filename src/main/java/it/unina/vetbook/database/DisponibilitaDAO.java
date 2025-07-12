@@ -4,20 +4,17 @@ import it.unina.vetbook.entity.Disponibilita;
 import it.unina.vetbook.entity.Stato;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class DisponibilitaDAO implements GenericDAO<Disponibilita, Integer> {
-
-    private final Connection connection;
+public class DisponibilitaDAO extends GenericDAO<Disponibilita, Integer> {
 
     public DisponibilitaDAO(Connection connection) {
-        this.connection = connection;
+        super(connection);
     }
 
+    @Override
     public void create(Disponibilita d) throws SQLException {
         String sql = "INSERT INTO disponibilita (data_visita, ora_visita, stato) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -33,7 +30,6 @@ public class DisponibilitaDAO implements GenericDAO<Disponibilita, Integer> {
             }
         }
     }
-
 
     @Override
     public Optional<Disponibilita> read(Integer[] key) throws SQLException {
@@ -68,23 +64,9 @@ public class DisponibilitaDAO implements GenericDAO<Disponibilita, Integer> {
         }
     }
 
-    @Override
-    public List<Disponibilita> executeQuery(String sql, Object... params) throws SQLException {
-        List<Disponibilita> results = new ArrayList<>();
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            for (int i = 0; i < params.length; i++) {
-                stmt.setObject(i + 1, params[i]);
-            }
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    results.add(mapRow(rs));
-                }
-            }
-        }
-        return results;
-    }
 
-    private Disponibilita mapRow(ResultSet rs) throws SQLException {
+    @Override
+    protected Disponibilita mapRow(ResultSet rs) throws SQLException {
         Disponibilita d = new Disponibilita(
                 rs.getDate("data_visita").toLocalDate(),
                 rs.getTime("ora_visita").toLocalTime()

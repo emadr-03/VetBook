@@ -5,13 +5,12 @@ import it.unina.vetbook.entity.Prenotazione;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class PrenotazioneDAO implements GenericDAO<Prenotazione, Integer> {
-
-    private final Connection connection;
+public class PrenotazioneDAO extends GenericDAO<Prenotazione, Integer> {
 
     public PrenotazioneDAO(Connection connection) {
-        this.connection = connection;
+        super(connection);
     }
 
     @Override
@@ -32,7 +31,6 @@ public class PrenotazioneDAO implements GenericDAO<Prenotazione, Integer> {
         }
     }
 
-
     @Override
     public void delete(Integer id) throws SQLException {
         String sql = "DELETE FROM prenotazioni WHERE id = ?";
@@ -42,24 +40,9 @@ public class PrenotazioneDAO implements GenericDAO<Prenotazione, Integer> {
         }
     }
 
+
     @Override
-    public List<Prenotazione> executeQuery(String sql, Object... params) throws SQLException {
-        List<Prenotazione> results = new ArrayList<>();
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            for (int i = 0; i < params.length; i++) {
-                stmt.setObject(i + 1, params[i]);
-            }
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    results.add(mapRow(rs));
-                }
-            }
-        }
-        return results;
-    }
-
-    private Prenotazione mapRow(ResultSet rs) throws SQLException {
-
+    protected Prenotazione mapRow(ResultSet rs) throws SQLException {
         Prenotazione p = new Prenotazione(
                 rs.getDate("data_prenotazione").toLocalDate(),
                 rs.getTime("ora_prenotazione").toLocalTime(),
@@ -68,5 +51,23 @@ public class PrenotazioneDAO implements GenericDAO<Prenotazione, Integer> {
         p.setId(rs.getInt("id"));
         return p;
     }
-}
 
+    @Override
+    public Optional<Prenotazione> read(Integer[] key) throws SQLException {
+        String sql = "SELECT * FROM prenotazioni WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, key[0]);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapRow(rs));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public void update(Prenotazione entity) throws SQLException {
+        throw new UnsupportedOperationException("update non supportato per PrenotazioneDAO");
+    }
+}
