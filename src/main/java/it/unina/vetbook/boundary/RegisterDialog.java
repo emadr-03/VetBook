@@ -1,7 +1,7 @@
 package it.unina.vetbook.boundary;
 
 import it.unina.vetbook.control.AuthController;
-import it.unina.vetbook.dto.RegistrationResultDTO;
+import it.unina.vetbook.utils.RegistrationResult;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,7 +79,7 @@ public class RegisterDialog extends JDialog {
             return;
         }
 
-        RegistrationResultDTO result = authController.registrati(
+        RegistrationResult result = authController.registrati(
                 userField.getText(),
                 emailField.getText(),
                 nomeField.getText(),

@@ -7,18 +7,20 @@ import java.util.List;
 
 public class Visita {
 
+    private int idVisita;
+    private int idVeterinario;
     private TipoVisita tipo;
     private String descrizione;
     private double costo;
     private LocalDate data;
     private LocalTime ora;
     private List<Farmaco> farmaciPrescritti;
-    private AnimaleDomestico animale;
 
-    public Visita(TipoVisita tipo, String descrizione, double costo) {
+    public Visita(TipoVisita tipo, String descrizione, double costo, int idVeterinario) {
         this.tipo = tipo;
         this.descrizione = descrizione;
         this.costo = costo;
+        this.idVeterinario = idVeterinario;
         this.farmaciPrescritti = new ArrayList<>();
     }
 
@@ -31,8 +33,42 @@ public class Visita {
     public TipoVisita getTipo() { return tipo; }
     public String getDescrizione() { return descrizione; }
     public double getCosto() { return costo; }
-    public AnimaleDomestico getAnimale() { return animale; }
-    public void setAnimale(AnimaleDomestico animale) { this.animale = animale; }
     public void setData(LocalDate data) { this.data = data; }
     public void setOra(LocalTime ora) { this.ora = ora; }
+
+    public void setIdVisita(int idVisita) {
+        this.idVisita = idVisita;
+    }
+
+    public void setTipo(TipoVisita tipo) {
+        this.tipo = tipo;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
+
+    public void setCosto(double costo) {
+        this.costo = costo;
+    }
+
+    public List<Farmaco> getFarmaciPrescritti() {
+        return farmaciPrescritti;
+    }
+
+    public void setFarmaciPrescritti(List<Farmaco> farmaciPrescritti) {
+        this.farmaciPrescritti = farmaciPrescritti;
+    }
+
+    public int getIdVisita() {
+        return idVisita;
+    }
+
+    public int getIdVeterinario() {
+        return idVeterinario;
+    }
+
+    public void setIdVeterinario(int idVeterinario) {
+        this.idVeterinario = idVeterinario;
+    }
 }

@@ -25,8 +25,8 @@ public class ProprietarioController {
 
     public ProprietarioController(Proprietario proprietarioCorrente) {
         animaliMock = new ArrayList<>();
-        animaliMock.add(new AnimaleDomestico(1234567890, "Fido", "Cane", "Golden Retriever", "Biondo", LocalDate.of(2020, 5, 10)));
-        animaliMock.add(new AnimaleDomestico(1234567891, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
+        animaliMock.add(new AnimaleDomestico(1234567890, 1, "Fido", "Cane", "Golden Retriever", "Biondo", LocalDate.of(2020, 5, 10)));
+        animaliMock.add(new AnimaleDomestico(1234567891, 1, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
         //this.proprietarioCorrente = proprietarioCorrente;
         //Usiamo un proprietario mockato
         this.proprietarioCorrente = getProprietarioMock();
@@ -147,7 +147,8 @@ public class ProprietarioController {
                         a.getRazza(),
                         a.getColore(),
                         a.getDataDiNascita(),
-                        a.getProprietario()
+                        new ProprietarioDTO("", "", "", "", null)
+                        //a.getProprietario()
                 ))
                 .toList();
     }
@@ -158,6 +159,7 @@ public class ProprietarioController {
     private Proprietario getProprietarioMock() {
         if (proprietarioCorrente == null) {
             proprietarioCorrente = new Proprietario("mrossi", "mario.rossi@email.com", "prova");
+            proprietarioCorrente.setId(1);
             proprietarioCorrente.setNome("Mario");
             proprietarioCorrente.setCognome("Rossi");
             proprietarioCorrente.setAnimali(animaliMock);
@@ -173,8 +175,23 @@ public class ProprietarioController {
                 proprietarioCorrente.getNome(),
                 proprietarioCorrente.getCognome(),
                 proprietarioCorrente.getImmagineProfilo(),
-                proprietarioCorrente.getAnimali()
+                getAnimaliDTO()
         );
+    }
+
+    public List<AnimaleDomesticoDTO> getAnimaliDTO() {
+        return proprietarioCorrente.getAnimali().stream()
+                .map(a -> new AnimaleDomesticoDTO(
+                        a.getCodiceChip(),
+                        a.getNome(),
+                        a.getTipo(),
+                        a.getRazza(),
+                        a.getColore(),
+                        a.getDataDiNascita(),
+                        new ProprietarioDTO("", "", "", "", null)
+                        //a.getProprietario()
+                ))
+                .toList();
     }
 
     private void validaCampoTesto(String testo, String nomeCampo, int lunghezzaMax) {

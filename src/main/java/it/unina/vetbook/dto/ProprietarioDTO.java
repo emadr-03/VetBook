@@ -11,7 +11,7 @@ public record ProprietarioDTO(
         String nome,
         String cognome,
         byte[] immagineProfilo,
-        List<AnimaleDomestico> animali
+        List<AnimaleDomesticoDTO> animali
 ) {
     public ProprietarioDTO(String username, String email, String nome, String cognome, byte[] immagineProfilo) {
         this(username, email, nome, cognome, immagineProfilo, List.of());

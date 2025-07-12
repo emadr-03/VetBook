@@ -6,9 +6,9 @@ import java.sql.SQLException;
 
 public final class DBManager {
 
-    private static final String URL      = "jdbc:postgresql://localhost:5432/vetclinic";
-    private static final String USER     = "vet_user";
-    private static final String PASSWORD = "vet_password";
+    private static final String URL      = "jdbc:mysql://localhost:3306/vetbookdb";
+    private static final String USER     = "root";
+    private static final String PASSWORD = "password";
     private static DBManager instance;
 
     private DBManager() { }

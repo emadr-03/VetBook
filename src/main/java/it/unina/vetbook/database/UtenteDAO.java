@@ -1,28 +1,110 @@
 package it.unina.vetbook.database;
 
 import it.unina.vetbook.entity.*;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
 import java.util.Optional;
 
+public class UtenteDAO implements GenericDAO<Utente, Integer> {
 
-public class UtenteDAO implements GenericDAO<Utente, String> {
+    private final Connection conn;
+
+    public UtenteDAO(Connection conn) {
+        this.conn = conn;
+    }
 
     @Override
-    public Optional<Utente> read(String[] key) throws SQLException {
-        Utente mockUtente = new Veterinario(key[0], "email", key[1]);
-        return Optional.of(mockUtente);
+    public void create(Utente u) throws SQLException {
+        String sql = "INSERT INTO utenti (username, email, password, ruolo) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, u.getUsername());
+            stmt.setString(2, u.getEmail());
+            stmt.setString(3, u.getPassword());
+            stmt.setString(4, u.getRuolo().name());
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    u.setId(rs.getInt(1));
+                }
+            }
+        }
+    }
+
+    public Optional<Utente> read(String[] usernamePassword) throws SQLException {
+        String sql = "SELECT * FROM utenti WHERE username = ? AND password = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, usernamePassword[0]);
+            stmt.setString(2, usernamePassword[1]);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapRow(rs));
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     public Optional<Utente> readByUsername(String username) throws SQLException {
-        List<Utente> utenti = executeQuery("SELECT * FROM Utente WHERE username = '" + username + "'");
-        return utenti.isEmpty() ? Optional.empty() : Optional.of(utenti.get(0));
+        String sql = "SELECT * FROM utenti WHERE username = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapRow(rs));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+
+    private Utente mapRow(ResultSet rs) throws SQLException {
+        String ruolo = rs.getString("ruolo");
+        Utente u;
+
+        switch (UserRole.valueOf(ruolo)) {
+            case VETERINARIO:
+                u = new Veterinario(rs.getString("username"), rs.getString("email"), rs.getString("password"));
+                break;
+            case PROPRIETARIO:
+                Proprietario p = new Proprietario(rs.getString("username"), rs.getString("email"), rs.getString("password"));
+                p.setNome(rs.getString("nome"));
+                p.setCognome(rs.getString("cognome"));
+                p.setImmagineProfilo(rs.getBytes("immagine_profilo"));
+                u = p;
+                break;
+            case AMMINISTRATORE:
+                u = new Amministratore(rs.getString("username"), rs.getString("email"), rs.getString("password"));
+                break;
+            default:
+                throw new IllegalStateException("Ruolo non gestito: " + ruolo);
+        }
+
+        u.setId(rs.getInt("id"));
+        return u;
+    }
+
+
+    @Override
+    public void update(Utente u) throws SQLException {
+        String sql = "UPDATE utenti SET username = ?, email = ?, password = ?, ruolo = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, u.getUsername());
+            stmt.setString(2, u.getEmail());
+            stmt.setString(3, u.getPassword());
+            stmt.setString(4, u.getRuolo().name());
+            stmt.setInt(5, u.getId());
+            stmt.executeUpdate();
+        }
     }
 
     @Override
-    public List<Utente> executeQuery(String sql, Object... params) throws SQLException {
-        return new ArrayList<>();
+    public void delete(Integer id) throws SQLException {
+        String sql = "DELETE FROM utenti WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
     }
+
 }

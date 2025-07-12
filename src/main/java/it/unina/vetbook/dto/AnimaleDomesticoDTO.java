@@ -11,7 +11,7 @@ public record AnimaleDomesticoDTO(
         String razza,
         String colore,
         LocalDate dataDiNascita,
-        Proprietario proprietario
+        ProprietarioDTO proprietario
 ) {
     public AnimaleDomesticoDTO(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
         this(codiceChip, nome, tipo, razza, colore, dataDiNascita, null);

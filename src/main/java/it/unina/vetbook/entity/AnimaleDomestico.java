@@ -5,15 +5,27 @@ import java.time.LocalDate;
 public class AnimaleDomestico {
 
     private int codiceChip;
+    private int idProprietario;
     private String nome;
     private String tipo;
     private String razza;
     private String colore;
     private LocalDate dataDiNascita;
-    private Proprietario proprietario;
+    private LocalDate dataUltimaVaccinazione;
+
 
     public AnimaleDomestico(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
         this.codiceChip = codiceChip;
+        this.nome = nome;
+        this.tipo = tipo;
+        this.razza = razza;
+        this.colore = colore;
+        this.dataDiNascita = dataDiNascita;
+    }
+
+    public AnimaleDomestico(int codiceChip, int idProprietario, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
+        this.codiceChip = codiceChip;
+        this.idProprietario = idProprietario;
         this.nome = nome;
         this.tipo = tipo;
         this.razza = razza;
@@ -49,13 +61,6 @@ public class AnimaleDomestico {
         return dataDiNascita;
     }
 
-    public Proprietario getProprietario() {
-        return proprietario;
-    }
-
-    public void setProprietario(Proprietario proprietario) {
-        this.proprietario = proprietario;
-    }
 
     public void setNome(String nome) {
         this.nome = nome;
@@ -75,6 +80,22 @@ public class AnimaleDomestico {
 
     public void setDataDiNascita(LocalDate dataDiNascita) {
         this.dataDiNascita = dataDiNascita;
+    }
+
+    public int getIdProprietario() {
+        return idProprietario;
+    }
+
+    public void setIdProprietario(int idProprietario) {
+        this.idProprietario = idProprietario;
+    }
+
+    public LocalDate getDataUltimaVaccinazione() {
+        return dataUltimaVaccinazione;
+    }
+
+    public void setDataUltimaVaccinazione(LocalDate dataUltimaVaccinazione) {
+        this.dataUltimaVaccinazione = dataUltimaVaccinazione;
     }
 }
 

@@ -1,10 +1,7 @@
 package it.unina.vetbook.control;
 
-import it.unina.vetbook.entity.TipoVisita;
+import it.unina.vetbook.entity.*;
 import it.unina.vetbook.dto.FarmacoDTO;
-import it.unina.vetbook.entity.Farmaco;
-import it.unina.vetbook.entity.Veterinario;
-import it.unina.vetbook.entity.Visita;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +9,7 @@ import java.util.stream.Collectors;
 public class VeterinarioController {
 
     private final Veterinario veterinario;
+    private final Agenda agenda = Agenda.getInstance();
 
     public VeterinarioController(Veterinario veterinario){
         this.veterinario = veterinario;
@@ -34,13 +32,13 @@ public class VeterinarioController {
             throw new IllegalArgumentException("Il costo non può essere minore di 0.");
         }
 
-        Visita v = new Visita(tipo, descrizione, costo);
+        Visita v = new Visita(tipo, descrizione, costo, veterinario.getId());
 
         for (FarmacoDTO farmaco : farmaci) {
-            v.prescrivi(new Farmaco(farmaco.nome(), farmaco.produttore()));
+            v.prescrivi(new Farmaco(farmaco.id(), farmaco.nome(), farmaco.produttore()));
         }
 
-        veterinario.registraVisita(v);
+        agenda.registraVisita(v);
     }
 
 }

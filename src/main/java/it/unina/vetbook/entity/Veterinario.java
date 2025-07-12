@@ -1,8 +1,5 @@
 package it.unina.vetbook.entity;
 
-import it.unina.vetbook.database.VisitaDAO;
-
-import java.sql.SQLException;
 
 public class Veterinario extends Utente {
 
@@ -13,15 +10,5 @@ public class Veterinario extends Utente {
         this.ruolo = UserRole.VETERINARIO;
     }
 
-
-    public void registraVisita(Visita v) {
-        VisitaDAO visitaDAO = new VisitaDAO();
-        try {
-            visitaDAO.create(v);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        agenda.getVisite().add(v);
-    }
 
 }

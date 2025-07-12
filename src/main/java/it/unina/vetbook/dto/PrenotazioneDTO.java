@@ -9,7 +9,7 @@ public record PrenotazioneDTO(
         LocalDate data,
         LocalTime ora,
         AnimaleDomesticoDTO animale,
-        Proprietario proprietario
+        ProprietarioDTO proprietario
 ) {
 
     public PrenotazioneDTO(LocalDate data, LocalTime ora, AnimaleDomesticoDTO animale) {

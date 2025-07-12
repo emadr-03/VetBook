@@ -4,7 +4,7 @@ import it.unina.vetbook.control.AdminController;
 import it.unina.vetbook.control.AuthController;
 import it.unina.vetbook.control.ProprietarioController;
 import it.unina.vetbook.control.VeterinarioController;
-import it.unina.vetbook.dto.LoginResultDTO;
+import it.unina.vetbook.utils.LoginResult;
 
 import javax.swing.*;
 import java.awt.*;
@@ -88,7 +88,7 @@ public class VisitorBoundary extends JFrame {
         String u = userField.getText();
         String p = String.valueOf(passField.getPassword());
 
-        LoginResultDTO result = authController.login(u, p);
+        LoginResult result = authController.login(u, p);
 
         if (!result.isSuccess()) {
             JOptionPane.showMessageDialog(this, result.getErrorMessage(), "Errore di login", JOptionPane.ERROR_MESSAGE);

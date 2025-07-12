@@ -1,12 +1,15 @@
 package it.unina.vetbook.entity;
 
+import it.unina.vetbook.database.DBManager;
 import it.unina.vetbook.database.UtenteDAO;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 
 public abstract class Utente {
 
+    protected int id;
     protected String username;
     protected String email;
     protected String password;
@@ -19,8 +22,8 @@ public abstract class Utente {
     }
 
     public static Utente login(String username, String password) {
-        try {
-            Optional<Utente> utente = new UtenteDAO().read(new String[]{username, password});
+        try(Connection conn = DBManager.getInstance().getConnection()) {
+            Optional<Utente> utente = new UtenteDAO(conn).read(new String[]{username, password});
             return utente.orElse(null);
         } catch (SQLException e) {
             throw new RuntimeException("Errore durante il login", e);
@@ -28,20 +31,19 @@ public abstract class Utente {
     }
 
     public void registrati() {
-        try {
-            new UtenteDAO().create(this);
+        try(Connection conn = DBManager.getInstance().getConnection()) {
+            new UtenteDAO(conn).create(this);
         } catch (SQLException e) {
             throw new RuntimeException("Errore nella registrazione dell'utente", e);
         }
     }
 
     public static boolean exists(String username) {
-        try {
-            Optional<Utente> u = new UtenteDAO().readByUsername(username);
+        try(Connection conn = DBManager.getInstance().getConnection()) {
+            Optional<Utente> u = new UtenteDAO(conn).readByUsername(username);
             return u.isPresent();
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new RuntimeException("Errore nella verifica dell'esistenza dell'utente", e);
         }
     }
 
@@ -73,4 +75,15 @@ public abstract class Utente {
         return ruolo;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setRuolo(UserRole ruolo) {
+        this.ruolo = ruolo;
+    }
 }
