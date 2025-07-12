@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class AnimaleDomestico {
 
     private int codiceChip;
-    private int idProprietario;
+    private Proprietario proprietario;
     private String nome;
     private String tipo;
     private String razza;
@@ -23,9 +23,9 @@ public class AnimaleDomestico {
         this.dataDiNascita = dataDiNascita;
     }
 
-    public AnimaleDomestico(int codiceChip, int idProprietario, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
+    public AnimaleDomestico(int codiceChip, Proprietario proprietario, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
         this.codiceChip = codiceChip;
-        this.idProprietario = idProprietario;
+        this.proprietario = proprietario;
         this.nome = nome;
         this.tipo = tipo;
         this.razza = razza;
@@ -82,12 +82,8 @@ public class AnimaleDomestico {
         this.dataDiNascita = dataDiNascita;
     }
 
-    public int getIdProprietario() {
-        return idProprietario;
-    }
-
-    public void setIdProprietario(int idProprietario) {
-        this.idProprietario = idProprietario;
+    public Proprietario getProprietario() {
+        return proprietario;
     }
 
     public LocalDate getDataUltimaVaccinazione() {

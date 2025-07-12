@@ -24,7 +24,7 @@ public class AnimaleDomesticoDAO extends GenericDAO<AnimaleDomestico, Integer> {
             stmt.setString(4, animale.getRazza());
             stmt.setString(5, animale.getColore());
             stmt.setDate(6, Date.valueOf(animale.getDataDiNascita()));
-            stmt.setInt(7, animale.getIdProprietario());
+            stmt.setInt(7, animale.getProprietario().getId());
             stmt.setDate(8, animale.getDataUltimaVaccinazione() != null ? Date.valueOf(animale.getDataUltimaVaccinazione()) : null);
             stmt.executeUpdate();
         }
@@ -61,7 +61,7 @@ public class AnimaleDomesticoDAO extends GenericDAO<AnimaleDomestico, Integer> {
             stmt.setString(3, animale.getRazza());
             stmt.setString(4, animale.getColore());
             stmt.setDate(5, Date.valueOf(animale.getDataDiNascita()));
-            stmt.setInt(6, animale.getIdProprietario());
+            stmt.setInt(6, animale.getProprietario().getId());
             stmt.setDate(7, animale.getDataUltimaVaccinazione() != null ? Date.valueOf(animale.getDataUltimaVaccinazione()) : null);
             stmt.setLong(8, animale.getCodiceChip());
             stmt.executeUpdate();
@@ -87,7 +87,6 @@ public class AnimaleDomesticoDAO extends GenericDAO<AnimaleDomestico, Integer> {
                 rs.getString("colore"),
                 rs.getDate("data_nascita").toLocalDate()
         );
-        a.setIdProprietario(rs.getInt("idproprietario"));
         Date vacc = rs.getDate("vaccinazione");
         if (vacc != null) a.setDataUltimaVaccinazione(vacc.toLocalDate());
         return a;

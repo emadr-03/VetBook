@@ -7,7 +7,7 @@ import java.time.LocalTime;
 public class Prenotazione {
 
     private int id;
-    private int idProprietario;
+    private Proprietario proprietario;
     private LocalDate data;
     private LocalTime ora;
     private AnimaleDomestico animale;
@@ -18,7 +18,7 @@ public class Prenotazione {
         this.ora = ora;
         this.animale = animale;
         if (animale != null) {
-            this.idProprietario = animale.getIdProprietario();
+            this.proprietario = animale.getProprietario();
         }
     }
 
@@ -34,10 +34,9 @@ public class Prenotazione {
         return animale;
     }
 
-    public int getIdProprietario() {
-        return idProprietario;
+    public Proprietario getProprietario() {
+        return proprietario;
     }
-
 
     public void setOra(LocalTime ora) {
         this.ora = ora;

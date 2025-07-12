@@ -28,11 +28,11 @@ public class ProprietarioController {
 
     public ProprietarioController(Proprietario proprietarioCorrente) {
         animaliMock = new ArrayList<>();
-        animaliMock.add(new AnimaleDomestico(1234567890, 1, "Fido", "Cane", "Golden Retriever", "Biondo", LocalDate.of(2020, 5, 10)));
-        animaliMock.add(new AnimaleDomestico(1234567891, 1, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
-        //this.proprietarioCorrente = proprietarioCorrente;
         //Usiamo un proprietario mockato
         this.proprietarioCorrente = getProprietarioMock();
+        animaliMock.add(new AnimaleDomestico(1234567890, this.proprietarioCorrente, "Fido", "Cane", "Golden Retriever", "Biondo", LocalDate.of(2020, 5, 10)));
+        animaliMock.add(new AnimaleDomestico(1234567891, this.proprietarioCorrente, "Micia", "Gatto", "Siamese", "Crema", LocalDate.of(2021, 8, 15)));
+        //this.proprietarioCorrente = proprietarioCorrente;
         agenda = Agenda.getInstance();
     }
 
@@ -159,7 +159,7 @@ public class ProprietarioController {
     //      Attualmente la classe è mockata
     private Proprietario getProprietarioMock() {
         if (proprietarioCorrente == null) {
-            proprietarioCorrente = new Proprietario("mrossi", "mario.rossi@email.com", "prova");
+            proprietarioCorrente = new Proprietario("mariorossi", "mariorossi@email.com", "prova");
             proprietarioCorrente.setId(1);
             proprietarioCorrente.setNome("Mario");
             proprietarioCorrente.setCognome("Rossi");

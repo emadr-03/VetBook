@@ -49,4 +49,10 @@ public class Proprietario extends Utente {
         this.animali = animali;
     }
 
+    public static Proprietario mockProprietario() {
+        Proprietario mock = new Proprietario("Mario", "mariorossi@libero.it", "mario123");
+        mock.setId(1);
+        return mock;
+    }
+
 }
