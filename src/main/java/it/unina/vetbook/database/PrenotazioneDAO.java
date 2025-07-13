@@ -1,8 +1,10 @@
 package it.unina.vetbook.database;
 
 import it.unina.vetbook.entity.Prenotazione;
+import it.unina.vetbook.entity.Visita;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 
 public class PrenotazioneDAO extends GenericDAO<Prenotazione, Integer> {
@@ -44,7 +46,8 @@ public class PrenotazioneDAO extends GenericDAO<Prenotazione, Integer> {
         Prenotazione p = new Prenotazione(
                 rs.getDate("data_prenotazione").toLocalDate(),
                 rs.getTime("ora_prenotazione").toLocalTime(),
-                null
+                rs.getInt("id_animale"),
+                rs.getInt("id_proprietario")
         );
         p.setId(rs.getInt("id"));
         return p;
@@ -62,6 +65,10 @@ public class PrenotazioneDAO extends GenericDAO<Prenotazione, Integer> {
             }
         }
         return Optional.empty();
+    }
+
+    public List<Prenotazione> readAll() throws SQLException {
+        return executeQuery("SELECT * FROM PRENOTAZIONI");
     }
 
     @Override

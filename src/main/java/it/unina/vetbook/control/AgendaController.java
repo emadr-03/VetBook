@@ -80,9 +80,7 @@ public class AgendaController {
         }
 
         for (Prenotazione p : agenda.getPrenotazioni()) {
-            AnimaleDomestico a = p.getAnimale();
-            String info = a.getNome() + " - " + a.getTipo();
-            righe.add(new AgendaDTO("Prenotazione", p.getData(), p.getOra(), info));
+            righe.add(new AgendaDTO("Prenotazione", p.getData(), p.getOra()));
         }
 
         for (Visita v : agenda.getVisite()) {

@@ -13,7 +13,7 @@ import java.util.List;
 public class Visita {
 
     private int idVisita;
-    private Veterinario veterinario;
+    private int idVeterinario;
     private TipoVisita tipo;
     private String descrizione;
     private double costo;
@@ -21,8 +21,10 @@ public class Visita {
     private LocalTime ora;
     private List<Farmaco> farmaciPrescritti;
 
-    public Visita(TipoVisita tipo, String descrizione, double costo, Veterinario veterinario) {
-        this.veterinario = veterinario;
+    public Visita(TipoVisita tipo, String descrizione, double costo, LocalDate data, LocalTime ora, int idVeterinario) {
+        this.idVeterinario = idVeterinario;
+        this.data = data;
+        this.ora = ora;
         this.tipo = tipo;
         this.descrizione = descrizione;
         this.costo = costo;
@@ -54,13 +56,16 @@ public class Visita {
         return farmaciPrescritti;
     }
 
+    public void setFarmaciPrescritti(List<Farmaco> farmaciPrescritti) {
+        this.farmaciPrescritti = farmaciPrescritti;
+    }
 
     public int getIdVisita() {
         return idVisita;
     }
 
     public int getIdVeterinario() {
-        return this.veterinario.getId();
+        return this.idVeterinario;
     }
 
     public static List<Visita> getVisiteVeterinario(int idVeterinario) {

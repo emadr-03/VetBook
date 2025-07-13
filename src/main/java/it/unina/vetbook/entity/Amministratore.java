@@ -12,6 +12,6 @@ public class Amministratore extends Utente {
     }
 
     public double ottieniIncasso(List<Visita> visite) {
-        return agenda.getVisite().stream().mapToDouble(Visita::getCosto).sum();
+        return agenda.visualizzaVisiteGiornaliere().stream().mapToDouble(Visita::getCosto).sum();
     }
 }

@@ -1,5 +1,6 @@
 package it.unina.vetbook.control;
 
+import it.unina.vetbook.database.DBManager;
 import it.unina.vetbook.dto.AnimaleDomesticoDTO;
 import it.unina.vetbook.dto.DisponibilitaDTO;
 import it.unina.vetbook.dto.ProprietarioDTO;
@@ -13,6 +14,7 @@ import it.unina.vetbook.exception.ValidationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,11 +23,16 @@ public class ProprietarioController {
 
     private final Proprietario proprietarioCorrente;
 
+    //Il seguente attributo è necessario solo a fini di mock del comportamento dell'UI, dunque non è presente nel BCED
+    // Dunque i metodi che utilizzano tali attributo sono delle versioni mockate del metodo finale
+    private final List<AnimaleDomestico> animali;
+
     private final Agenda agenda;
 
     public ProprietarioController(Proprietario proprietarioCorrente) {
-        //Usiamo un proprietario mockato
-        this.proprietarioCorrente = Proprietario.mockProprietario();
+        this.proprietarioCorrente = proprietarioCorrente;
+        this.animali = this.proprietarioCorrente.getAnimali();
+        this.proprietarioCorrente.setAnimali(animali);
         agenda = Agenda.getInstance();
     }
 
@@ -46,6 +53,7 @@ public class ProprietarioController {
             throw new ValidationException("La password deve essere maggiore di 6 caratteri");
         }
 
+        //A: I seguenti setters sono mockati per simulare il funzionamento dell'UI, non c'è persistenza
         proprietarioCorrente.setUsername(username.trim());
         proprietarioCorrente.setNome(nome.trim());
         proprietarioCorrente.setCognome(cognome.trim());
@@ -68,6 +76,7 @@ public class ProprietarioController {
 
         try (FileInputStream fis = new FileInputStream(file)) {
             byte[] bytes = fis.readAllBytes();
+            //A: Il seguente setter è mockato per simulare il funzionamento dell'UI, non c'è persistenza
             proprietarioCorrente.setImmagineProfilo(bytes);
         } catch (IOException e) {
             throw new BusinessRuleViolationException("Errore nella lettura del file immagine.", e);
@@ -90,6 +99,7 @@ public class ProprietarioController {
         if (dataDiNascita == null || dataDiNascita.isAfter(LocalDate.now()))
             throw new ValidationException("Data di nascita non valida.");
 
+        //A: Il seguente add è un mock per simulare il funzionamento dell'UI. L'aggiunta non viene persistita-
         proprietarioCorrente.addAnimale(new AnimaleDomestico(codiceChip, proprietarioCorrente.getId(), nome, tipo, razza, colore, dataDiNascita));
     }
 
@@ -103,11 +113,13 @@ public class ProprietarioController {
         if (dataDiNascita == null || dataDiNascita.isAfter(LocalDate.now()))
             throw new ValidationException("Data di nascita non valida.");
 
-        AnimaleDomestico animale = proprietarioCorrente.getAnimali().stream()
+
+        AnimaleDomestico animale = animali.stream()
                 .filter(a -> a.getCodiceChip() == codiceChip)
                 .findFirst()
                 .orElseThrow(() -> new ValidationException("Animale con codice chip " + codiceChip + " non trovato."));
 
+        //A: I seguenti setters sono mockati per simulare il funzionamento dell'UI, non c'è persistenza
         animale.setNome(nome);
         animale.setTipo(tipo);
         animale.setRazza(razza);

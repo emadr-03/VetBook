@@ -10,6 +10,7 @@ public class Prenotazione {
     private int idProprietario;
     private LocalDate data;
     private LocalTime ora;
+    private int idAnimale;
     private AnimaleDomestico animale;
 
 
@@ -20,6 +21,13 @@ public class Prenotazione {
         if (animale != null) {
             this.idProprietario = animale.getIdProprietario();
         }
+    }
+
+    public Prenotazione(LocalDate data, LocalTime ora, int idAnimale, int idProprietario) {
+        this.data = data;
+        this.ora = ora;
+        this.idAnimale = idAnimale;
+        this.idProprietario = idProprietario;
     }
 
     public LocalDate getData() {
@@ -54,4 +62,11 @@ public class Prenotazione {
         this.id = id;
     }
 
+    public int getIdAnimale() {
+        return idAnimale;
+    }
+
+    public void setAnimale(AnimaleDomestico animale) {
+        this.animale = animale;
+    }
 }

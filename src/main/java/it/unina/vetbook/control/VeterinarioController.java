@@ -4,6 +4,10 @@ import it.unina.vetbook.entity.*;
 import it.unina.vetbook.dto.FarmacoDTO;
 import it.unina.vetbook.exception.ValidationException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +37,10 @@ public class VeterinarioController {
             throw new ValidationException("Il costo non può essere minore di 0.");
         }
 
-        Visita v = new Visita(tipo, descrizione, costo, veterinario);
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.HOURS);
+        Visita v = new Visita(tipo, descrizione, costo, now.toLocalDate(), now.toLocalTime(), veterinario.getId());
+
+
 
         for (FarmacoDTO farmaco : farmaci) {
             v.prescrivi(new Farmaco(farmaco.id(), farmaco.nome(), farmaco.produttore()));

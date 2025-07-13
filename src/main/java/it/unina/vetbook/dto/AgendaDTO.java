@@ -6,4 +6,7 @@ import java.time.LocalTime;
 
 public record AgendaDTO(String tipoEvento, LocalDate data, LocalTime ora, String descrizione) {
 
+     public AgendaDTO(String tipoEvento, LocalDate data, LocalTime ora){
+        this(tipoEvento, data, ora, "");
+    }
 }

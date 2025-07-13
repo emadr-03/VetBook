@@ -5,7 +5,6 @@ import it.unina.vetbook.dto.AnimaleDomesticoDTO;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class AnimaliNonVaccinatiForm extends JDialog {
     }
 
     private void initTable() {
-        List<AnimaleDomesticoDTO> rows = adminController.visualizzaAnimaliNonVaccinati();
+        List<AnimaleDomesticoDTO> rows = adminController.visualizzaMockAnimaliNonVaccinati();
 
         Object[][] data = new Object[rows.size()][COLS.length];
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");

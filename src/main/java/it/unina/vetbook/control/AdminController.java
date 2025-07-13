@@ -42,8 +42,7 @@ public class AdminController {
         return user.ottieniIncasso(visiteGiornaliere);
     }
 
-    public List<AnimaleDomesticoDTO> visualizzaAnimaliNonVaccinati() {
-        // MOCK DATA: Method must not be implemented
+    public List<AnimaleDomesticoDTO> visualizzaMockAnimaliNonVaccinati() {
         return List.of(
                 new AnimaleDomesticoDTO(101, "Luna", "Gatto", null, null, LocalDate.of(2025, 4, 27), 1),
                 new AnimaleDomesticoDTO(207, "Milo", "Cane", null, null, LocalDate.of(2023, 4, 27), 1),

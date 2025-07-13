@@ -4,7 +4,6 @@ import it.unina.vetbook.entity.Disponibilita;
 import it.unina.vetbook.entity.Stato;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,6 +63,9 @@ public class DisponibilitaDAO extends GenericDAO<Disponibilita, Integer> {
         }
     }
 
+    public List<Disponibilita> readAll() throws SQLException {
+        return executeQuery("SELECT * FROM DISPONIBILITA");
+    }
 
     @Override
     protected Disponibilita mapRow(ResultSet rs) throws SQLException {
