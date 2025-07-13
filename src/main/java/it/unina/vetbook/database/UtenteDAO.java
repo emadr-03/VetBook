@@ -13,12 +13,23 @@ public class UtenteDAO extends GenericDAO<Utente, Integer> {
 
     @Override
     public void create(Utente u) throws SQLException {
-        String sql = "INSERT INTO utenti (username, email, password, ruolo) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        String sql = "INSERT INTO utenti (username, email, password, ruolo, nome, cognome) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt =
+                     connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             stmt.setString(1, u.getUsername());
             stmt.setString(2, u.getEmail());
             stmt.setString(3, u.getPassword());
             stmt.setString(4, u.getRuolo().name());
+
+            if (u instanceof Proprietario p) {
+                stmt.setString(5, p.getNome());
+                stmt.setString(6, p.getCognome());
+            } else {
+                stmt.setNull(5, Types.VARCHAR);
+                stmt.setNull(6, Types.VARCHAR);
+            }
+
             stmt.executeUpdate();
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {
