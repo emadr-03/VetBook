@@ -35,9 +35,7 @@ Per effettuare un testing completo dell’applicazione è necessario:
    - `schema.sql`: crea la struttura del database;
    - `popolamento.sql`: popola le tabelle con dati mock.
 
-> Il database da creare si chiama `vetbook`.
-> Lo username è `studente`
-> La password è `studente`
+> Il database da creare si chiama `vetbook`, lo username è `studente`, la password è `studente`. In alternativa per usare credenziali diverse è necessario modificare la classe DBManager.
 
 ## Utenti mock già presenti nel sistema
 
