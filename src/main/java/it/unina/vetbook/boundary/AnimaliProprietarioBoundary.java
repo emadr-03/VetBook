@@ -118,7 +118,6 @@ public class AnimaliProprietarioBoundary extends JFrame {
                 int codiceChip = (int) model.getValueAt(selectedRow, 0);
                 proprietarioController.eliminaAnimale(codiceChip);
                 model.removeRow(selectedRow);
-                animali.remove(selectedRow);
                 JOptionPane.showMessageDialog(this, "Animale eliminato con successo! (MOCK)");
             }
         });

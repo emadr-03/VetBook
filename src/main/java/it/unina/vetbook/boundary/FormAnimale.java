@@ -113,10 +113,10 @@ public class FormAnimale extends JFrame {
 
             if (isModifica) {
                 proprietarioController.modificaAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
-                JOptionPane.showMessageDialog(this, "Animale modificato con successo!");
+                JOptionPane.showMessageDialog(this, "Animale modificato con successo! (MOCK)");
             } else {
                 proprietarioController.inserisciAnimale(codiceChipInt, nomeInput, tipoInput, razzaInput, coloreInput, dataNascitaInput);
-                JOptionPane.showMessageDialog(this, "Animale inserito con successo!");
+                JOptionPane.showMessageDialog(this, "Animale inserito con successo! (MOCK)");
             }
 
             new AnimaliProprietarioBoundary(proprietarioController).setVisible(true);
