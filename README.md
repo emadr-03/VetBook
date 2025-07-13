@@ -36,6 +36,8 @@ Per effettuare un testing completo dell’applicazione è necessario:
    - `popolamento.sql`: popola le tabelle con dati mock.
 
 > Il database da creare si chiama `vetbook`.
+> Lo username è `studente`
+> La password è `studente`
 
 ## Utenti mock già presenti nel sistema
 
