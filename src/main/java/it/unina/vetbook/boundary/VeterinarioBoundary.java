@@ -50,7 +50,7 @@ public class VeterinarioBoundary extends JFrame {
         box.setBorder(BorderFactory.createEmptyBorder(10, 200, 30, 200));
 
         box.add(VetcareStyle.makeCard(
-                "Visualizza Prenotazioni",
+                "Visualizza Prenotazioni Giornaliere",
                 icon("calendar_icon.png"),
                 () -> {
                     new PrenotazioniBoundary(veterinarioController).setVisible(true);
