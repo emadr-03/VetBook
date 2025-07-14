@@ -57,3 +57,25 @@ L'applicazione può essere avviata in due modi alternativi:
 
 L'interfaccia utente è sviluppata in Java Swing e adotta il tema grafico FlatLaf per offrire una visualizzazione moderna e coerente su sistemi desktop.
 
+## Note
+Da UI è possibile interagire con le seguenti feature ma i dati visualizzati sono mockati (a livello di controller), dunque non c'è persistenza nel database:
+### Proprietario
+1) Gestione profilo
+2) Aggiorna (Immagine profilo)
+3) Carica (Immagine profilo)
+3) Inserisci Nuovo Animale
+4) Modifica (Animale)
+5) Elimina (Animale)
+### Amministratore
+6) Animali Non Vaccinati
+
+Le seguenti feature sono funzionanti e seguono il flusso completo boundary->control->entity->database
+### Proprietario
+1) Visualizza i Tuoi Animali
+2) Prenota Visita
+### Amministratore
+1) Inserisci Disponibilità
+2) Incassi Giornalieri
+### Veterinario
+1) Visualizza Prenotazioni
+2) Registra Visita
