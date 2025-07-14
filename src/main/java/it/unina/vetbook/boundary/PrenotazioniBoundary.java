@@ -67,7 +67,7 @@ public class PrenotazioniBoundary extends JFrame {
     private void caricaDati() {
         model.setRowCount(0);
 
-        List<PrenotazioneDTO> prenotazioni = AgendaController.getInstance().visualizzaPrenotazioni();
+        List<PrenotazioneDTO> prenotazioni = AgendaController.getInstance().visualizzaPrenotazioniGiornaliere();
         DateTimeFormatter formatterData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter formatterOra = DateTimeFormatter.ofPattern("HH:mm");
 

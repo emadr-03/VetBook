@@ -104,6 +104,17 @@ public class FormAnimale extends JFrame {
 
     private void handleSalva() {
         try {
+            String codiceChipStr = txtCodiceChip.getText().trim();
+            if (!codiceChipStr.matches("\\d+")) {
+                mostraErrore("Il codice chip deve essere un numero valido.");
+                return;
+            }
+
+            if (codiceChipStr.length() != 10) {
+                mostraErrore("Il codice chip deve essere esattamente di 10 cifre.");
+                return;
+            }
+
             int codiceChipInt = Integer.parseInt(txtCodiceChip.getText().trim());
             String nomeInput = txtNome.getText().trim();
             String tipoInput = txtTipo.getText().trim();
@@ -121,8 +132,6 @@ public class FormAnimale extends JFrame {
 
             new AnimaliProprietarioBoundary(proprietarioController).setVisible(true);
             dispose();
-        } catch (NumberFormatException ex) {
-            mostraErrore("Il codice chip deve essere un numero valido.");
         } catch (Exception ex) {
             mostraErrore("Errore: " + ex.getMessage());
         }

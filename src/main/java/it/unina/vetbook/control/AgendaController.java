@@ -53,8 +53,10 @@ public class AgendaController {
     }
 
 
-    public List<PrenotazioneDTO> visualizzaPrenotazioni() {
+    public List<PrenotazioneDTO> visualizzaPrenotazioniGiornaliere() {
+        LocalDate oggi = LocalDate.now();
         return agenda.getPrenotazioni().stream()
+                .filter(p -> p.getData().equals(oggi))
                 .map(p -> new PrenotazioneDTO(
                         p.getData(),
                         p.getOra(),
@@ -70,6 +72,9 @@ public class AgendaController {
                 ))
                 .toList();
     }
+
+
+
 
 
     public List<AgendaDTO> visualizzaAgenda() {

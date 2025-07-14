@@ -86,7 +86,7 @@ public class ProprietarioController {
 
     public void inserisciAnimale(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
         if (String.valueOf(codiceChip).length() != 10)
-            throw new ValidationException("Il codice chip deve essere di 10 cifre.");
+            throw new ValidationException("Il codice chip deve essere esattamente di 10 cifre.");
 
         if (proprietarioCorrente.getAnimali().stream().anyMatch(a -> a.getCodiceChip() == codiceChip))
             throw new BusinessRuleViolationException("Codice chip già esistente.");
@@ -189,7 +189,7 @@ public class ProprietarioController {
         if (testo == null || testo.trim().isEmpty())
             throw new ValidationException("Il campo '" + nomeCampo + "' è obbligatorio.");
         if (testo.length() > lunghezzaMax)
-            throw new ValidationException("Il campo '" + nomeCampo + "' è troppo lungo (max " + lunghezzaMax + ").");
+            throw new ValidationException("Il campo '" + nomeCampo + "' è troppo lungo");
         if (testo.matches(".*\\d.*"))
             throw new ValidationException("Il campo '" + nomeCampo + "' non può contenere numeri.");
         if (!testo.matches("[a-zA-Z\\s]+"))
