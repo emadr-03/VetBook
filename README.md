@@ -35,7 +35,7 @@ Per effettuare un testing completo dell’applicazione è necessario:
    - `schema.sql`: crea la struttura del database;
    - `popolamento.sql`: popola le tabelle con dati mock.
 
-> Il database da creare deve essere mysql, esposto su porto 3306 e deve chiamarsi `vetbook`, lo username è `studente`, la password è `studente`. In alternativa per usare credenziali diverse è necessario modificare la classe DBManager. (`jdbc:mysql://localhost:3306/vetbook`)
+> Il database da creare deve essere mysql, esposto su porto 3306 e deve chiamarsi `vetbook`, lo username è `studente`, la password è `studente`. In alternativa per usare credenziali diverse è necessario modificare la classe DBManager. (Connessione: `jdbc:mysql://localhost:3306/vetbook`)
 
 ## Utenti mock già presenti nel sistema
 
