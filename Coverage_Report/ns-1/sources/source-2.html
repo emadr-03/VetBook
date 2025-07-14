@@ -1,0 +1,194 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AnimaliNonVaccinatiForm</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unina.vetbook.boundary</a>
+</div>
+
+<h1>Coverage Summary for Class: AnimaliNonVaccinatiForm (it.unina.vetbook.boundary)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AnimaliNonVaccinatiForm</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unina.vetbook.boundary;
+&nbsp;
+&nbsp;import it.unina.vetbook.control.AdminController;
+&nbsp;import it.unina.vetbook.dto.AnimaleDomesticoDTO;
+&nbsp;
+&nbsp;import javax.swing.*;
+&nbsp;import java.awt.*;
+&nbsp;import java.time.format.DateTimeFormatter;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public class AnimaliNonVaccinatiForm extends JDialog {
+&nbsp;
+<b class="nc">&nbsp;    private final String[] COLS = { &quot;ID&quot;, &quot;Nome&quot;, &quot;Specie&quot;, &quot;Ult. vaccino&quot; };</b>
+&nbsp;
+&nbsp;    private JTable table;
+&nbsp;    private JScrollPane scrollPane;
+&nbsp;    private JButton chiudiButton;
+&nbsp;    private JPanel southPanel;
+&nbsp;
+&nbsp;    private AdminController adminController;
+&nbsp;
+&nbsp;    public AnimaliNonVaccinatiForm(Frame owner, AdminController adminController) {
+<b class="nc">&nbsp;        super(owner, &quot;Animali Non Vaccinati&quot;, true);</b>
+<b class="nc">&nbsp;        this.adminController = adminController;</b>
+&nbsp;
+<b class="nc">&nbsp;        initDialog();</b>
+<b class="nc">&nbsp;        initComponents();</b>
+<b class="nc">&nbsp;        layoutComponents();</b>
+<b class="nc">&nbsp;        addListeners();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void initDialog() {
+<b class="nc">&nbsp;        setSize(600, 400);</b>
+<b class="nc">&nbsp;        setLocationRelativeTo(getOwner());</b>
+<b class="nc">&nbsp;        setContentPane(VetcareStyle.createSpotlightBackground());</b>
+<b class="nc">&nbsp;        setLayout(new BorderLayout(12, 12));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void initComponents() {
+<b class="nc">&nbsp;        initTable();</b>
+<b class="nc">&nbsp;        initSouthPanel();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void initTable() {
+<b class="nc">&nbsp;        List&lt;AnimaleDomesticoDTO&gt; rows = adminController.visualizzaMockAnimaliNonVaccinati();</b>
+&nbsp;
+<b class="nc">&nbsp;        Object[][] data = new Object[rows.size()][COLS.length];</b>
+<b class="nc">&nbsp;        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;dd/MM/yyyy&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        for (int i = 0; i &lt; rows.size(); i++) {</b>
+<b class="nc">&nbsp;            AnimaleDomesticoDTO dto = rows.get(i);</b>
+<b class="nc">&nbsp;            data[i][0] = dto.codiceChip();</b>
+<b class="nc">&nbsp;            data[i][1] = dto.nome();</b>
+<b class="nc">&nbsp;            data[i][2] = dto.tipo();</b>
+<b class="nc">&nbsp;            data[i][3] = dto.dataDiNascita() != null ? dto.dataDiNascita().format(formatter) : &quot;-&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        table = VetcareStyle.makeTable(data, COLS);</b>
+<b class="nc">&nbsp;        scrollPane = new JScrollPane(table);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private void initSouthPanel() {
+<b class="nc">&nbsp;        chiudiButton = new JButton(&quot;Chiudi&quot;);</b>
+<b class="nc">&nbsp;        southPanel = new JPanel();</b>
+<b class="nc">&nbsp;        southPanel.setOpaque(false);</b>
+<b class="nc">&nbsp;        southPanel.add(chiudiButton);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void layoutComponents() {
+<b class="nc">&nbsp;        add(scrollPane, BorderLayout.CENTER);</b>
+<b class="nc">&nbsp;        add(southPanel, BorderLayout.SOUTH);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void addListeners() {
+<b class="nc">&nbsp;        chiudiButton.addActionListener(e -&gt; dispose());</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-07-14 22:01</div>
+</div>
+</body>
+</html>

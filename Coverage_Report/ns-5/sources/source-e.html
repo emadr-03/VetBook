@@ -1,0 +1,184 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Visita</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unina.vetbook.entity</a>
+</div>
+
+<h1>Coverage Summary for Class: Visita (it.unina.vetbook.entity)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Visita</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    43.8%
+  </span>
+  <span class="absValue">
+    (7/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    56%
+  </span>
+  <span class="absValue">
+    (14/25)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unina.vetbook.entity;
+&nbsp;
+&nbsp;import it.unina.vetbook.database.DBManager;
+&nbsp;import it.unina.vetbook.database.VisitaDAO;
+&nbsp;
+&nbsp;import java.sql.Connection;
+&nbsp;import java.sql.SQLException;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.LocalTime;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public class Visita {
+&nbsp;
+&nbsp;    private int idVisita;
+&nbsp;    private int idVeterinario;
+&nbsp;    private TipoVisita tipo;
+&nbsp;    private String descrizione;
+&nbsp;    private double costo;
+&nbsp;    private LocalDate data;
+&nbsp;    private LocalTime ora;
+&nbsp;    private List&lt;Farmaco&gt; farmaciPrescritti;
+&nbsp;
+<b class="fc">&nbsp;    public Visita(TipoVisita tipo, String descrizione, double costo, LocalDate data, LocalTime ora, int idVeterinario) {</b>
+<b class="fc">&nbsp;        this.idVeterinario = idVeterinario;</b>
+<b class="fc">&nbsp;        this.data = data;</b>
+<b class="fc">&nbsp;        this.ora = ora;</b>
+<b class="fc">&nbsp;        this.tipo = tipo;</b>
+<b class="fc">&nbsp;        this.descrizione = descrizione;</b>
+<b class="fc">&nbsp;        this.costo = costo;</b>
+<b class="fc">&nbsp;        this.farmaciPrescritti = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void prescrivi(Farmaco f) {
+<b class="fc">&nbsp;        farmaciPrescritti.add(f);</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public LocalDate getData() { return data; }</b>
+<b class="fc">&nbsp;    public LocalTime getOra() { return ora; }</b>
+<b class="fc">&nbsp;    public TipoVisita getTipo() { return tipo; }</b>
+<b class="fc">&nbsp;    public String getDescrizione() { return descrizione; }</b>
+<b class="fc">&nbsp;    public double getCosto() { return costo; }</b>
+<b class="nc">&nbsp;    public void setData(LocalDate data) { this.data = data; }</b>
+<b class="nc">&nbsp;    public void setOra(LocalTime ora) { this.ora = ora; }</b>
+&nbsp;
+&nbsp;    public void setIdVisita(int idVisita) {
+<b class="nc">&nbsp;        this.idVisita = idVisita;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTipo(TipoVisita tipo) {
+<b class="nc">&nbsp;        this.tipo = tipo;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public List&lt;Farmaco&gt; getFarmaciPrescritti() {
+<b class="nc">&nbsp;        return farmaciPrescritti;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setFarmaciPrescritti(List&lt;Farmaco&gt; farmaciPrescritti) {
+<b class="nc">&nbsp;        this.farmaciPrescritti = farmaciPrescritti;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getIdVisita() {
+<b class="nc">&nbsp;        return idVisita;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getIdVeterinario() {
+<b class="nc">&nbsp;        return this.idVeterinario;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static List&lt;Visita&gt; getVisiteVeterinario(int idVeterinario) {
+<b class="nc">&nbsp;        try (Connection conn = DBManager.getInstance().getConnection()) {</b>
+<b class="nc">&nbsp;            return new VisitaDAO(conn).readAllByVet(idVeterinario);</b>
+&nbsp;        } catch (SQLException e) {
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Errore durante il recupero delle visite&quot;, e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-07-14 22:01</div>
+</div>
+</body>
+</html>

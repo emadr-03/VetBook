@@ -1,0 +1,365 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > VetcareStyle</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unina.vetbook.boundary</a>
+</div>
+
+<h1>Coverage Summary for Class: VetcareStyle (it.unina.vetbook.boundary)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">VetcareStyle</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/62)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">VetcareStyle$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">VetcareStyle$CardBase</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">VetcareStyle$RadialSpotlight</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/89)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unina.vetbook.boundary;
+&nbsp;
+&nbsp;import com.formdev.flatlaf.FlatClientProperties;
+&nbsp;import com.formdev.flatlaf.FlatLightLaf;
+&nbsp;import com.formdev.flatlaf.ui.FlatDropShadowBorder;
+&nbsp;import com.github.lgooddatepicker.components.DatePicker;
+&nbsp;import com.github.lgooddatepicker.components.TimePicker;
+&nbsp;import com.github.lgooddatepicker.components.TimePickerSettings;
+&nbsp;
+&nbsp;import javax.swing.*;
+&nbsp;import javax.swing.border.Border;
+&nbsp;import javax.swing.table.JTableHeader;
+&nbsp;import java.awt.*;
+&nbsp;import java.awt.geom.Point2D;
+&nbsp;import java.awt.event.MouseAdapter;
+&nbsp;import java.awt.event.MouseEvent;
+&nbsp;import java.awt.RadialGradientPaint;
+&nbsp;
+&nbsp;
+&nbsp;public final class VetcareStyle {
+&nbsp;
+<b class="nc">&nbsp;    public static final Color TXT        = new Color(0x0F, 0x1A, 0x52);</b>
+<b class="nc">&nbsp;    public static final Color BTN_HOVER  = new Color(0xCC, 0xDF, 0xFF);</b>
+<b class="nc">&nbsp;    public static final Color GRAD_TOP   = new Color(0xE1, 0xE9, 0xFF);</b>
+<b class="nc">&nbsp;    public static final Color ACCENT     = new Color(0x1A, 0x2F, 0x64);</b>
+<b class="nc">&nbsp;    public static final Color CARD_BG    = Color.WHITE;</b>
+&nbsp;
+&nbsp;
+&nbsp;    public static void initLookAndFeel() {
+<b class="nc">&nbsp;        try { UIManager.setLookAndFeel(new FlatLightLaf()); }</b>
+<b class="nc">&nbsp;        catch (Exception ex) { System.err.println(&quot;FlatLaf not loaded&quot;); }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;    public static JPanel createSpotlightBackground() { return new RadialSpotlight(); }</b>
+&nbsp;
+<b class="nc">&nbsp;    private static class RadialSpotlight extends JPanel {</b>
+&nbsp;        @Override protected void paintComponent(Graphics g) {
+<b class="nc">&nbsp;            super.paintComponent(g);</b>
+<b class="nc">&nbsp;            int w = getWidth(), h = getHeight();</b>
+<b class="nc">&nbsp;            Point2D center = new Point2D.Float(w / 2f, h / 2f);</b>
+<b class="nc">&nbsp;            float radius   = Math.max(w, h) * 0.6f;</b>
+&nbsp;
+<b class="nc">&nbsp;            float[] dist = { 0f, 0.35f, 0.7f, 1f };</b>
+<b class="nc">&nbsp;            Color[] cols = {</b>
+&nbsp;                    Color.WHITE,
+&nbsp;                    new Color(0xE3, 0xEC, 0xFF),
+&nbsp;                    new Color(0x5C, 0x7B, 0xFF),
+&nbsp;                    new Color(0x36, 0x46, 0xA0)
+&nbsp;            };
+<b class="nc">&nbsp;            RadialGradientPaint paint = new RadialGradientPaint(center, radius, dist, cols);</b>
+<b class="nc">&nbsp;            Graphics2D g2 = (Graphics2D) g.create();</b>
+<b class="nc">&nbsp;            g2.setPaint(paint);</b>
+<b class="nc">&nbsp;            g2.fillRect(0, 0, w, h);</b>
+<b class="nc">&nbsp;            g2.dispose();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public static JPanel makeCard(String text, ImageIcon icon, Runnable onClick) {
+&nbsp;
+<b class="nc">&nbsp;        JButton btn = new JButton(text, icon);</b>
+<b class="nc">&nbsp;        btn.setFont(new Font(&quot;SansSerif&quot;, Font.BOLD, 17));</b>
+<b class="nc">&nbsp;        btn.setForeground(TXT);</b>
+<b class="nc">&nbsp;        btn.setBackground(CARD_BG);</b>
+<b class="nc">&nbsp;        btn.setIconTextGap(18);</b>
+<b class="nc">&nbsp;        btn.setHorizontalAlignment(SwingConstants.LEFT);</b>
+<b class="nc">&nbsp;        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));</b>
+<b class="nc">&nbsp;        btn.putClientProperty(&quot;FlatLaf.style&quot;, &quot;hoverBackground:&quot; + toHex(BTN_HOVER) + &quot;;&quot;);</b>
+<b class="nc">&nbsp;        btn.setBorder(BorderFactory.createEmptyBorder(18, 30, 18, 30));</b>
+<b class="nc">&nbsp;        btn.setFocusable(true);</b>
+&nbsp;
+<b class="nc">&nbsp;        Border base  = new FlatDropShadowBorder(Color.BLACK, 8, 0.05f);</b>
+<b class="nc">&nbsp;        Border hover = new FlatDropShadowBorder(Color.BLACK, 16, 0.30f);</b>
+&nbsp;
+<b class="nc">&nbsp;        JPanel card = new CardBase();</b>
+<b class="nc">&nbsp;        card.setBorder(base);</b>
+<b class="nc">&nbsp;        card.add(btn, BorderLayout.CENTER);</b>
+&nbsp;
+<b class="nc">&nbsp;        btn.addMouseListener(new MouseAdapter() {</b>
+<b class="nc">&nbsp;            @Override public void mouseEntered(MouseEvent e) { card.setBorder(hover); }</b>
+<b class="nc">&nbsp;            @Override public void mouseExited (MouseEvent e) { card.setBorder(base);  }</b>
+<b class="nc">&nbsp;            @Override public void mouseClicked(MouseEvent e) { if (onClick!=null) onClick.run(); }</b>
+&nbsp;        });
+<b class="nc">&nbsp;        return card;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private static class CardBase extends JPanel {
+&nbsp;        CardBase() {
+<b class="nc">&nbsp;            super(new BorderLayout());</b>
+<b class="nc">&nbsp;            setOpaque(false);</b>
+<b class="nc">&nbsp;            setBorder(BorderFactory.createEmptyBorder(0,4,0,0));</b>
+<b class="nc">&nbsp;            setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));</b>
+&nbsp;        }
+&nbsp;        @Override protected void paintComponent(Graphics gg) {
+<b class="nc">&nbsp;            Graphics2D g = (Graphics2D) gg.create();</b>
+<b class="nc">&nbsp;            g.setPaint(new GradientPaint(0,0, CARD_BG, getWidth(),0, GRAD_TOP));</b>
+<b class="nc">&nbsp;            g.fillRoundRect(0,0,getWidth(),getHeight(),16,16);</b>
+<b class="nc">&nbsp;            g.setColor(ACCENT);</b>
+<b class="nc">&nbsp;            g.fillRoundRect(0,0,8,getHeight(),16,16);</b>
+<b class="nc">&nbsp;            g.dispose();</b>
+<b class="nc">&nbsp;            super.paintComponent(gg);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public static JTable makeTable(Object[][] rows, String[] cols) {
+&nbsp;
+<b class="nc">&nbsp;        JTable t = new JTable(rows, cols);</b>
+<b class="nc">&nbsp;        t.setFillsViewportHeight(true);</b>
+<b class="nc">&nbsp;        t.setRowHeight(28);</b>
+<b class="nc">&nbsp;        t.setFont(new Font(&quot;SansSerif&quot;, Font.PLAIN, 14));</b>
+<b class="nc">&nbsp;        t.setForeground(TXT);</b>
+<b class="nc">&nbsp;        t.setGridColor(new Color(0xDDE3FF));</b>
+&nbsp;
+&nbsp;        /* header look */
+<b class="nc">&nbsp;        JTableHeader head = t.getTableHeader();</b>
+<b class="nc">&nbsp;        head.setReorderingAllowed(false);</b>
+<b class="nc">&nbsp;        head.setFont(new Font(&quot;SansSerif&quot;, Font.BOLD, 14));</b>
+<b class="nc">&nbsp;        head.setBackground(ACCENT);</b>
+<b class="nc">&nbsp;        head.setForeground(Color.WHITE);</b>
+<b class="nc">&nbsp;        head.setBorder(BorderFactory.createEmptyBorder(6,6,6,6));</b>
+&nbsp;
+&nbsp;        /* selection colours */
+<b class="nc">&nbsp;        t.setSelectionBackground(BTN_HOVER);</b>
+<b class="nc">&nbsp;        t.setSelectionForeground(TXT);</b>
+&nbsp;
+<b class="nc">&nbsp;        return t;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static DatePicker makeDatePicker() {
+<b class="nc">&nbsp;        DatePicker dp = new DatePicker();</b>
+<b class="nc">&nbsp;        dp.setDateToToday();</b>
+&nbsp;        // font e colori: FlatLaf li prende dal Look&amp;Feel
+<b class="nc">&nbsp;        return dp;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static TimePicker makeHourPicker() {
+<b class="nc">&nbsp;        TimePicker tp = new TimePicker();</b>
+<b class="nc">&nbsp;        tp.getSettings().generatePotentialMenuTimes(</b>
+&nbsp;                TimePickerSettings.TimeIncrement.OneHour,
+<b class="nc">&nbsp;                java.time.LocalTime.of(0,0),</b>
+<b class="nc">&nbsp;                java.time.LocalTime.of(23,0)</b>
+&nbsp;        );
+<b class="nc">&nbsp;        tp.setTime(java.time.LocalTime.of(8,0));</b>
+<b class="nc">&nbsp;        return tp;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static JPanel makeDialogCard() {
+<b class="nc">&nbsp;        JPanel card = new JPanel(new GridBagLayout());</b>
+<b class="nc">&nbsp;        card.setBackground(Color.WHITE);</b>
+<b class="nc">&nbsp;        card.setBorder(new FlatDropShadowBorder(Color.BLACK, 12, .20f));</b>
+<b class="nc">&nbsp;        return card;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static JTextField textField(String ph) {
+<b class="nc">&nbsp;        JTextField t = new JTextField(18);</b>
+<b class="nc">&nbsp;        t.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, ph);</b>
+<b class="nc">&nbsp;        t.setPreferredSize(new Dimension(220, 28));</b>
+<b class="nc">&nbsp;        return t;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static JPasswordField passwordField(String ph) {
+<b class="nc">&nbsp;        JPasswordField p = new JPasswordField(18);</b>
+<b class="nc">&nbsp;        p.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, ph);</b>
+<b class="nc">&nbsp;        p.setPreferredSize(new Dimension(220, 28));</b>
+<b class="nc">&nbsp;        return p;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private static String toHex(Color c){
+<b class="nc">&nbsp;        return String.format(&quot;#%02X%02X%02X&quot;, c.getRed(), c.getGreen(), c.getBlue());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private VetcareStyle() {}
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-07-14 22:01</div>
+</div>
+</body>
+</html>

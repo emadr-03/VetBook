@@ -1,0 +1,146 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Veterinario</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unina.vetbook.entity</a>
+</div>
+
+<h1>Coverage Summary for Class: Veterinario (it.unina.vetbook.entity)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Veterinario</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unina.vetbook.entity;
+&nbsp;
+&nbsp;
+&nbsp;import it.unina.vetbook.database.DBManager;
+&nbsp;import it.unina.vetbook.database.VisitaDAO;
+&nbsp;
+&nbsp;import java.sql.Connection;
+&nbsp;import java.sql.SQLException;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public class Veterinario extends Utente {
+&nbsp;
+<b class="nc">&nbsp;    private final Agenda agenda = Agenda.getInstance();</b>
+&nbsp;    private List&lt;Visita&gt; visite;
+&nbsp;
+&nbsp;    public Veterinario(String username, String email, String password) {
+<b class="nc">&nbsp;        super(username, email, password);</b>
+<b class="nc">&nbsp;        this.ruolo = UserRole.VETERINARIO;</b>
+<b class="nc">&nbsp;        this.visite = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void registraVisita(Visita v) {
+<b class="nc">&nbsp;        try(Connection conn = DBManager.getInstance().getConnection()){</b>
+<b class="nc">&nbsp;            VisitaDAO visitaDAO = new VisitaDAO(conn);</b>
+<b class="nc">&nbsp;            visitaDAO.create(v);</b>
+&nbsp;        } catch (SQLException e) {
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        agenda.getVisite().add(v);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Visita&gt; getVisite() {
+<b class="nc">&nbsp;        return Visita.getVisiteVeterinario(this.id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static Veterinario mockVet(){
+<b class="nc">&nbsp;        Veterinario mock = new Veterinario(&quot;dr_roberto&quot;, &quot;email@outlook.it&quot;, &quot;veterinario&quot;);</b>
+<b class="nc">&nbsp;        mock.setId(3);</b>
+<b class="nc">&nbsp;        return mock;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-07-14 22:01</div>
+</div>
+</body>
+</html>

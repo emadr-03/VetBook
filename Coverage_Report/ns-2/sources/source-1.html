@@ -1,0 +1,168 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AdminController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unina.vetbook.control</a>
+</div>
+
+<h1>Coverage Summary for Class: AdminController (it.unina.vetbook.control)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AdminController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (18/18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unina.vetbook.control;
+&nbsp;
+&nbsp;import it.unina.vetbook.dto.AnimaleDomesticoDTO;
+&nbsp;import it.unina.vetbook.dto.VisitaDTO;
+&nbsp;import it.unina.vetbook.entity.Agenda;
+&nbsp;import it.unina.vetbook.entity.Amministratore;
+&nbsp;import it.unina.vetbook.entity.Visita;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public class AdminController {
+&nbsp;
+<b class="fc">&nbsp;    private static AdminController instance = null;</b>
+<b class="fc">&nbsp;    private final Agenda agenda = Agenda.getInstance();</b>
+&nbsp;    private final Amministratore user;
+&nbsp;
+<b class="fc">&nbsp;    private AdminController(Amministratore user) {</b>
+<b class="fc">&nbsp;        this.user = user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    //A: uso di synchronized per futuro scaling del lato server-side
+&nbsp;    public static synchronized AdminController getInstance(Amministratore user) {
+<b class="pc">&nbsp;        if (instance == null) {</b>
+<b class="fc">&nbsp;            instance = new AdminController(user);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return instance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;VisitaDTO&gt; getVisiteGiornaliere() {
+<b class="fc">&nbsp;        List&lt;Visita&gt; visiteEntity = agenda.visualizzaVisiteGiornaliere();</b>
+<b class="fc">&nbsp;        List&lt;VisitaDTO&gt; visiteDto = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (Visita v : visiteEntity) {</b>
+<b class="fc">&nbsp;            visiteDto.add(new VisitaDTO(v.getTipo(), v.getDescrizione(), v.getCosto()));</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return visiteDto;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double getTotaleIncassoGiornaliero() {
+<b class="fc">&nbsp;        List&lt;Visita&gt; visiteGiornaliere = agenda.visualizzaVisiteGiornaliere();</b>
+<b class="fc">&nbsp;        return user.ottieniIncasso(visiteGiornaliere);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;AnimaleDomesticoDTO&gt; visualizzaMockAnimaliNonVaccinati() {
+<b class="fc">&nbsp;        return List.of(</b>
+<b class="fc">&nbsp;                new AnimaleDomesticoDTO(101, &quot;Luna&quot;, &quot;Gatto&quot;, null, null, LocalDate.of(2025, 4, 27), 1),</b>
+<b class="fc">&nbsp;                new AnimaleDomesticoDTO(207, &quot;Milo&quot;, &quot;Cane&quot;, null, null, LocalDate.of(2023, 4, 27), 1),</b>
+<b class="fc">&nbsp;                new AnimaleDomesticoDTO(315, &quot;Kiwi&quot;, &quot;Coniglio&quot;, null, null, LocalDate.of(2022, 4, 25), 1)</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-07-14 22:01</div>
+</div>
+</body>
+</html>

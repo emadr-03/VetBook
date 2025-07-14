@@ -1,0 +1,315 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ProprietarioController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unina.vetbook.control</a>
+</div>
+
+<h1>Coverage Summary for Class: ProprietarioController (it.unina.vetbook.control)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProprietarioController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    76.9%
+  </span>
+  <span class="absValue">
+    (10/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.9%
+  </span>
+  <span class="absValue">
+    (26/62)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63.4%
+  </span>
+  <span class="absValue">
+    (64/101)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unina.vetbook.control;
+&nbsp;
+&nbsp;import it.unina.vetbook.database.DBManager;
+&nbsp;import it.unina.vetbook.dto.AnimaleDomesticoDTO;
+&nbsp;import it.unina.vetbook.dto.DisponibilitaDTO;
+&nbsp;import it.unina.vetbook.dto.ProprietarioDTO;
+&nbsp;import it.unina.vetbook.entity.Agenda;
+&nbsp;import it.unina.vetbook.entity.AnimaleDomestico;
+&nbsp;import it.unina.vetbook.entity.Prenotazione;
+&nbsp;import it.unina.vetbook.entity.Proprietario;
+&nbsp;import it.unina.vetbook.exception.BusinessRuleViolationException;
+&nbsp;import it.unina.vetbook.exception.ValidationException;
+&nbsp;
+&nbsp;import java.io.File;
+&nbsp;import java.io.FileInputStream;
+&nbsp;import java.io.IOException;
+&nbsp;import java.sql.Connection;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public class ProprietarioController {
+&nbsp;
+&nbsp;
+&nbsp;    private final Proprietario proprietarioCorrente;
+&nbsp;
+&nbsp;    //Il seguente attributo è necessario solo a fini di mock del comportamento dell&#39;UI, dunque non è presente nel BCED
+&nbsp;    // Dunque i metodi che utilizzano tali attributo sono delle versioni mockate del metodo finale
+&nbsp;    private final List&lt;AnimaleDomestico&gt; animali;
+&nbsp;
+&nbsp;    private final Agenda agenda;
+&nbsp;
+<b class="fc">&nbsp;    public ProprietarioController(Proprietario proprietarioCorrente) {</b>
+<b class="fc">&nbsp;        this.proprietarioCorrente = proprietarioCorrente;</b>
+<b class="fc">&nbsp;        this.animali = this.proprietarioCorrente.getAnimali();</b>
+<b class="fc">&nbsp;        this.proprietarioCorrente.setAnimali(animali);</b>
+<b class="fc">&nbsp;        agenda = Agenda.getInstance();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void gestioneProfilo(String username, String nome, String cognome, String email, String password) {
+<b class="pc">&nbsp;        if (username == null || username.trim().isEmpty() || username.length() &gt; 20) {</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;Username non valido.&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (!nome.matches(&quot;[a-zA-Z\\s]+&quot;) || nome.length() &gt; 30) {</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;Nome non valido.&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (!cognome.matches(&quot;[a-zA-Z\\s]+&quot;) || cognome.length() &gt; 30) {</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;Cognome non valido.&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (!email.matches(&quot;^[\\w-.]+@[\\w-]+\\.[a-zA-Z]{2,}$&quot;)) {</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;Email non valida.&quot;);</b>
+&nbsp;        }
+<b class="pc">&nbsp;        if (password.length() &lt; 6 &amp;&amp; (!password.isEmpty())) {</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;La password deve essere maggiore di 6 caratteri&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        //A: I seguenti setters sono mockati per simulare il funzionamento dell&#39;UI, non c&#39;è persistenza
+<b class="fc">&nbsp;        proprietarioCorrente.setUsername(username.trim());</b>
+<b class="fc">&nbsp;        proprietarioCorrente.setNome(nome.trim());</b>
+<b class="fc">&nbsp;        proprietarioCorrente.setCognome(cognome.trim());</b>
+<b class="fc">&nbsp;        proprietarioCorrente.setEmail(email.trim());</b>
+<b class="fc">&nbsp;        proprietarioCorrente.setPassword(password);</b>
+&nbsp;
+<b class="fc">&nbsp;        System.out.println(&quot;Profilo aggiornato. Nuovo username: &quot; + proprietarioCorrente.getUsername());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void aggiornaImmagineProfilo(File file) {
+<b class="pc">&nbsp;        if (file == null || !file.exists()) {</b>
+<b class="fc">&nbsp;            throw new ValidationException(&quot;File immagine non valido.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        String nomeFile = file.getName().toLowerCase();</b>
+<b class="nc">&nbsp;        if (!(nomeFile.endsWith(&quot;.jpg&quot;) || nomeFile.endsWith(&quot;.jpeg&quot;) ||</b>
+<b class="nc">&nbsp;                nomeFile.endsWith(&quot;.png&quot;) || nomeFile.endsWith(&quot;.gif&quot;))) {</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;Formato immagine non supportato.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        try (FileInputStream fis = new FileInputStream(file)) {</b>
+<b class="nc">&nbsp;            byte[] bytes = fis.readAllBytes();</b>
+&nbsp;            //A: Il seguente setter è mockato per simulare il funzionamento dell&#39;UI, non c&#39;è persistenza
+<b class="nc">&nbsp;            proprietarioCorrente.setImmagineProfilo(bytes);</b>
+&nbsp;        } catch (IOException e) {
+<b class="nc">&nbsp;            throw new BusinessRuleViolationException(&quot;Errore nella lettura del file immagine.&quot;, e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public void inserisciAnimale(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
+<b class="pc">&nbsp;        if (String.valueOf(codiceChip).length() != 10)</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;Il codice chip deve essere esattamente di 10 cifre.&quot;);</b>
+&nbsp;
+<b class="pc">&nbsp;        if (proprietarioCorrente.getAnimali().stream().anyMatch(a -&gt; a.getCodiceChip() == codiceChip))</b>
+<b class="fc">&nbsp;            throw new BusinessRuleViolationException(&quot;Codice chip già esistente.&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        validaCampoTesto(nome, &quot;Nome&quot;, 40);</b>
+<b class="fc">&nbsp;        validaCampoTesto(tipo, &quot;Tipo&quot;, 20);</b>
+<b class="fc">&nbsp;        validaCampoTesto(razza, &quot;Razza&quot;, 20);</b>
+<b class="fc">&nbsp;        validaCampoTesto(colore, &quot;Colore&quot;, 20);</b>
+&nbsp;
+<b class="pc">&nbsp;        if (dataDiNascita == null || dataDiNascita.isAfter(LocalDate.now()))</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;Data di nascita non valida.&quot;);</b>
+&nbsp;
+&nbsp;        //A: Il seguente add è un mock per simulare il funzionamento dell&#39;UI. L&#39;aggiunta non viene persistita-
+<b class="fc">&nbsp;        proprietarioCorrente.addAnimale(new AnimaleDomestico(codiceChip, proprietarioCorrente.getId(), nome, tipo, razza, colore, dataDiNascita));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public void modificaAnimale(int codiceChip, String nome, String tipo, String razza, String colore, LocalDate dataDiNascita) {
+<b class="fc">&nbsp;        validaCampoTesto(nome, &quot;Nome&quot;, 40);</b>
+<b class="fc">&nbsp;        validaCampoTesto(tipo, &quot;Tipo&quot;, 20);</b>
+<b class="fc">&nbsp;        validaCampoTesto(razza, &quot;Razza&quot;, 20);</b>
+<b class="fc">&nbsp;        validaCampoTesto(colore, &quot;Colore&quot;, 20);</b>
+&nbsp;
+<b class="pc">&nbsp;        if (dataDiNascita == null || dataDiNascita.isAfter(LocalDate.now()))</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;Data di nascita non valida.&quot;);</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        AnimaleDomestico animale = animali.stream()</b>
+<b class="pc">&nbsp;                .filter(a -&gt; a.getCodiceChip() == codiceChip)</b>
+<b class="fc">&nbsp;                .findFirst()</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new ValidationException(&quot;Animale con codice chip &quot; + codiceChip + &quot; non trovato.&quot;));</b>
+&nbsp;
+&nbsp;        //A: I seguenti setters sono mockati per simulare il funzionamento dell&#39;UI, non c&#39;è persistenza
+<b class="fc">&nbsp;        animale.setNome(nome);</b>
+<b class="fc">&nbsp;        animale.setTipo(tipo);</b>
+<b class="fc">&nbsp;        animale.setRazza(razza);</b>
+<b class="fc">&nbsp;        animale.setColore(colore);</b>
+<b class="fc">&nbsp;        animale.setDataDiNascita(dataDiNascita);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void eliminaAnimale(int codiceChip) {
+<b class="pc">&nbsp;        proprietarioCorrente.getAnimali().removeIf(a -&gt; a.getCodiceChip() == codiceChip);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void effettuaPrenotazione(AnimaleDomesticoDTO animaleDomesticoDTO, DisponibilitaDTO disponibilita) {
+<b class="fc">&nbsp;        AnimaleDomestico animale = proprietarioCorrente.getAnimali().stream()</b>
+<b class="pc">&nbsp;                .filter(a -&gt; a.getCodiceChip() == animaleDomesticoDTO.codiceChip())</b>
+<b class="fc">&nbsp;                .findFirst()</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new ValidationException(&quot;Animale non trovato per il codice chip specificato.&quot;));</b>
+&nbsp;
+<b class="fc">&nbsp;        Prenotazione prenotazione = new Prenotazione(</b>
+<b class="fc">&nbsp;                disponibilita.data(),</b>
+<b class="fc">&nbsp;                disponibilita.ora(),</b>
+&nbsp;                animale
+&nbsp;        );
+<b class="fc">&nbsp;        agenda.prenotaVisita(prenotazione);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;AnimaleDomesticoDTO&gt; getAnimaliProprietario() {
+<b class="fc">&nbsp;        return proprietarioCorrente.getAnimali().stream()</b>
+<b class="fc">&nbsp;                .map(a -&gt; new AnimaleDomesticoDTO(</b>
+<b class="fc">&nbsp;                        a.getCodiceChip(),</b>
+<b class="fc">&nbsp;                        a.getNome(),</b>
+<b class="fc">&nbsp;                        a.getTipo(),</b>
+<b class="fc">&nbsp;                        a.getRazza(),</b>
+<b class="fc">&nbsp;                        a.getColore(),</b>
+<b class="fc">&nbsp;                        a.getDataDiNascita(),</b>
+<b class="fc">&nbsp;                        proprietarioCorrente.getId()</b>
+&nbsp;                ))
+<b class="fc">&nbsp;                .toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public ProprietarioDTO getProprietarioDTO() {
+<b class="nc">&nbsp;        return new ProprietarioDTO(</b>
+<b class="nc">&nbsp;                proprietarioCorrente.getUsername(),</b>
+<b class="nc">&nbsp;                proprietarioCorrente.getEmail(),</b>
+<b class="nc">&nbsp;                proprietarioCorrente.getNome(),</b>
+<b class="nc">&nbsp;                proprietarioCorrente.getCognome(),</b>
+<b class="nc">&nbsp;                proprietarioCorrente.getImmagineProfilo(),</b>
+<b class="nc">&nbsp;                getAnimaliDTO()</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;    private List&lt;AnimaleDomesticoDTO&gt; getAnimaliDTO() {
+<b class="nc">&nbsp;        return proprietarioCorrente.getAnimali().stream()</b>
+<b class="nc">&nbsp;                .map(a -&gt; new AnimaleDomesticoDTO(</b>
+<b class="nc">&nbsp;                        a.getCodiceChip(),</b>
+<b class="nc">&nbsp;                        a.getNome(),</b>
+<b class="nc">&nbsp;                        a.getTipo(),</b>
+<b class="nc">&nbsp;                        a.getRazza(),</b>
+<b class="nc">&nbsp;                        a.getColore(),</b>
+<b class="nc">&nbsp;                        a.getDataDiNascita(),</b>
+<b class="nc">&nbsp;                        proprietarioCorrente.getId()</b>
+&nbsp;                ))
+<b class="nc">&nbsp;                .toList();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void validaCampoTesto(String testo, String nomeCampo, int lunghezzaMax) {
+<b class="pc">&nbsp;        if (testo == null || testo.trim().isEmpty())</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;Il campo &#39;&quot; + nomeCampo + &quot;&#39; è obbligatorio.&quot;);</b>
+<b class="pc">&nbsp;        if (testo.length() &gt; lunghezzaMax)</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;Il campo &#39;&quot; + nomeCampo + &quot;&#39; è troppo lungo&quot;);</b>
+<b class="pc">&nbsp;        if (testo.matches(&quot;.*\\d.*&quot;))</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;Il campo &#39;&quot; + nomeCampo + &quot;&#39; non può contenere numeri.&quot;);</b>
+<b class="pc">&nbsp;        if (!testo.matches(&quot;[a-zA-Z\\s]+&quot;))</b>
+<b class="nc">&nbsp;            throw new ValidationException(&quot;Il campo &#39;&quot; + nomeCampo + &quot;&#39; contiene simboli non validi.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-07-14 22:01</div>
+</div>
+</body>
+</html>

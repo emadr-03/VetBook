@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,39 +29,22 @@ public class Agenda {
         } catch (SQLException e){
             throw new PersistenceException("Errore durante l'inizializzazione dell'agenda" + e.getMessage());
         }
+    }
 
-//        // Disponibilità
-//        disponibilita.add(new Disponibilita(1, LocalDate.now().plusDays(1), LocalTime.of(9, 0)));
-//        disponibilita.add(new Disponibilita(2, LocalDate.now().plusDays(1), LocalTime.of(10, 0)));
-//        disponibilita.add(new Disponibilita(3, LocalDate.now().plusDays(2), LocalTime.of(11, 0)));
-//        disponibilita.add(new Disponibilita(4, LocalDate.now().plusDays(2), LocalTime.of(12, 0)));
-//
-//        // Animali di test
-//        AnimaleDomestico rex = new AnimaleDomestico(111222333, 1,"Rex", "Cane", "Pastore Tedesco", "Nero", LocalDate.now().minusYears(3));
-//        AnimaleDomestico luna = new AnimaleDomestico(444555666, 1, "Luna", "Gatto", "Europeo", "Bianco", LocalDate.now().minusYears(2));
-//        AnimaleDomestico zorro = new AnimaleDomestico(777888999, 1, "Zorro", "Cane", "Labrador", "Miele", LocalDate.now().minusYears(4));
-//
-//        // Prenotazioni MOCK
-//        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(1), LocalTime.of(9, 0), rex));
-//        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(2), LocalTime.of(12, 0), luna));
-//        this.prenotazioni.add(new Prenotazione(LocalDate.now().plusDays(3), LocalTime.of(15, 0), zorro));
-//
-//        // Visite MOCK
-//
-//        Visita v1 = new Visita(TipoVisita.CONTROLLO, "Controllo annuale", 35.00, null);
-//        v1.setData(LocalDate.now());
-//        v1.setOra(LocalTime.of(10, 0));
-//        this.visite.add(v1);
-//
-//        Visita v2 = new Visita(TipoVisita.VACCINAZIONE, "Vaccino rabbia", 60.00, null);
-//        v2.setData(LocalDate.now());
-//        v2.setOra(LocalTime.of(11, 0));
-//        this.visite.add(v2);
-//
-//        Visita v3 = new Visita(TipoVisita.INTERVENTO_CHIRURGICO, "Rimozione cisti", 120.00, null);
-//        v3.setData(LocalDate.now().plusDays(1));
-//        v3.setOra(LocalTime.of(9, 0));
-//        this.visite.add(v3);
+
+    //A: Metodo di supporto per test unitari
+    public static Agenda creaMock(List<Disponibilita> disp, List<Prenotazione> pren, List<Visita> vis) {
+        Agenda a = new Agenda(true);
+        a.getDisponibilita().addAll(disp);
+        a.getPrenotazioni().addAll(pren);
+        a.getVisite().addAll(vis);
+        return a;
+    }
+
+    private Agenda(boolean testingMode) {
+        this.disponibilita = new ArrayList<>();
+        this.prenotazioni = new ArrayList<>();
+        this.visite = new ArrayList<>();
     }
 
 

@@ -1,0 +1,245 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Agenda</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unina.vetbook.entity</a>
+</div>
+
+<h1>Coverage Summary for Class: Agenda (it.unina.vetbook.entity)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Agenda</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (8/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    34.6%
+  </span>
+  <span class="absValue">
+    (9/26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    40.7%
+  </span>
+  <span class="absValue">
+    (22/54)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unina.vetbook.entity;
+&nbsp;
+&nbsp;import it.unina.vetbook.database.*;
+&nbsp;import it.unina.vetbook.exception.PersistenceException;
+&nbsp;
+&nbsp;import java.sql.Connection;
+&nbsp;import java.sql.SQLException;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.LocalTime;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;public class Agenda {
+&nbsp;
+&nbsp;    private static Agenda instance;
+&nbsp;    private final List&lt;Disponibilita&gt; disponibilita;
+&nbsp;    private final List&lt;Prenotazione&gt; prenotazioni;
+&nbsp;    private final List&lt;Visita&gt; visite;
+&nbsp;
+<b class="nc">&nbsp;    private Agenda() {</b>
+<b class="nc">&nbsp;        try(Connection conn = DBManager.getInstance().getConnection()) {</b>
+<b class="nc">&nbsp;            this.disponibilita = new DisponibilitaDAO(conn).readAll();</b>
+<b class="nc">&nbsp;            this.prenotazioni = new PrenotazioneDAO(conn).readAll();</b>
+<b class="nc">&nbsp;            this.visite = new VisitaDAO(conn).readAll();</b>
+<b class="nc">&nbsp;            List&lt;AnimaleDomestico&gt; animali = new AnimaleDomesticoDAO(conn).readAll();</b>
+<b class="nc">&nbsp;            risolviCollegamenti(animali);</b>
+&nbsp;        } catch (SQLException e){
+<b class="nc">&nbsp;            throw new PersistenceException(&quot;Errore durante l&#39;inizializzazione dell&#39;agenda&quot; + e.getMessage());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    //A: Metodo di supporto per test unitari
+&nbsp;    public static Agenda creaMock(List&lt;Disponibilita&gt; disp, List&lt;Prenotazione&gt; pren, List&lt;Visita&gt; vis) {
+<b class="fc">&nbsp;        Agenda a = new Agenda(true);</b>
+<b class="fc">&nbsp;        a.getDisponibilita().addAll(disp);</b>
+<b class="fc">&nbsp;        a.getPrenotazioni().addAll(pren);</b>
+<b class="fc">&nbsp;        a.getVisite().addAll(vis);</b>
+<b class="fc">&nbsp;        return a;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    private Agenda(boolean testingMode) {</b>
+<b class="fc">&nbsp;        this.disponibilita = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        this.prenotazioni = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        this.visite = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public static Agenda getInstance() {
+<b class="nc">&nbsp;        if (instance == null) {</b>
+<b class="nc">&nbsp;            instance = new Agenda();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return instance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Disponibilita&gt; getDisponibilita() {
+<b class="fc">&nbsp;        return disponibilita;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void prenotaVisita(Prenotazione p) {
+<b class="nc">&nbsp;        Optional&lt;Disponibilita&gt; daEliminare = disponibilita.stream()</b>
+<b class="nc">&nbsp;                .filter(d -&gt; d.getData().equals(p.getData()) &amp;&amp; d.getOra().equals(p.getOra()))</b>
+<b class="nc">&nbsp;                .findFirst();</b>
+<b class="nc">&nbsp;        disponibilita.removeIf(d -&gt; d.getData().equals(p.getData()) &amp;&amp; d.getOra().equals(p.getOra()));</b>
+&nbsp;
+<b class="nc">&nbsp;        try (Connection conn = DBManager.getInstance().getConnection()) {</b>
+<b class="nc">&nbsp;            if (daEliminare.isPresent()) {</b>
+<b class="nc">&nbsp;                new DisponibilitaDAO(conn).delete(daEliminare.get().getId());</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Creazione prenotazione
+<b class="nc">&nbsp;            new PrenotazioneDAO(conn).create(p);</b>
+&nbsp;
+&nbsp;        } catch (SQLException e) {
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        this.prenotazioni.add(p);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Prenotazione aggiunta in memoria per: &quot; + p.getAnimale().getNome());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public List&lt;Prenotazione&gt; getPrenotazioni() {
+<b class="fc">&nbsp;        return prenotazioni;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean addDisponibilita(Disponibilita nuovaDisp) {
+<b class="fc">&nbsp;        boolean esisteGia = disponibilita.stream()</b>
+<b class="pc">&nbsp;                .anyMatch(d -&gt; d.getData().equals(nuovaDisp.getData()) &amp;&amp; d.getOra().equals(nuovaDisp.getOra()));</b>
+<b class="pc">&nbsp;        if (esisteGia) {</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        try(Connection conn = DBManager.getInstance().getConnection()){</b>
+<b class="nc">&nbsp;            DisponibilitaDAO dao = new DisponibilitaDAO(conn);</b>
+<b class="nc">&nbsp;            dao.create(nuovaDisp);</b>
+&nbsp;        } catch (SQLException e) {
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return this.disponibilita.add(nuovaDisp);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Visita&gt; getVisite() {
+<b class="fc">&nbsp;        return this.visite;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Visita&gt; visualizzaVisiteGiornaliere() {
+<b class="fc">&nbsp;        return this.visite.stream()</b>
+<b class="fc">&nbsp;                .filter(visita -&gt; visita.getData().equals(LocalDate.now()))</b>
+<b class="fc">&nbsp;                .collect(Collectors.toList());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isSlotOccupato(LocalDate data, LocalTime ora) {
+<b class="pc">&nbsp;        return disponibilita.stream().anyMatch(d -&gt; d.getData().equals(data) &amp;&amp; d.getOra().equals(ora)) ||</b>
+<b class="pc">&nbsp;                prenotazioni.stream().anyMatch(p -&gt; p.getData().equals(data) &amp;&amp; p.getOra().equals(ora)) ||</b>
+<b class="pc">&nbsp;                visite.stream().anyMatch(v -&gt; v.getData().equals(data) &amp;&amp; v.getOra().equals(ora));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void risolviCollegamenti(List&lt;AnimaleDomestico&gt; animali) {
+<b class="nc">&nbsp;        for (Prenotazione p : prenotazioni) {</b>
+<b class="nc">&nbsp;            animali.stream()</b>
+<b class="nc">&nbsp;                    .filter(a -&gt; a.getCodiceChip() == p.getIdAnimale())</b>
+<b class="nc">&nbsp;                    .findFirst()</b>
+<b class="nc">&nbsp;                    .ifPresent(p::setAnimale);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-07-14 22:01</div>
+</div>
+</body>
+</html>

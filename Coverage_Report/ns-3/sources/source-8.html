@@ -1,0 +1,210 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > VisitaDAO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unina.vetbook.database</a>
+</div>
+
+<h1>Coverage Summary for Class: VisitaDAO (it.unina.vetbook.database)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">VisitaDAO</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/39)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unina.vetbook.database;
+&nbsp;
+&nbsp;import it.unina.vetbook.entity.*;
+&nbsp;
+&nbsp;import java.sql.*;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.LocalTime;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;public class VisitaDAO extends GenericDAO&lt;Visita, Integer&gt; {
+&nbsp;
+&nbsp;    public VisitaDAO(Connection conn) {
+<b class="nc">&nbsp;        super(conn);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void create(Visita visita) throws SQLException {
+<b class="nc">&nbsp;        String insertVisitaSQL = &quot;INSERT INTO visite (tipo_visita, descrizione, costo, data_visita, ora_visita, id_veterinario) VALUES (?, ?, ?, ?, ?, ?)&quot;;</b>
+<b class="nc">&nbsp;        try (PreparedStatement ps = connection.prepareStatement(insertVisitaSQL, Statement.RETURN_GENERATED_KEYS)) {</b>
+<b class="nc">&nbsp;            ps.setString(1, visita.getTipo().toString());</b>
+<b class="nc">&nbsp;            ps.setString(2, visita.getDescrizione());</b>
+<b class="nc">&nbsp;            ps.setDouble(3, visita.getCosto());</b>
+<b class="nc">&nbsp;            ps.setDate(4, Date.valueOf(visita.getData())); // Conversione da LocalDate</b>
+<b class="nc">&nbsp;            ps.setTime(5, Time.valueOf(visita.getOra()));  // Conversione da LocalTime</b>
+<b class="nc">&nbsp;            ps.setInt(6, visita.getIdVeterinario());</b>
+&nbsp;
+<b class="nc">&nbsp;            ps.executeUpdate();</b>
+<b class="nc">&nbsp;            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {</b>
+<b class="nc">&nbsp;                if (generatedKeys.next()) {</b>
+<b class="nc">&nbsp;                    visita.setIdVisita(generatedKeys.getInt(1));</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        String insertFarmaciSQL = &quot;INSERT INTO farmaci_has_visite (visite_id, farmaci_id) VALUES (?, ?)&quot;;</b>
+<b class="nc">&nbsp;        try (PreparedStatement ps = connection.prepareStatement(insertFarmaciSQL)) {</b>
+<b class="nc">&nbsp;            for (Farmaco f : visita.getFarmaciPrescritti()) {</b>
+<b class="nc">&nbsp;                ps.setInt(1, visita.getIdVisita());</b>
+<b class="nc">&nbsp;                ps.setInt(2, f.getId());</b>
+<b class="nc">&nbsp;                ps.addBatch();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            ps.executeBatch();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public List&lt;Visita&gt; readAllByVet(int idVet) throws SQLException {
+<b class="nc">&nbsp;        String sql = &quot;SELECT * FROM visite WHERE id_veterinario = ?&quot;;</b>
+<b class="nc">&nbsp;        return executeQuery(sql, idVet);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Visita&gt; readAll() throws SQLException {
+<b class="nc">&nbsp;        return executeQuery(&quot;SELECT * FROM VISITE&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Optional&lt;Visita&gt; read(Integer[] key) throws SQLException {
+<b class="nc">&nbsp;        throw new UnsupportedOperationException(&quot;read() non implementato per VisitaDAO.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void update(Visita entity) throws SQLException {
+<b class="nc">&nbsp;        throw new UnsupportedOperationException(&quot;update() non implementato per VisitaDAO.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void delete(Integer id) throws SQLException {
+<b class="nc">&nbsp;        throw new UnsupportedOperationException(&quot;delete() non implementato per VisitaDAO.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    protected Visita mapRow(ResultSet rs) throws SQLException {
+<b class="nc">&nbsp;        int idVisita = rs.getInt(&quot;id&quot;);</b>
+<b class="nc">&nbsp;        String tipoVisitaStr = rs.getString(&quot;tipo_visita&quot;);</b>
+<b class="nc">&nbsp;        String descrizione = rs.getString(&quot;descrizione&quot;);</b>
+<b class="nc">&nbsp;        double costo = rs.getDouble(&quot;costo&quot;);</b>
+<b class="nc">&nbsp;        Date dataSql = rs.getDate(&quot;data_visita&quot;);</b>
+<b class="nc">&nbsp;        Time oraSql = rs.getTime(&quot;ora_visita&quot;);</b>
+<b class="nc">&nbsp;        int idVeterinario = rs.getInt(&quot;id_veterinario&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        TipoVisita tipo = TipoVisita.valueOf(tipoVisitaStr);</b>
+<b class="nc">&nbsp;        LocalDate data = dataSql != null ? dataSql.toLocalDate() : null;</b>
+<b class="nc">&nbsp;        LocalTime ora = oraSql != null ? oraSql.toLocalTime() : null;</b>
+&nbsp;
+<b class="nc">&nbsp;        Visita visita = new Visita(tipo, descrizione, costo, data, ora, idVeterinario);</b>
+<b class="nc">&nbsp;        visita.setIdVisita(idVisita);</b>
+&nbsp;
+<b class="nc">&nbsp;        return visita;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-07-14 22:01</div>
+</div>
+</body>
+</html>

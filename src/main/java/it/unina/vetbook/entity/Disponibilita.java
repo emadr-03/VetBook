@@ -13,7 +13,7 @@ public class Disponibilita {
     public Disponibilita(LocalDate data, LocalTime ora) {
         this.data = data;
         this.ora = ora;
-        this.stato = Stato.PRENOTATA;
+        this.stato = Stato.LIBERA;
     }
 
     public Disponibilita(int id, LocalDate data, LocalTime ora) {

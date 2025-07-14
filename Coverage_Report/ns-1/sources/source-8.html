@@ -1,0 +1,344 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FormDialogVisita</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">it.unina.vetbook.boundary</a>
+</div>
+
+<h1>Coverage Summary for Class: FormDialogVisita (it.unina.vetbook.boundary)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FormDialogVisita</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/101)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FormDialogVisita$FarmacoRenderer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/106)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package it.unina.vetbook.boundary;
+&nbsp;
+&nbsp;import it.unina.vetbook.control.AgendaController;
+&nbsp;import it.unina.vetbook.control.VeterinarioController;
+&nbsp;import it.unina.vetbook.dto.FarmacoDTO;
+&nbsp;import it.unina.vetbook.entity.TipoVisita;
+&nbsp;
+&nbsp;import javax.swing.*;
+&nbsp;import java.awt.*;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public class FormDialogVisita extends JDialog {
+&nbsp;
+&nbsp;    private JComboBox&lt;TipoVisita&gt; tipoVisitaCombo;
+&nbsp;    private JTextField descrizioneText;
+&nbsp;    private JTextField costoText;
+&nbsp;    private JButton registraBtn, chiudiBtn, addFarmacoBtn, removeFarmacoBtn;
+&nbsp;    private DefaultListModel&lt;FarmacoDTO&gt; disponibiliModel;
+&nbsp;    private DefaultListModel&lt;FarmacoDTO&gt; prescrittiModel;
+&nbsp;    private JList&lt;FarmacoDTO&gt; disponibiliList, prescrittiList;
+&nbsp;
+&nbsp;    private final VeterinarioController veterinarioController;
+&nbsp;
+&nbsp;    public FormDialogVisita(Frame owner, VeterinarioController veterinarioController) {
+<b class="nc">&nbsp;        super(owner, &quot;Registra Visita&quot;, true);</b>
+<b class="nc">&nbsp;        this.veterinarioController = veterinarioController;</b>
+&nbsp;
+<b class="nc">&nbsp;        initDialog();</b>
+<b class="nc">&nbsp;        initComponents();</b>
+<b class="nc">&nbsp;        layoutComponents();</b>
+<b class="nc">&nbsp;        addListeners();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void initDialog() {
+<b class="nc">&nbsp;        setSize(750, 600);</b>
+<b class="nc">&nbsp;        setLocationRelativeTo(getOwner());</b>
+<b class="nc">&nbsp;        setContentPane(VetcareStyle.createSpotlightBackground());</b>
+<b class="nc">&nbsp;        setLayout(new GridBagLayout());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void initComponents() {
+<b class="nc">&nbsp;        tipoVisitaCombo = new JComboBox&lt;&gt;(TipoVisita.values());</b>
+<b class="nc">&nbsp;        descrizioneText = VetcareStyle.textField(&quot;Descrizione della visita...&quot;);</b>
+<b class="nc">&nbsp;        costoText = VetcareStyle.textField(&quot;Costo (es. 50.00)&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        disponibiliModel = new DefaultListModel&lt;&gt;();</b>
+<b class="nc">&nbsp;        prescrittiModel = new DefaultListModel&lt;&gt;();</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;FarmacoDTO&gt; farmaciDisponibili = veterinarioController.getFarmaciDisponibili();</b>
+<b class="nc">&nbsp;        farmaciDisponibili.forEach(disponibiliModel::addElement);</b>
+&nbsp;
+<b class="nc">&nbsp;        disponibiliList = new JList&lt;&gt;(disponibiliModel);</b>
+<b class="nc">&nbsp;        prescrittiList = new JList&lt;&gt;(prescrittiModel);</b>
+&nbsp;
+<b class="nc">&nbsp;        disponibiliList.setCellRenderer(new FarmacoRenderer());</b>
+<b class="nc">&nbsp;        prescrittiList.setCellRenderer(new FarmacoRenderer());</b>
+&nbsp;
+<b class="nc">&nbsp;        addFarmacoBtn = new JButton(&quot;&gt;&gt;&quot;);</b>
+<b class="nc">&nbsp;        removeFarmacoBtn = new JButton(&quot;&lt;&lt;&quot;);</b>
+<b class="nc">&nbsp;        registraBtn = new JButton(&quot;Registra&quot;);</b>
+<b class="nc">&nbsp;        chiudiBtn = new JButton(&quot;Chiudi&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void layoutComponents() {
+<b class="nc">&nbsp;        JPanel card = VetcareStyle.makeDialogCard();</b>
+<b class="nc">&nbsp;        card.setLayout(new GridBagLayout());</b>
+<b class="nc">&nbsp;        add(card);</b>
+&nbsp;
+<b class="nc">&nbsp;        GridBagConstraints c = new GridBagConstraints();</b>
+<b class="nc">&nbsp;        c.fill = GridBagConstraints.HORIZONTAL;</b>
+<b class="nc">&nbsp;        c.insets = new Insets(8, 15, 8, 15);</b>
+<b class="nc">&nbsp;        c.gridx = 0;</b>
+<b class="nc">&nbsp;        c.gridy = 0;</b>
+<b class="nc">&nbsp;        c.gridwidth = 3;</b>
+&nbsp;
+<b class="nc">&nbsp;        card.add(new JLabel(&quot;Tipo Visita:&quot;), c);</b>
+<b class="nc">&nbsp;        c.gridy++;</b>
+<b class="nc">&nbsp;        card.add(tipoVisitaCombo, c);</b>
+<b class="nc">&nbsp;        c.gridy++;</b>
+<b class="nc">&nbsp;        card.add(new JLabel(&quot;Descrizione:&quot;), c);</b>
+<b class="nc">&nbsp;        c.gridy++;</b>
+<b class="nc">&nbsp;        card.add(descrizioneText, c);</b>
+<b class="nc">&nbsp;        c.gridy++;</b>
+<b class="nc">&nbsp;        card.add(new JLabel(&quot;Costo:&quot;), c);</b>
+<b class="nc">&nbsp;        c.gridy++;</b>
+<b class="nc">&nbsp;        card.add(costoText, c);</b>
+<b class="nc">&nbsp;        c.gridy++;</b>
+<b class="nc">&nbsp;        card.add(new JLabel(&quot;Prescrivi Farmaci (Disponibili a sx, Prescritti a dx):&quot;), c);</b>
+&nbsp;
+<b class="nc">&nbsp;        c.gridy++;</b>
+<b class="nc">&nbsp;        c.gridwidth = 1;</b>
+<b class="nc">&nbsp;        c.weightx = 0.45;</b>
+<b class="nc">&nbsp;        c.weighty = 1.0;</b>
+<b class="nc">&nbsp;        c.fill = GridBagConstraints.BOTH;</b>
+<b class="nc">&nbsp;        card.add(new JScrollPane(disponibiliList), c);</b>
+&nbsp;
+<b class="nc">&nbsp;        JPanel buttonPanel = new JPanel();</b>
+<b class="nc">&nbsp;        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));</b>
+<b class="nc">&nbsp;        buttonPanel.setOpaque(false);</b>
+<b class="nc">&nbsp;        buttonPanel.add(addFarmacoBtn);</b>
+<b class="nc">&nbsp;        buttonPanel.add(Box.createVerticalStrut(10));</b>
+<b class="nc">&nbsp;        buttonPanel.add(removeFarmacoBtn);</b>
+<b class="nc">&nbsp;        c.gridx = 1;</b>
+<b class="nc">&nbsp;        c.weightx = 0.1;</b>
+<b class="nc">&nbsp;        c.weighty = 0;</b>
+<b class="nc">&nbsp;        c.fill = GridBagConstraints.NONE;</b>
+<b class="nc">&nbsp;        card.add(buttonPanel, c);</b>
+&nbsp;
+<b class="nc">&nbsp;        c.gridx = 2;</b>
+<b class="nc">&nbsp;        c.weightx = 0.45;</b>
+<b class="nc">&nbsp;        c.weighty = 1.0;</b>
+<b class="nc">&nbsp;        c.fill = GridBagConstraints.BOTH;</b>
+<b class="nc">&nbsp;        card.add(new JScrollPane(prescrittiList), c);</b>
+&nbsp;
+<b class="nc">&nbsp;        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));</b>
+<b class="nc">&nbsp;        bottomPanel.setOpaque(false);</b>
+<b class="nc">&nbsp;        bottomPanel.add(registraBtn);</b>
+<b class="nc">&nbsp;        bottomPanel.add(chiudiBtn);</b>
+<b class="nc">&nbsp;        c.gridy++;</b>
+<b class="nc">&nbsp;        c.gridx = 0;</b>
+<b class="nc">&nbsp;        c.gridwidth = 3;</b>
+<b class="nc">&nbsp;        c.weighty = 0;</b>
+<b class="nc">&nbsp;        c.fill = GridBagConstraints.HORIZONTAL;</b>
+<b class="nc">&nbsp;        c.insets = new Insets(20, 15, 8, 15);</b>
+<b class="nc">&nbsp;        card.add(bottomPanel, c);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void addListeners() {
+<b class="nc">&nbsp;        addFarmacoBtn.addActionListener(e -&gt; spostaFarmaci(disponibiliList, disponibiliModel, prescrittiModel));</b>
+<b class="nc">&nbsp;        removeFarmacoBtn.addActionListener(e -&gt; spostaFarmaci(prescrittiList, prescrittiModel, disponibiliModel));</b>
+<b class="nc">&nbsp;        registraBtn.addActionListener(e -&gt; handleRegistra());</b>
+<b class="nc">&nbsp;        chiudiBtn.addActionListener(e -&gt; dispose());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void spostaFarmaci(JList&lt;FarmacoDTO&gt; sourceList, DefaultListModel&lt;FarmacoDTO&gt; sourceModel, DefaultListModel&lt;FarmacoDTO&gt; destModel) {
+<b class="nc">&nbsp;        List&lt;FarmacoDTO&gt; selected = sourceList.getSelectedValuesList();</b>
+<b class="nc">&nbsp;        for (FarmacoDTO f : selected) {</b>
+<b class="nc">&nbsp;            destModel.addElement(f);</b>
+<b class="nc">&nbsp;            sourceModel.removeElement(f);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void handleRegistra() {
+<b class="nc">&nbsp;        String descrizione = descrizioneText.getText().trim();</b>
+<b class="nc">&nbsp;        String costoStr = costoText.getText().trim();</b>
+&nbsp;
+&nbsp;        double costo;
+&nbsp;        try {
+<b class="nc">&nbsp;            costo = Double.parseDouble(costoStr);</b>
+&nbsp;        } catch (NumberFormatException ex) {
+<b class="nc">&nbsp;            mostraErrore(&quot;Costo non valido! Inserire un numero.&quot;);</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        TipoVisita tipo = (TipoVisita) tipoVisitaCombo.getSelectedItem();</b>
+<b class="nc">&nbsp;        List&lt;FarmacoDTO&gt; farmaciPrescritti = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; prescrittiModel.getSize(); i++) {</b>
+<b class="nc">&nbsp;            farmaciPrescritti.add(prescrittiModel.getElementAt(i));</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            veterinarioController.registraVisita(tipo, descrizione, costo, farmaciPrescritti);</b>
+<b class="nc">&nbsp;            JOptionPane.showMessageDialog(this, &quot;Visita registrata con successo!&quot;);</b>
+<b class="nc">&nbsp;            dispose();</b>
+&nbsp;        } catch (Exception ex) {
+<b class="nc">&nbsp;            mostraErrore(&quot;Errore: &quot; + ex.getMessage());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private void mostraErrore(String messaggio) {
+<b class="nc">&nbsp;        JOptionPane.showMessageDialog(this, messaggio, &quot;Errore di Inserimento&quot;, JOptionPane.ERROR_MESSAGE);</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    static class FarmacoRenderer extends DefaultListCellRenderer {</b>
+&nbsp;        @Override
+&nbsp;        public Component getListCellRendererComponent(JList&lt;?&gt; list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+<b class="nc">&nbsp;            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);</b>
+<b class="nc">&nbsp;            if (value instanceof FarmacoDTO dto) {</b>
+<b class="nc">&nbsp;                setText(dto.nome() + &quot; (&quot; + dto.produttore() + &quot;)&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return this;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-07-14 22:01</div>
+</div>
+</body>
+</html>

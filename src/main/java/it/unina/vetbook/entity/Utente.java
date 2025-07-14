@@ -31,7 +31,7 @@ public abstract class Utente {
         }
     }
 
-    public void registrati() throws PersistenceException{
+    public void registrati() {
         try(Connection conn = DBManager.getInstance().getConnection()) {
             new UtenteDAO(conn).create(this);
         } catch (SQLException e) {

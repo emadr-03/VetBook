@@ -1,53 +1,84 @@
 package controller;
 
 import it.unina.vetbook.control.AdminController;
+import it.unina.vetbook.dto.AnimaleDomesticoDTO;
+import it.unina.vetbook.dto.VisitaDTO;
 import it.unina.vetbook.entity.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Answers.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+import org.junit.jupiter.api.*;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+import java.lang.reflect.Field;
+import java.time.LocalDate;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 class AdminControllerTest {
 
-    Amministratore admin;
-    AdminController ctrl;
-    List<Visita> visite = new ArrayList<>();
+    AdminController controller;
+    Amministratore mockAdmin;
+    Agenda mockAgenda;
+    MockedStatic<Agenda> agendaStatic;
+
+    List<Visita> visite;
+
+    @BeforeEach
+    void setUp() {
+        visite = List.of(
+                new Visita(TipoVisita.VACCINAZIONE, "Visita A", 50.0, LocalDate.now(), null, 1),
+                new Visita(TipoVisita.CONTROLLO, "Visita B", 100.0, LocalDate.now(), null, 1)
+        );
+
+        mockAdmin = mock(Amministratore.class);
+        mockAgenda = mock(Agenda.class);
+
+        agendaStatic = Mockito.mockStatic(Agenda.class);
+        agendaStatic.when(Agenda::getInstance).thenReturn(mockAgenda);
+
+        when(mockAgenda.visualizzaVisiteGiornaliere()).thenReturn(visite);
+        when(mockAdmin.ottieniIncasso(visite)).thenReturn(150.0);
+
+        controller = AdminController.getInstance(mockAdmin);
+    }
+
+    @AfterEach
+    void tearDown() {
+        agendaStatic.close();
+        resetSingleton();
+    }
+
+    private void resetSingleton() {
+        try {
+            Field f = AdminController.class.getDeclaredField("instance");
+            f.setAccessible(true);
+            f.set(null, null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Test
-    void incassoGiornaliero_ok() {
-        Agenda mockAgenda = mock(Agenda.class);
+    void getVisiteGiornaliere_returnsCorrectDTOs() {
+        List<VisitaDTO> result = controller.getVisiteGiornaliere();
+        assertEquals(2, result.size());
+        assertEquals("Visita A", result.get(0).descrizione());
+        assertEquals("Visita B", result.get(1).descrizione());
+    }
 
-        when(mockAgenda.getVisite()).thenReturn(visite);
-        when(mockAgenda.visualizzaVisiteGiornaliere()).thenReturn(visite);
+    @Test
+    void getTotaleIncassoGiornaliero_returnsCorrectAmount() {
+        double incasso = controller.getTotaleIncassoGiornaliero();
+        assertEquals(150.0, incasso);
+    }
 
-        try (MockedStatic<Agenda> ignored = Mockito.mockStatic(Agenda.class)) {
-            Mockito.when(Agenda.getInstance()).thenReturn(mockAgenda);
-
-            visite.add(new Visita(TipoVisita.CONTROLLO,    "Visita1", 30,
-                    LocalDate.now(), LocalTime.NOON,           1));
-            visite.add(new Visita(TipoVisita.VACCINAZIONE, "Vaccino",  40,
-                    LocalDate.now(), LocalTime.NOON.plusHours(1), 1));
-
-            admin = new Amministratore("admin","a@x.it","pw");
-            ctrl  = AdminController.getInstance(admin);
-
-            assertEquals(70.0, ctrl.getTotaleIncassoGiornaliero(), 0.001);
-        }
-
+    @Test
+    void visualizzaMockAnimaliNonVaccinati_returnsExpectedMockList() {
+        List<AnimaleDomesticoDTO> animali = controller.visualizzaMockAnimaliNonVaccinati();
+        assertEquals(3, animali.size());
+        assertEquals("Luna", animali.get(0).nome());
+        assertEquals("Milo", animali.get(1).nome());
+        assertEquals("Kiwi", animali.get(2).nome());
     }
 }
-
-
