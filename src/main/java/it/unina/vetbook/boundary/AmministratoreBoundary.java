@@ -17,6 +17,7 @@ public class AmministratoreBoundary extends JFrame {
 
     private JLabel head;
     private JPanel box;
+    private JButton logoutBtn;
     private JComponent cardDisponibilita, cardIncassi, cardAnimali;
     private final AdminController adminController;
 
@@ -53,6 +54,13 @@ public class AmministratoreBoundary extends JFrame {
         box.setOpaque(false);
         box.setBorder(BorderFactory.createEmptyBorder(10, 200, 30, 200));
 
+        logoutBtn = new JButton("Logout");
+        logoutBtn.setFocusPainted(false);
+        logoutBtn.addActionListener(e -> {
+            new VisitorBoundary().setVisible(true);
+            dispose();
+        });
+
         // Inizializzazione delle card-menu
         cardDisponibilita = VetcareStyle.makeCard(
                 "Inserisci Disponibilità",
@@ -81,6 +89,11 @@ public class AmministratoreBoundary extends JFrame {
         box.add(cardIncassi);
         box.add(Box.createVerticalStrut(26));
         box.add(cardAnimali);
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setOpaque(false);
+        bottomPanel.add(logoutBtn);
+        add(bottomPanel, BorderLayout.SOUTH);
 
         add(box, BorderLayout.CENTER);
     }
