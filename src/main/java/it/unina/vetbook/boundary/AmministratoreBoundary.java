@@ -4,6 +4,7 @@ import it.unina.vetbook.control.AdminController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * Rappresenta la finestra principale per l'attore Amministratore.
@@ -13,7 +14,7 @@ import java.awt.*;
  */
 public class AmministratoreBoundary extends JFrame {
 
-    private static final String RES = "src/main/resources/img/";
+    private static final String RES = "/img/";
 
     private JLabel head;
     private JPanel box;
@@ -43,7 +44,7 @@ public class AmministratoreBoundary extends JFrame {
     private void initComponents() {
         // Inizializzazione header con logo
         ImageIcon logo = new ImageIcon(
-                new ImageIcon(RES + "logo_clinica.png")
+                new ImageIcon(Objects.requireNonNull(getClass().getResource(RES + "logo_clinica.png")))
                         .getImage().getScaledInstance(140, 140, Image.SCALE_SMOOTH));
         head = new JLabel(logo, SwingConstants.CENTER);
         head.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
@@ -100,7 +101,7 @@ public class AmministratoreBoundary extends JFrame {
 
     private ImageIcon createIcon(String file) {
         return new ImageIcon(
-                new ImageIcon(RES + file).getImage()
+                new ImageIcon(Objects.requireNonNull(getClass().getResource(RES + file))).getImage()
                         .getScaledInstance(32, 32, Image.SCALE_SMOOTH));
     }
 }

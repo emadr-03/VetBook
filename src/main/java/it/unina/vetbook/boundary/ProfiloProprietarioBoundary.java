@@ -8,10 +8,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Objects;
 
 public class ProfiloProprietarioBoundary extends JFrame {
 
-    private static final String RES = "src/main/resources/img/";
+    private static final String RES = "/img/";
     private final ProprietarioDTO proprietarioCorrente;
 
     private JLabel imageLabel;
@@ -177,7 +178,7 @@ public class ProfiloProprietarioBoundary extends JFrame {
 
     private ImageIcon icon() {
         try {
-            return scaleImageIcon(new ImageIcon(RES + "user_profile_icon.png"));
+            return scaleImageIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource(RES + "user_profile_icon.png"))));
         } catch (Exception e) {
             return createPlaceholderIcon();
         }

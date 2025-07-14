@@ -8,10 +8,11 @@ import it.unina.vetbook.utils.LoginResult;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class VisitorBoundary extends JFrame {
 
-    private static final String RES = "src/main/resources/img/";
+    private static final String RES = "/img/";
 
     private JTextField userField;
     private JPasswordField passField;
@@ -50,7 +51,7 @@ public class VisitorBoundary extends JFrame {
 
     private void layoutComponents() {
         ImageIcon logo = new ImageIcon(
-                new ImageIcon(RES + "logo_clinica.png")
+                new ImageIcon(Objects.requireNonNull(getClass().getResource(RES + "logo_clinica.png")))
                         .getImage().getScaledInstance(120,120,Image.SCALE_SMOOTH));
         JLabel head = new JLabel(logo, SwingConstants.CENTER);
         head.setBorder(BorderFactory.createEmptyBorder(30,0,10,0));

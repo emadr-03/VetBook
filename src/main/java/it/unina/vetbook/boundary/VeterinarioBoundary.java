@@ -5,10 +5,11 @@ import it.unina.vetbook.control.VeterinarioController;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 public class VeterinarioBoundary extends JFrame {
 
-    private static final String RES = "src/main/resources/img/";
+    private static final String RES = "/img/";
     private JButton logoutButton;
     private final VeterinarioController veterinarioController;
 
@@ -38,7 +39,7 @@ public class VeterinarioBoundary extends JFrame {
 
     private void layoutComponents() {
         ImageIcon logo = new ImageIcon(
-                new ImageIcon(RES + "logo_clinica.png")
+                new ImageIcon(Objects.requireNonNull(getClass().getResource(RES + "logo_clinica.png")))
                         .getImage().getScaledInstance(140,140,Image.SCALE_SMOOTH));
         JLabel head = new JLabel(logo, SwingConstants.CENTER);
         head.setBorder(BorderFactory.createEmptyBorder(20,0,10,0));
@@ -82,7 +83,7 @@ public class VeterinarioBoundary extends JFrame {
 
     private ImageIcon icon(String file) {
         try {
-            return new ImageIcon(new ImageIcon(RES + file).getImage()
+            return new ImageIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource(RES + file))).getImage()
                     .getScaledInstance(32, 32, Image.SCALE_SMOOTH));
         } catch (Exception e) {
             return new ImageIcon(new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB));
