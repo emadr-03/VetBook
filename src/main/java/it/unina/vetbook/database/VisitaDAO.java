@@ -21,8 +21,8 @@ public class VisitaDAO extends GenericDAO<Visita, Integer> {
             ps.setString(1, visita.getTipo().toString());
             ps.setString(2, visita.getDescrizione());
             ps.setDouble(3, visita.getCosto());
-            ps.setDate(4, Date.valueOf(visita.getData())); // Conversione da LocalDate
-            ps.setTime(5, Time.valueOf(visita.getOra()));  // Conversione da LocalTime
+            ps.setDate(4, Date.valueOf(visita.getData()));
+            ps.setTime(5, Time.valueOf(visita.getOra()));
             ps.setInt(6, visita.getIdVeterinario());
 
             ps.executeUpdate();
