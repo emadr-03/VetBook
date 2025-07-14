@@ -34,7 +34,7 @@ class AuthControllerTest {
     void tearDown() {
         utenteStatic.close();
         factoryStatic.close();
-        agendaStatic.close();  // <--- chiudi anche questo
+        agendaStatic.close();
         resetSingleton();
     }
 
