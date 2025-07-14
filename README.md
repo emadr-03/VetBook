@@ -35,7 +35,7 @@ Per effettuare un testing completo dell’applicazione è necessario:
    - `schema.sql`: crea la struttura del database;
    - `popolamento.sql`: popola le tabelle con dati mock.
 
-> Il database da creare si chiama `vetbook`, lo username è `studente`, la password è `studente`. In alternativa per usare credenziali diverse è necessario modificare la classe DBManager.
+> Il database da creare deve essere mysql, esposto su porto 3306 e deve chiamarsi `vetbook`, lo username è `studente`, la password è `studente`. In alternativa per usare credenziali diverse è necessario modificare la classe DBManager. (`jdbc:mysql://localhost:3306/vetbook`)
 
 ## Utenti mock già presenti nel sistema
 
@@ -53,7 +53,7 @@ L'applicazione può essere avviata in due modi alternativi:
    Eseguire il metodo `main()` della classe `AppLauncher`.
 
 2. **Da file eseguibile**  
-   Utilizzare il file `.jar` precompilato presente nella cartella `exec/`.
+   Utilizzare il file `.jar` precompilato presente nella cartella `out/artifcats/vetbook_original_jar`.
 
 L'interfaccia utente è sviluppata in Java Swing e adotta il tema grafico FlatLaf per offrire una visualizzazione moderna e coerente su sistemi desktop.
 
