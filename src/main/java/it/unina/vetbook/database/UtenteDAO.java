@@ -130,4 +130,27 @@ public class UtenteDAO extends GenericDAO<Utente, Integer> {
             stmt.executeUpdate();
         }
     }
+
+    public void deleteProprietario(int idProprietario) {
+        try (Connection conn = DBManager.getInstance().getConnection()) {
+            conn.setAutoCommit(false);
+
+            AnimaleDomesticoDAO animaleDAO = new AnimaleDomesticoDAO(conn);
+            String deleteAnimaliSQL = "DELETE FROM animali WHERE idproprietario = ?";
+            try (PreparedStatement stmtAnimali = conn.prepareStatement(deleteAnimaliSQL)) {
+                stmtAnimali.setInt(1, idProprietario);
+                stmtAnimali.executeUpdate();
+            }
+
+            String deleteProprietarioSQL = "DELETE FROM utenti WHERE id = ?";
+            try (PreparedStatement stmtProprietario = conn.prepareStatement(deleteProprietarioSQL)) {
+                stmtProprietario.setInt(1, idProprietario);
+                stmtProprietario.executeUpdate();
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException("Errore durante la cancellazione del proprietario e dei suoi animali", e);
+        }
+    }
 }

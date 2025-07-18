@@ -60,6 +60,17 @@ public class Proprietario extends Utente {
         return animali;
     }
 
+    //A: Metodo unicamente inserito per esplicitare la composizione
+    public void deleteProprietario() {
+        try(Connection conn = DBManager.getInstance().getConnection()) {
+            UtenteDAO dao = new UtenteDAO(conn);
+            dao.deleteProprietario(this.id);
+        } catch (SQLException e){
+            throw new RuntimeException(e);
+        }
+    }
+
+
     public void setAnimali(List<AnimaleDomestico> animali) {
         this.animali = animali;
     }
