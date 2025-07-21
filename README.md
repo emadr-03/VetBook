@@ -61,13 +61,10 @@ L'interfaccia utente è sviluppata in Java Swing e adotta il tema grafico FlatLa
 Da UI è possibile interagire con le seguenti feature ma i dati visualizzati sono mockati (a livello di controller), dunque non c'è persistenza nel database:
 ### Proprietario
 1) Gestione profilo
-2) Aggiorna (Immagine profilo)
-3) Carica (Immagine profilo)
-3) Inserisci Nuovo Animale
-4) Modifica (Animale)
-5) Elimina (Animale)
+2) Inserisci Nuovo Animale
+3) Modifica/Elimina (Animale)
 ### Amministratore
-6) Animali Non Vaccinati
+1) Animali Non Vaccinati
 
 Le seguenti feature sono funzionanti e seguono il flusso completo boundary->control->entity->database
 ### Proprietario
