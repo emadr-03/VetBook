@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class DaoIntegrationTest {
+class DaoTest {
 
     private Connection conn;
 
